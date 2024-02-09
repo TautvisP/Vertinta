@@ -1,4 +1,4 @@
-"""Indeform Sparkspace projects template URL Configuration
+"""Indeform OSOM.Codex (LE) projects template URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/

@@ -1,5 +1,5 @@
 """
-WSGI config for Indeform Sparkspace project.
+WSGI config for Indeform OSOM.Codex (LE) project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

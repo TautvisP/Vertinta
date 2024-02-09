@@ -1,7 +1,7 @@
 {
-  "name": "Indeform Sparkspace",
+  "name": "Indeform OSOM.Codex (LE)",
   "version": "1.0.0",
-  "description": "Indeform Sparkspace project template",
+  "description": "Indeform OSOM.Codex (LE) project template",
   "scripts": {
     "test": "test",
     "build": "webpack --mode=production --node-env=production",
@@ -11,7 +11,7 @@
   },
   "keywords": [
     "indeform",
-    "sparkspace"
+    "osom codex"
   ],
   "author": "Indeform Ltd",
   "license": "Commercial",

@@ -1,5 +1,5 @@
 """
-ASGI config for Indeform Sparkspace project.
+ASGI config for Indeform OSOM.Codex (LE) project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
