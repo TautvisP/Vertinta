@@ -1,0 +1,32 @@
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>RArea: Indeform Sparkspace projects template</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'rarea/build.css' %}" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta charset="UTF-8"/>
+        <meta name="description" content="Indeform Sparkspace"/>
+        <meta name="keywords" content=""/>
+        <meta name="author" content="(C) Indeform Ltd."/>
+        <meta name="verify-paysera" content="5542982fda7eab5eb3e95e6c00a037f9">
+    </head>
+
+    <body>
+        {% include 'rarea/header.html' %}
+
+        <ul class="sbarnav">
+            <li><a href="{% url 'rarea:index' %}">Home</a></li>
+            <li><a href="{% url 'modules/demo:data' %}">Demo</a></li>
+            <li><a>...</a></li>
+        </ul>
+        <div class="content nopadd">
+            {% block content %}{% endblock content %}
+        </div>
+
+        {% include 'rarea/footer.html' %}
+    </body>
+    <script type="text/javascript" src="{% static 'rarea/build.js' %}"></script>
+</html>

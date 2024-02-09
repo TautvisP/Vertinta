@@ -1,0 +1,20 @@
+// Welcome panel.
+.welcome-panel {
+    padding:40px;
+    background-color: #282828;
+    color:#fff;
+    border-radius:20px;
+    margin-top:100px;
+    padding: 60px 100px 60px 100px;
+
+    .header {
+        height:30px;
+        width:100%;
+        background:transparent url(img/logo.png) center center no-repeat;
+        background-position:center center;
+    }
+
+    .content {
+        margin-top:80px;
+    }    
+}

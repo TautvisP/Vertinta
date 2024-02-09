@@ -1,0 +1,46 @@
+# LaTex
+*.aux
+*.log
+*.lof
+*.lot
+*.out
+*.toc
+*.mtc*
+*.mlt*
+*.mlf*
+*.maf
+*.synctex.gz
+
+
+# Python
+*.pyc
+__pycache__/
+.venv
+
+
+# Django
+**/*oauth2.json
+**/media/*
+settings_local.py
+staticfiles/
+dev/static/tmp
+
+# IDEs
+.vscode
+.idea/
+
+# JS
+node_modules/
+*.min.js
+dev/pub/
+
+# Other
+*.bak
+deploy
+db.sqlite3
+*.css.map
+
+
+# Git
+# Used to add empty folders (for example for media files storage).
+!.gitkeep

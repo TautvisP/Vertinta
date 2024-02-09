@@ -1,0 +1,30 @@
+{% extends 'rarea/layout.html' %}
+{% load i18n %}
+
+{% block content %}
+    <h1 class="con-header">Welcome to Your new Sparkspace Project {Your project title here}</h1>
+    <p class="con-header">Great job! You already did the very first step - initialized and set your project template. {Your project description here}</p>
+
+    <h2 class="con-header">BACKLOG</h2>
+    <ul class="dash">
+        <li>Set your project title and description</li>
+        <li>Check UI guidelines</li>
+        <li>Create new module</li>
+    </ul>
+
+    <h2 class="con-header">INPROGRESS</h2>
+    <ul class="dash">
+        <li>(ME) Project template setup.</li>
+    </ul>
+
+    <h2 class="con-header">RELEASES</h2>
+    <h2 class="con-header">myproject.current</h2>
+    <ul class="dash">
+        <li>(ME) Nothing yet.</li>
+    </ul>
+
+    <h2 class="con-header">myproject.r1.0.YYYYMM-NN_alpha</h2>
+    <ul class="dash">
+        <li>(ME) Nothing yet.</li>
+    </ul>
+{% endblock %}
