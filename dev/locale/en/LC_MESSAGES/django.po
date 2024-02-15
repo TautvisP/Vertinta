@@ -20,4 +20,4 @@ msgstr ""
 
 #: main/urls.py:44
 msgid "ADMIN_AREA_TITLE"
-msgstr "Indeform OSOM.Codex (LE) Admin"
+msgstr "Indeform OSOM.Codex (Sandbox edition) Admin"

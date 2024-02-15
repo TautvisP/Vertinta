@@ -1,5 +1,5 @@
 """
-ASGI config for Indeform OSOM.Codex (LE) project.
+ASGI config for Indeform OSOM.Codex (Sandbox edition) project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 

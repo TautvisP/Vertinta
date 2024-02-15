@@ -1,7 +1,7 @@
 {
-  "name": "Indeform OSOM.Codex (LE)",
+  "name": "Indeform OSOM.Codex (Sandbox edition)",
   "version": "1.0.0",
-  "description": "Indeform OSOM.Codex (LE) project template",
+  "description": "Indeform OSOM.Codex - sandbox environment for new projects.",
   "scripts": {
     "test": "test",
     "build": "webpack --mode=production --node-env=production",
@@ -18,7 +18,7 @@
   "devDependencies": {
     "@babel/core": "^7.16.12",
     "@babel/preset-env": "^7.16.11",
-    "@webpack-cli/generators": "^2.4.2",
+    "@webpack-cli/generators": "^3.0.7",
     "babel-loader": "^8.2.3",
     "prettier": "^2.5.1",
     "sass": "^1.49.4",
