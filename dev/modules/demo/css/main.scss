@@ -1,0 +1,32 @@
+@CHARSET "UTF-8";
+.hidden { display:none; }
+
+.data-header {
+    text-align:right;
+}
+
+.dialog { 
+    background-color:#3e4444; 
+    color:#fff; 
+    padding: 20px; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width:600px;
+}
+
+.dialog .footer { text-align:right; }
+
+
+.table { 
+    background-color:#3e4444; 
+    color:#fff; 
+    padding: 20px; 
+    width:600px;
+}
+
+
+button { padding:10px 20px 10px 20px; margin-top:5px; color:#fff; border:none; border-radius: 5px;}
+button { background-color:#c1946a; }
+button.close { background-color:#405d27; }

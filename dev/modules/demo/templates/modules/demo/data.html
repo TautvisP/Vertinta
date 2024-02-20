@@ -2,6 +2,14 @@
 {% load i18n %}
 
 {% block content %}
+
+<div id="main-container">
+    <h2>OSOM.js Demo. Projects list</h2>
+    <div class="data-header"><button type="button" osom-event="createProject"/>Create Project</button></div>
+    <div id="data-table-container"></div>
+</div>
+
+
 <form class="col3" method="post">
     {% csrf_token %}
     <h2 class="fill3">Create product</h2>
@@ -22,9 +30,9 @@
         {% if form.stock.errors %}<span class="error">{{ form.stock.errors }}</span>{% endif %}
     </p>
 
-    <p class="fill3 tright">
+    <p class="fill3 tright" id="main-container">
         <input type="submit" name="create-product" value="Create"/>
-    </p>    
+    </p>
 </form>
 
 
@@ -47,4 +55,6 @@
         {% endfor %}
     </tbody>
 </table>
+
+
 {% endblock %}

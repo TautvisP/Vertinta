@@ -2,20 +2,34 @@
 # Please open terminal and follow setup steps below to make your project up and running in minutes.
 
 
-# Install NPM packages for frontend development.
-$ npm install
+# Libraries setup.
+# lib: Setup OSOM.js GIT submodule.
+git submodule init
+git submodule update
 
 
-# Setup Python virtual environment for backend libraries.
+# lib: Install NPM packages for frontend development.
+$ mkdir -p ./lib/node_modules
+$ npm install --prefix ./lib
+
+# NOTE: Use the same command for installation of different NPM packages.
+# $ npm install --prefix ./lib {PACKAGE_NAME}
+
+
+# backend: Setup Python virtual environment for backend libraries.
 $ python3 -m venv .venv
 
-# Activate virtual environment so you could install required backend packages.
+# backend: Activate virtual environment so you could install required backend packages.
 $ source .venv/bin/activate
 
-# Install packages required into virtual environment.
+# backend: Install packages required into virtual environment.
 (.venv)$ pip install -r requirements.txt
 
-# Initialize and apply DB migrations (don't forget to cd into 'dev' folder first).
+# NOTE: If mysqlclient installation fails, install: 
+# apt-get install libmariadb-dev
+
+
+# backend: Initialize and apply DB migrations (don't forget to cd into 'dev' folder first).
 (.venv)$ cd ./dev
 (.venv)$ python manage.py makemigrations
 (.venv)$ python manage.py migrate
