@@ -9,16 +9,30 @@
 import * as Osom from "osom";
 
 
-export default class CreateProjectForm extends Osom.Form {
+export default class CreateProductForm extends Osom.Form {
   constructor({ list }) {
     super( // HTML Element. Possible values: HTML Template, Element ID, or Element as DOM object.
       `
         <div class="dialog hidden">
-          <h1>Create Project<button osom-event="closeDialog">X</button></h1>
-          <form method="post" onsubmit="return false;">
-            <p><input type="text" name="title"/></p>
-            <div class="footer"><button osom-event="submitData" class="close">Create</button></div>
-          </form>
+          <h1>Create Product<button osom-event="closeDialog">X</button></h1>
+
+          <form class="col1" method="post" onsubmit="return false;">
+                <p>
+                    <label for="code_field">Code:</label>
+                    <input id="code_field" type="text" name="code"/>
+                </p>
+                <p>
+                    <label for="title_field">Title:</label>
+                    <input id="title_field" type="text" name="title"/>
+                </p>
+                <p>
+                    <label for="stock_field">Stock:</label>
+                    <input id="stock_field" type="text" name="stock"/>
+                </p>
+                <p class="tright">
+                    <button osom-event="submitData" class="close">Create</button>
+                </p>
+            </form>
         </div>
       `,
 
@@ -29,7 +43,6 @@ export default class CreateProjectForm extends Osom.Form {
       ['click'],   
     );
 
-    //console.log("LIST", list);
     this.list = list;
 
   }
@@ -42,7 +55,7 @@ export default class CreateProjectForm extends Osom.Form {
 
     async on_submitData(d, e) {
         
-        let resp = await this.submit('http://127.0.0.1:8000/crud/testprojects/create');
+        let resp = await this.submit('http://127.0.0.1:8000/demo/osom/api/create');
         if (resp) {
             this.clear();
             this.list.update();
@@ -52,7 +65,6 @@ export default class CreateProjectForm extends Osom.Form {
     
     
     show(val = true) {
-
         let elements = Object.values(this._elements);
         let first = elements[0]
 

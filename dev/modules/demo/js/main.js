@@ -1,8 +1,8 @@
 
 
 import * as Osom from "osom"
-import CreateProjectForm from "./frm-create-project";
-import ProjectsTable from "./projects-table";
+import CreateProductForm from "./frm-create-product";
+import ProductsTable from "./products-table";
 
 
 class Main extends Osom.Component {
@@ -11,21 +11,19 @@ class Main extends Osom.Component {
             'main-container',
 
             // Data binding. Initial values.
-            { projects: [] },
+            { products: [] },
 
             // Events filter
             ['click'],      
         );
 
 
-        this.pt = this.append(ProjectsTable, 'data-table-container');
-        this.cpf = this.append(CreateProjectForm, document.body, { list:this.pt });
-
-        console.log(this);
+        this.pt = this.append(ProductsTable, 'data-table-container');
+        this.cpf = this.append(CreateProductForm, document.body, { list:this.pt });
     }
   
 
-    on_createProject(d, e) {
+    on_createProduct(d, e) {
         this.cpf.clear();
         this.cpf.show();
     };

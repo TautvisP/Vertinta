@@ -15,7 +15,6 @@ class DataView(CreateView, LoginRequiredMixin):
 
     def get_context_data(self, **kwargs):
         kwargs['object_list'] = Product.objects.order_by('code')
-        print(kwargs['object_list'])
         return super(DataView, self).get_context_data(**kwargs)    
 
 

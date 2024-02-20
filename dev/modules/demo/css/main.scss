@@ -1,19 +1,26 @@
 @CHARSET "UTF-8";
-.hidden { display:none; }
-
-.data-header {
-    text-align:right;
-}
-
 .dialog { 
     background-color:#3e4444; 
-    color:#fff; 
     padding: 20px; 
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width:600px;
+    border-radius:10px;
+}
+
+
+.dialog h1 {
+    font-weight:bold;
+    font-size:18px;
+    color:#fff;
+    display:block;
+    overflow:hidden;
+    margin-bottom:10px;
+}
+
+.dialog h1 button {
+    float:right;
 }
 
 .dialog .footer { text-align:right; }
