@@ -1,0 +1,24 @@
+table {
+    font-size: 15px;
+    color: var(--cprime-text)
+}
+
+
+thead {
+    color: var(--csec-text);
+    border-bottom: solid 1px var(--cborder);
+}
+
+th, td {
+    padding: 10px;
+}
+
+tr:nth-child(odd) {
+    background-color: var(--cprime);
+}
+
+
+tr:nth-child(even) {
+    background-color: var(--csec);
+}
+

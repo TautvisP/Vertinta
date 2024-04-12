@@ -1,0 +1,36 @@
+ul.modules-listbar {
+    li:first-child a {
+        margin-top: 10px;
+    }
+
+    li a {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: center;
+        text-transform: uppercase;
+        color: var(--csec-text);
+        padding: 12px 10px 12px 10px;
+        margin: 5px 10px 0px 10px;
+        text-decoration:none;
+
+        span.icon {
+            display: block;
+            cursor: pointer;
+            min-width: 24px;
+            min-height: 24px;
+            margin-bottom:5px;
+            background-color: var(--cicon-sec);
+        }
+
+        &:hover {
+            background-color: var(--cactive);
+            border-radius: 10px;
+            color: var(--cprime-text);
+
+            span.icon {
+                background-color: var(--cicon-sec-active);
+            }
+        }
+    }        
+}

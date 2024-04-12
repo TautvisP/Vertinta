@@ -1,0 +1,22 @@
+{% extends layout_template %}
+{% load i18n %}
+
+{% block title %}
+    Osom.JS
+{% endblock %}
+
+{% block content %}
+    <h1>{{ module.title }}</h1>
+    {% if module.description %}<p>{{ module.description }}</p>{% endif %}
+    {% if module.specification_url %}<p>{{ module.specification_url }}</p>{% endif %}
+    {% if module.manual_url %}<p>{{ module.manual_url }}</p>{% endif %}
+
+    {% for entry in module.release_notes %}
+    <h2>{{ entry.title }}</h2>
+    <ul class="list disc">
+        {% for item in entry.items %}
+            <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+{% endblock %}

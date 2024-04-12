@@ -26,8 +26,7 @@ from django.utils.translation import gettext_lazy as _
 urlpatterns = [
     # general
     path('admin/', admin.site.urls),
-    path('', include('parea.urls', namespace='parea')),
-    path('rarea/', include('rarea.urls', namespace='rarea')),
+    path('', include('rarea.urls', namespace='rarea')),
 
     # core
     path('auth/', include('core.uauth.urls', namespace='core/uauth')),

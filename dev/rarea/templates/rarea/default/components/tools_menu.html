@@ -1,0 +1,22 @@
+<ul class="tools-menu">
+    <li class="active">
+        <a href="#" title="Notifications">
+            <span class="icon notifications"></span>
+        </a>
+    </li>
+    <li>
+        <a href="#" title="Notes">
+            <span class="icon notes"></span>
+        </a>
+    </li>
+
+    {% for module in enabled_modules %}
+        {% if module.location == 'tools-menu' %}
+            <li>
+                <a href="{{ module.url }}" title="{{ module.name }}">
+                    <span class="icon module-{{ module.id }}"></span>
+                </a>
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>

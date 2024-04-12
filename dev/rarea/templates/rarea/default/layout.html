@@ -1,0 +1,58 @@
+{% load i18n %}
+{% load static %}
+{% load auxiliary_tags %}
+
+{% static '' as baseURL %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title> OSOM.Codex (sandbox edition) • {% block title %} {% endblock %} </title>
+        <link rel="stylesheet" type="text/css" href="{{ baseURL }}rarea/{{ theme }}/build.css" />
+        <link rel="icon" type="image/x-icon" href="{{ baseURL }}rarea/{{ theme }}/img/favicons/favicon.ico" id="favicon" />
+
+        {% for module in enabled_modules %}
+            <link rel="stylesheet" type="text/css" href="{{ baseURL }}modules/{{ module.id }}/{{ theme }}/build.css" />
+        {% endfor %}
+
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="description" content="OSOM Codex (sandbox)"/>
+        <meta name="keywords" content=""/>
+        <meta name="author" content="Indeform Ltd."/>
+
+        {% if request.user.is_authenticated %}
+            <script async>
+                document.userId = {{ request.user.id }};
+                document.cookie = `django_timezone=${Intl.DateTimeFormat().resolvedOptions().timeZone}; samesite=lax; path=/`;
+            </script>
+        {% endif %}
+    </head>
+
+    <body>
+        {% include "./components/header.html" %}
+        {% include "./components/modules_listbar.html" %}
+        
+        <div class="content">
+            {% block content %}
+            {% endblock content %}
+        </div>
+
+        <div class="content-sidebar">
+            {% block content_sidebar %}
+                {% include "./components/content_sidebar.html" %}
+            {% endblock %}
+        </div>
+
+        <div class="tools-sidebar">
+            {% block tools_sidebar %}
+                {% include "./components/tools_sidebar.html" %}
+            {% endblock %}
+        </div>
+
+        {% include "./components/tools_menu.html" %}
+    </body>
+
+    <script async type="text/javascript" src="{% static 'shared/build.js' %}"></script>
+    <script async type="text/javascript" src="{% static 'rarea/build.js' %}"></script>
+</html>

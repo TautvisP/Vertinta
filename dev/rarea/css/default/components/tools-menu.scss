@@ -1,0 +1,14 @@
+ul.tools-menu {
+    li a span.icon {
+        display: block;
+        text-align:center;
+        width: 28px;
+        height: 28px;
+        margin:0px 14px 0px 14px;
+        background-color: var(--cprime-text);
+    }
+
+    li.active a span.icon {
+        background-color: var(--cactive);
+    }
+}

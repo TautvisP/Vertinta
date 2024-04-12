@@ -1,0 +1,12 @@
+{% load i18n %}
+{% load auxiliary_tags %}
+
+<ul class="header">
+    <li class="logo">OSOM.Codex (sandbox edition)</li>
+    <li class="profile">
+        {% if user.avatar %}
+            <img src="/media/{{ user.avatar }}">
+        {% endif %}
+    </li>
+</ul>
+{% include menu_template %}

@@ -1,0 +1,42 @@
+@use '~shared/css/functions';
+
+$icons: 
+    'module-navigation-arrow',
+    'sidebar-menu-toggle',
+    'dashboard',
+    'notifications',
+    'calendar',
+    'chat',
+    'notes',
+    'module-codex',
+    'module-osomjs',
+    'module-uauth',
+
+    'module-taskman',
+    'module-teambuilder',
+    'module-skilltree',
+    'module-recrewter',
+    'module-timeplanner',
+    'module-chat',
+    !default;
+
+$icons-extension: '.svg' !default;
+$icons-root-path: './img/icons/' !default;
+
+span.icon {
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: 50% 50%;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: 50% 50%;
+    display: inline-block;
+    background-color: #FF00FF;
+
+    @each $name in $icons {
+        &.#{$name} {
+            mask-image: functions.get-icon($icons-root-path, $name, $icons-extension);
+            -webkit-mask-image: functions.get-icon($icons-root-path, $name, $icons-extension);
+        }
+    }
+}

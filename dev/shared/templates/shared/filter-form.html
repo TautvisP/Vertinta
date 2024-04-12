@@ -1,0 +1,13 @@
+{% load i18n %}
+{% load ecomm_tags %}
+
+
+<div class="filter-bar">
+    {% for filter_data in FILTERS_DICT.items %}
+        {{ filter_data|build_filter:request|safe }}
+    {% endfor %}
+    
+    {% if FILTERS_DICT.items %}
+        <button type="submit">{% trans 'Filter' %}</button>
+    {% endif %}
+</div>

@@ -1,0 +1,24 @@
+ul.menu {
+    li {
+        >a {
+            display: flex;
+            align-items: center;
+            padding: 10px 24px 10px 24px;
+            color: var(--csec-text);
+            text-decoration: none;
+
+            &:hover {
+                background-color: var(--cprime);
+                text-shadow:0px 0px 2px var(--cactive);
+                color: var(--cactive);
+            }    
+        }
+    }
+
+    li.module-title {
+        font-weight: 600;
+        margin-right: 8px;
+        padding: 10px 24px 10px 24px;
+        text-transform: uppercase;
+    }
+}

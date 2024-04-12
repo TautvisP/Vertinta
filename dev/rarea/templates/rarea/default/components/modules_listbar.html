@@ -1,0 +1,18 @@
+{% load i18n %}
+
+<ul class="modules-listbar">
+    <li>
+        <a href="{% url 'rarea:index' %}">
+            <span class="icon module-codex"></span>
+            <span> OSOM.Codex (Sandbox) </span>
+        </a>
+    </li>
+    {% for module in enabled_modules %}
+        <li>
+            <a href="{{ module.url }}">
+                <span class="icon module-{{ module.id }}" title="{{ module.name }}"></span>
+                <span> {{ module.name }} </span>
+            </a>
+        </li>
+    {% endfor %}
+</ul>

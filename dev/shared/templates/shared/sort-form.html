@@ -1,0 +1,12 @@
+{% load i18n %}
+{% load ecomm_tags %}
+
+
+<div class="sort-bar">
+    <label for="sort-select">Sort by:</label>
+    <select onChange="form.submit();" name="sort" id="sort-select">
+        {% for key in SORTING_DICT %}
+            <option value="{{key}}" {% if request.GET.sort == key %}selected{% endif %}>{{SORTING_DICT|get_verbal:key}}</option>
+        {% endfor %}
+    </select>
+</div>

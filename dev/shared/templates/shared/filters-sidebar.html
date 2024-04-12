@@ -1,0 +1,35 @@
+{% load i18n %}
+{% load ecomm_tags %}
+
+<div class="sidebar col1" id="sidebar">
+    
+    {% if CATEGORIES %}
+        <h2>{% trans 'CATEGORIES' %}</h2>
+        
+        {% for category in CATEGORIES %}
+            <a href="{% url 'modules/ecomm:store_products_category' slug=category.slug %}">
+                {% for i in category.depth|times %}&nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}
+                {{category.name}}
+            </a>
+        {% endfor %}
+    {% endif %}
+        
+    
+    {% if ATTRIBUTE_FILTERS %}
+        
+        <h2>{% trans 'ATTRIBUTE FILTERS' %}</h2>
+
+        <form method="GET" id="filter-form">
+            {% for filter in ATTRIBUTE_FILTERS %}
+                {{ filter|build_filter_from_attribute:request|safe }}
+
+                {% if forloop.last %}
+                    <button type="button" osom-event="applyFilters">{% trans 'Filter by attributes' %}</button>
+                {% endif %}
+
+            {% endfor %}
+        </form>
+
+    {% endif %}
+
+</div>

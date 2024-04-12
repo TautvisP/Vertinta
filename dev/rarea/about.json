@@ -1,0 +1,30 @@
+{
+    "title":"Welcome to the OSOM.Codex sandbox edition!",
+    "description": "Great job! You already did the very first step - initialized and set your project environment. Please feel free to explore what you can do next.",
+    "specification_url": "",
+    "manual_url": "",
+    "release_notes":[
+        {   "title":"TODO next",
+            "items": [
+                "Start exploring \"dev/parea\" and \"dev/rarea\" to learn more about code/folders structure you should follow for \"Areas\".",
+                "Start exploring \"Demo -> Data\" and \"Demo -> CAD\" at \"dev/modules\" to learn more about code/folders structure you should follow wile creating \"Modules\".",
+                "Explore \"UI guidelines\" to learn how to form standard forms and views.",
+                "Got it? So it's time to start creating your own module at \"dev/modules\"! Good luck!"
+            ]
+        },
+        {   "title":"osom.codex.current",
+            "items": [
+                "Integrated themes support.",
+                "Updated modules and descriptions."
+            ]
+        },
+        {   "title":"osom.codex.r1.0.202202-01",
+            "items": [
+                "Initial sandbox version."
+            ]
+        }
+    ]
+}
+
+
+

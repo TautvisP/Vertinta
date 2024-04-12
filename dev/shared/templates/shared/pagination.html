@@ -1,0 +1,27 @@
+{% load i18n %}
+{% load parea_tags %}
+
+
+<div class="pagination">
+    {% if is_paginated %}
+        <div class="page-info">{{ page_obj.start_index }} {% trans 'to' %} {{ page_obj.end_index }} {% trans 'of' %} {{ paginator.count }}</div>
+        <div class="paginator">
+            {% if page_obj.has_previous %}
+                <a class="first" href="?page=1">{% trans 'First' %}</a>
+                <a class="prev" href="?{% param_replace page=page_obj|get_page_number:-5 %}">{% trans 'Previous' %}</a>
+            {% endif %}
+
+            {% for page in page_obj|neighbour_pages_range:4 %}
+                <a href="?{% param_replace page=page %}"
+                    {% if page == page_obj.number %}
+                        class="active"
+                    {% endif %}>{{ page }}</a>
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a class="next" href="?{% param_replace page=page_obj|get_page_number:5 %}">{% trans 'Next' %}</a>
+                <a class="last" href="?page={{ page_obj.paginator.num_pages }}">{% trans 'Last' %}</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

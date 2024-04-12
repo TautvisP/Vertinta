@@ -1,0 +1,18 @@
+:root {
+    --font-family-body: 'Inter';
+    --font-family-code: 'FreeMono Regular';
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Inter';
+    src: url('./fonts/inter/Inter.ttf');
+}
+
+@font-face {
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+    font-family: 'FreeMono Regular';
+    src: local('FreeMono Regular'), url('./fonts/free-mono/FreeMono.woff') format('woff');
+}

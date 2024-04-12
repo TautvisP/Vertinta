@@ -1,0 +1,14 @@
+{% extends "./menu_wrapper.html" %}
+
+{% block title %}
+    Codex
+{% endblock %}
+
+{% block items %}
+    <li>
+        <a href="{% url 'rarea:index' %}">About</a>
+    </li>
+    <li>
+        <a href="{% url 'rarea:ui-guidelines' %}">UI guidelines</a>
+    </li>
+{% endblock %}

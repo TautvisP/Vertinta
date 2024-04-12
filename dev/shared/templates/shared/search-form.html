@@ -1,0 +1,8 @@
+{% load i18n %}
+{% load ecomm_tags %}
+
+
+<div class="search-bar">
+    <button type="submit"></button>
+    <input id="search-orders-input" type="text" name="search" value="{% if request.GET.search %}{{ request.GET.search }}{% endif %}" placeholder="{% trans 'Search' %}">
+</div>

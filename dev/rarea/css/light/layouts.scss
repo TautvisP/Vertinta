@@ -1,0 +1,110 @@
+// #region Root.
+body {
+    display: grid;
+    font-size: 16px;
+    min-height: 100vh;
+    line-height: 1.25;
+    font-family: var(--font-family-body), sans-serif;
+    grid-template-rows: min-content min-content 1fr;
+    grid-template-columns: min-content 1fr min-content min-content min-content;
+    grid-template-areas:
+        "Header     Header      Header      Header      Header"
+        "Menu       Menu        Menu        Menu    Menu"
+        "ModulesListbar    ModuleContent       ContentSidebar      ToolsSidebar    ToolsMenu";
+}
+
+
+// #region Header
+ul.header {
+    grid-area: Header;
+    grid-template-columns: 1fr min-content;
+    display: flex;
+    overflow: auto;
+    padding: 14px;
+    color: var(--cprime-text);
+    background-color: var(--cprime);
+}
+// #endregion
+
+
+// #region Menu
+ul.menu {
+    grid-area: Menu;
+    display: flex;
+    background-color: var(--csec);
+    color: var(--csec-text);
+    border-top: 1px solid var(--cborder);
+    border-bottom: 1px solid var(--cborder);
+    padding-top:3px;
+    padding-bottom:3px;
+}
+// #endregion.
+
+
+// #region Modules listbar
+ul.modules-listbar {
+    grid-area: ModulesListbar;
+    display:flex;
+    flex-direction: column;
+    background-color: var(--csec);
+    color: var(--csec-text);
+    border-right: 1px solid var(--cborder);
+}
+// #endregion.
+
+
+// #region Content.
+div.content {
+    grid-area: ModuleContent;
+    overflow: auto;
+    box-sizing: border-box;
+    background-color: var(--cthi);
+    color: var(--cthi-text);
+    padding: 64px 70px 64px 70px;
+}
+// #endregion.
+
+
+// #region Content sidebar.
+div.content-sidebar {
+    grid-area: ContentSidebar;
+}
+// #endregion
+
+
+// #region Tools sidebar.
+div.tools-sidebar {
+    grid-area: ToolsSidebar;
+}
+// #endregion
+
+
+
+// #region Right sidebar.
+ul.tools-menu {
+    grid-area: ToolsMenu;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow: auto;
+    gap: 36px;
+    padding-block: 48px;
+    background-color: var(--csec);
+    border-left: 1px solid var(--cborder);
+}
+// #endregion
+
+
+
+// #region Footer.
+footer {
+    padding: 10px;
+    z-index: 1000;
+    font-size: 0.7rem;
+    text-align: center;
+    grid-area: 4 / 1 / 5 / 4;
+    color: var(--cprime-text);
+    background-color: var(--cprime);
+    border-top: 1px solid var(--csec);
+}
+// #endregion.

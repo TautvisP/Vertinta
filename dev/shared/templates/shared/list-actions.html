@@ -1,0 +1,23 @@
+{% load i18n %}
+{% load ecomm_tags %}
+
+
+{% if sorting_is_active or filtering_is_active or searching_is_active%}
+
+    <form method="GET" action="" id="actions-form">
+        {% if sorting_is_active %}
+            {% include 'shared/sort-form.html' %}
+        {% endif %}
+            
+        {% if filtering_is_active %}
+            {% include 'shared/filter-form.html' %}
+        {% endif %}
+            
+        <a href="{{request.path}}">{% trans 'Clear all' %}</a>
+       
+        {% if searching_is_active %}
+            {% include 'shared/search-form.html' %}
+        {% endif %}
+    </form>
+
+{% endif %}

@@ -1,0 +1,107 @@
+$breakpoints: (
+    "small": 375px,
+    "medium": 600px,
+    "large": 900px,
+    "extra-large": 1200px
+);
+
+// Return path to the icon image file.
+@function get-icon($icon-url, $icon-name, $extension: '.svg') {
+    @return url($icon-url + $icon-name + $extension);
+}
+
+// Return path to the emote image file.
+@function get-emote($emote-url, $emote-name, $extension: '.svg') {
+    @return url($emote-url + $emote-name + $extension);
+}
+
+// Merge maps.
+@function map-deep-get($map, $keys...) {
+    @each $key in $keys {
+        $map: map-get($map, $key);
+    }
+
+    @return $map;
+}
+
+// Generates theme class for each theme in the given map.
+// E.g. theme-dark, theme-light, there 'light', 'dark' are theme map keys.
+@mixin context($themes) {
+    @each $theme, $map in $themes {
+        .theme-#{$theme} & {
+            $theme-map: () !global;
+
+            @each $key, $submap in $map {
+                $value: map-get(map-get($themes, $theme), "#{$key}");
+                $theme-map: map-merge(
+                    $theme-map,
+                    (
+                        $key: $value
+                    )
+                ) !global;
+            }
+
+            @content;
+            $theme-map: null !global;
+        }
+    }
+}
+
+// Return map values of the given keys.
+@function get($keys...) {
+    @return map-deep-get($theme-map, $keys...);
+}
+
+/**
+ * @mixin respond-to
+ *
+ * @description
+ * Generates a media query for the given breakpoint.
+ * Available breakpoints are defined in the $breakpoints variable.
+ *
+ * @example
+ * .container {
+ *     @include respond-to(small) {
+ *         font-size: 1.2rem;
+ *     }
+ * }
+ *
+ * @param {map} $breakpoint
+ * 		Map of breakpoints, where key is breakpoint name and value is
+ *    	breakpoint min width in pixels.
+ */
+@mixin respond-to($breakpoints, $breakpoint) {
+    @if map-has-key($breakpoints, $breakpoint) {
+        @media (min-width: map-get($breakpoints, $breakpoint)) {
+            @content;
+        }
+    } @else {
+        @warn "Could not retrieve breakpoint: `#{$breakpoint}`. ";
+        @warn "Available breakpoints are: #{map-keys($breakpoints)}.";
+    }
+}
+
+/**
+ * @mixin grid-autofill
+ *
+ * @description
+ * Generates auto filling grid with maximum number of columns. Items try to
+ * fill the width of the grid but do not create more columns than defined by `$max-columns`
+ * value. Instead, existing columns stretch in width.
+ *
+ * @param {number (unit-less)} $max-columns
+ * 		Maximum number of columns per grid.
+ * @param {number (px)} $min-item-width
+ * 		Minimum width of the grid item.
+ * @param {number (px)}
+ * 		Spacing between grid rows and columns.
+ */
+@mixin grid-autofill($max-columns, $min-item-width, $gap) {
+    $gap-count: calc(#{$max-columns} - 1);
+    $total-gap-width: calc(#{$gap-count} * #{$gap});
+    $grid-item--max-width: calc((100% - #{$total-gap-width}) / #{$max-columns});
+
+    display: grid;
+    grid-gap: $gap;
+    grid-template-columns: repeat(auto-fill, minmax(max(#{$min-item-width}, #{$grid-item--max-width}), 1fr));
+}

@@ -1,0 +1,32 @@
+ul.header {
+    li.logo {
+        flex-grow: 1;
+        color: var(--cactive);
+        font-weight:bold;
+        font-size: 28px;
+    }
+
+    li.profile {
+        width: 36px;
+        height: 36px;
+
+        img {
+            background-color: var(--csec);
+        }
+
+        span {
+            display: flex;
+            font-size: 24px;
+            align-items: center;
+            justify-content: center;
+            color: var(--cprim);
+        }
+
+        img,
+        span {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+    }
+}
