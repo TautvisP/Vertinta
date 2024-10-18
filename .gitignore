@@ -39,6 +39,7 @@ dev/pub/
 deploy
 db.sqlite3
 *.css.map
+lib
 
 
 # Git
