@@ -1,0 +1,48 @@
+<!-- dev/modules/agency/templates/agency/evaluator_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluators in Agency</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {% include 'shared/header.html' %}
+    <div class="content-page">
+        <div class="content">
+            <div class='container-fluid col-10'>
+                <h2>Evaluators in Agency</h2>
+                <a href="{% url 'modules.agency:create_evaluator_account' %}" class="btn btn-primary">Create Evaluator Account</a>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Date Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for evaluator in evaluator_data %}
+                        <tr>
+                            <td>{{ evaluator.first_name }}</td>
+                            <td>{{ evaluator.last_name }}</td>
+                            <td>{{ evaluator.email }}</td>
+                            <td>{{ evaluator.phone_num }}</td>
+                            <td>{{ evaluator.date_joined }}</td>
+                            <td>
+                                <a href="{% url 'modules.evaluator:edit_evaluator_account' evaluator.id %}" class="btn btn-primary">Edit Profile</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

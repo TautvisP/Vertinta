@@ -1,9 +1,9 @@
 from django.apps import AppConfig
-
+from django.db.models.signals import post_migrate
 
 class UauthConfig(AppConfig):
-    """
-    UAUth module settings and configuration.
-    """
-
     name = 'core.uauth'
+
+    def ready(self):
+        from .signals import create_user_groups_and_permissions
+        post_migrate.connect(create_user_groups_and_permissions, sender=self)

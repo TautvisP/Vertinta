@@ -3,12 +3,17 @@ from django.contrib import admin
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import views as auth_views
-
+from core.uauth.views.uauth_views import *
 
 app_name = 'core.uauth'
 
-
 urlpatterns = [
     path('logout', auth_views.LogoutView.as_view(), name='logout'),
+
+    path('login/', CustomLoginView.as_view(), name='login'),
+    path('register/', RegisterView.as_view(), name='register'),
+    path('register/agency/', AgencyRegisterView.as_view(), name='agency_register'),
+    path('register/evaluator/', EvaluatorRegisterView.as_view(), name='evaluator_register'),
+    path('edit/', UserEditView.as_view(), name='edit_profile'),
 ]
 

@@ -1,0 +1,60 @@
+<!-- dev/modules/agency/templates/agency/edit_agency_account.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redaguoti agentūros paskyrą</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {% include 'shared/header.html' %}
+    <div class="registration-container">
+        <h2>Agentūros paskyra</h2>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.agency_name.label_tag }}
+                {{ form.agency_name }}
+            </div>
+            <div class="form-group">
+                {{ form.main_city.label_tag }}
+                {{ form.main_city }}
+            </div>
+            <div class="form-group">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+            </div>
+            <div class="form-group">
+                {{ form.phone_num.label_tag }}
+                {{ form.phone_num }}
+            </div>
+            <div class="form-group">
+                {{ form.evaluation_starting_price.label_tag }}
+                {{ form.evaluation_starting_price }}
+            </div>
+            <div class="form-group">
+                {{ password_form.old_password.label_tag }}
+                {{ password_form.old_password }}
+            </div>
+            <div class="form-group">
+                {{ password_form.new_password1.label_tag }}
+                {{ password_form.new_password1 }}
+            </div>
+            <div class="form-group">
+                {{ password_form.new_password2.label_tag }}
+                {{ password_form.new_password2 }}
+            </div>
+            <button type="submit" class="btn-submit">Išsaugoti</button>
+        </form>
+    </div>
+</body>
+</html>

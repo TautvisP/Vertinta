@@ -1,0 +1,50 @@
+<!-- dev/modules/orders/templates/orders/agency_selection.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select an Agency</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {% include 'shared/header.html' %}
+    <div class="content-page">
+        <div class="content">
+            <div class='container-fluid col-10'>
+                <h2>Select an Agency</h2>
+                <form method="POST" action="{% url 'modules.orders:select_agency' %}">
+                    {% csrf_token %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Date Joined</th>
+                                <th>Number of Evaluators</th>
+                                <th>Completed Orders</th>
+                                <th>Evaluation Starting Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for agency in agency_data %}
+                            <tr>
+                                <td>{{ agency.name }}</td>
+                                <td>{{ agency.date_joined }}</td>
+                                <td>{{ agency.evaluator_count }}</td>
+                                <td>{{ agency.completed_orders }}</td>
+                                <td>{{ agency.evaluation_starting_price }}</td>
+                                <td>
+                                    <button type="submit" name="selected_agency_id" value="{{ agency.id }}" class="btn btn-primary">Select</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

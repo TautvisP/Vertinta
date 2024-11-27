@@ -1,0 +1,48 @@
+ <!-- dev/modules/agency/templates/agency/create_evaluator_account.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Evaluator Account</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {% include 'shared/header.html' %}
+    <div class="registration-container">
+        <h2>Create Evaluator Account</h2>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.first_name.label_tag }}
+                {{ form.first_name }}
+            </div>
+            <div class="form-group">
+                {{ form.last_name.label_tag }}
+                {{ form.last_name }}
+            </div>
+            <div class="form-group">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+            </div>
+            <div class="form-group">
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+            </div>
+            <div class="form-group">
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+            </div>
+            <button type="submit" class="btn-submit">Create Account</button>
+        </form>
+    </div>
+</body>
+</html>

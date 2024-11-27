@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'parea',
     'rarea',
     'modules.demo',
+    'modules.orders',
+    'modules.agency',
+    'modules.evaluator',
 ]
 
 MIDDLEWARE = [
@@ -59,7 +62,11 @@ ROOT_URLCONF = 'main.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'shared/templates'),
+            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'core/uauth/templates/core'),
+                ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -67,11 +74,23 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'core.contexts.app_context.enabled_modules'
+                'core.contexts.app_context.enabled_modules',
+                'modules.orders.context_processors.object_types',
             ],
         },
     },
 ]
+
+
+STATICFILES_DIRS = [BASE_DIR / 'shared']
+STATIC_URL = '/shared/'
+
+#uncomment for rarea to have a design
+#STATIC_URL = '/pub/'
+#STATICFILES_DIRS = [os.path.join(BASE_DIR, 'pub'), ]
+
+
+TEMPLATE_LOADERS = 'apptemplates.Loader'
 
 WSGI_APPLICATION = 'main.wsgi.application'
 
@@ -81,8 +100,12 @@ WSGI_APPLICATION = 'main.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'osomcodex.db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Vertinta',
+        'USER': 'vertintaUser',
+        'PASSWORD': 'indeform',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -90,15 +113,15 @@ DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 
 
 # Login redirection
-LOGIN_URL = '/'
-LOGIN_REDIRECT_URL = '/rarea/'
-LOGOUT_REDIRECT_URL = '/'
+#LOGIN_URL = '/'
+#LOGIN_REDIRECT_URL = '/rarea/'
+#LOGOUT_REDIRECT_URL = '/'
 
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = []
-
+AUTH_USER_MODEL = 'uauth.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -121,10 +144,10 @@ LOCALE_PATHS = (
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/pub/'
+# STATIC_URL = '/pub/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'pub'),
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'pub'),
+# ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')

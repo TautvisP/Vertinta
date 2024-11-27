@@ -1,0 +1,79 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Header Styling */
+.header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #f8f8f8;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    z-index: 1000;
+}
+
+.header-content {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo h1 {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+}
+
+.nav-links a {
+    margin: 0 15px;
+    font-size: 1em;
+    color: #333;
+    text-decoration: none;
+}
+
+.nav-links a:hover {
+    color: #007bff; /* Adjust for hover effect */
+}
+
+.user-icons {
+    display: flex;
+    align-items: center;
+}
+
+.notification {
+    position: relative;
+    margin-right: 15px;
+}
+
+.notification .fa-bell {
+    font-size: 1.2em;
+    color: #333;
+}
+
+.notification-dot {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    border-radius: 50%;
+}
+
+.profile img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+}

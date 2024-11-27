@@ -1,0 +1,213 @@
+body {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    background-color: #f9f9f9;
+}
+
+h2 {
+    color: #333;
+}
+
+.form-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    flex-direction: column;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.form-section h3 {
+    margin-top: 0;
+    color: #007BFF;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.form-row label {
+    flex: 1;
+}
+
+.form-row input,
+.form-row select {
+    flex: 2;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.add-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 5px 15px;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.add-button:hover {
+    background-color: #0056b3;
+}
+
+
+/* Registration Container */
+.registration-container {
+    background-color: #fff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+.registration-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+}
+
+/* Submit Button */
+.btn-submit {
+    background-color: #3b82f6;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-submit:hover {
+    background-color: #2563eb;
+}
+
+/* Additional Links */
+.registration-container p {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.registration-container p a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.registration-container p a:hover {
+    text-decoration: underline;
+}
+
+/* Registration Container */
+.registration-container {
+    background-color: #fff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.registration-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+}
+
+/* Form Styles */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    position: relative;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-color: #6c63ff;
+    box-shadow: 0 0 5px rgba(108, 99, 255, 0.5);
+}
+
+/* Submit Button */
+.btn-submit {
+    background-color: #3b82f6;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-submit:hover {
+    background-color: #2563eb;
+}
+
+/* Additional Links */
+.registration-container p {
+    margin-top: 20px;   
+    font-size: 14px;
+    color: #666;
+}
+
+.registration-container p a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.registration-container p a:hover {
+    text-decoration: underline;
+}
+
+.content-page {
+    padding-top: 100px; /* Adjust this value to ensure the content is below the header */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: not-allowed;
+    text-align: center;
+    display: inline-block;
+}
+
+.btn-secondary.disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}

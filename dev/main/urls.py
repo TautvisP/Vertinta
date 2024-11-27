@@ -33,6 +33,15 @@ urlpatterns = [
 
     # modules
     path('demo/', include('modules.demo.urls', namespace='modules/demo')),
+
+    # orders
+    path('orders/', include('modules.orders.urls', namespace='modules/orders')),
+
+    # agency
+    path('agency/', include('modules.agency.urls', namespace='modules/agency')),
+
+    # evaluator
+    path('evaluator/', include('modules.evaluator.urls', namespace='modules/evaluator')),
 ]
 
 
