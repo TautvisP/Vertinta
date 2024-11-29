@@ -32,19 +32,4 @@ def object_types(request):
         "arbor": memoize(
             lambda: ObjectTypes.ARBOR
         )
-        #"industrial": memoize(
-        #    lambda: ObjectTypes.INDUSTRIAL_TYPE
-        #),
-        #"culture": memoize(
-        #    lambda: ObjectTypes.CULTURE_TYPE
-        #),
-        #"science": memoize(
-        #    lambda: ObjectTypes.EDUCATION_TYPE
-        #),
-        #"relax": memoize(
-        #    lambda: ObjectTypes.RELAXATION_TYPE
-        #),
-        #"pool": memoize(
-        #    lambda: ObjectTypes.POOL
-        #)
     }

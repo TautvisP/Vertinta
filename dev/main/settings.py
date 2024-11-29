@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
 
     'core.uauth',
     'parea',
@@ -94,6 +96,24 @@ TEMPLATE_LOADERS = 'apptemplates.Loader'
 
 WSGI_APPLICATION = 'main.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+#JWT settings
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -113,9 +133,13 @@ DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 
 
 # Login redirection
-#LOGIN_URL = '/'
-#LOGIN_REDIRECT_URL = '/rarea/'
-#LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = 'core.uauth:login'
+LOGIN_REDIRECT_URL = 'modules.orders:order_list'
+LOGOUT_REDIRECT_URL = 'core.uauth:login'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 
 # Password validation

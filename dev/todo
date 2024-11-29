@@ -1,0 +1,15 @@
+when agency is editing evaluator account, the header changes
+
+Some views still have the old login logic, need to adapt it to the new one with login mixins
+
+make so that order_list displays only that users orders
+
+header still covers content, maybe there are issues with some of the templates, maybe they lack some sort of css styles to adapt the header. Some of the templates that the header covers the content: edit_evaluator_account, edit_agency_account, order_list
+
+unregistered users should be able to select what object they want to evaluate
+
+when adding an additional object, the user should be able to add more than one, and have  a seperate button for going to the next step, now after adding a single garage, the next step is loaded
+
+after agency_select the user gets redirected to the login page instead of order list
+
+possibly header styling is messed up, since after removing it some pages react differently, some with the added link to the header do not print their content

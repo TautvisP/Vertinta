@@ -17,11 +17,14 @@ class LoginForm(AuthenticationForm):
 
         if email and password:
             self.user_cache = authenticate(self.request, email=email, password=password)
+
             if self.user_cache is None:
+
                 if not User.objects.filter(email=email).exists():
                     raise forms.ValidationError("No account found with this email address.")
                 else:
                     raise forms.ValidationError("Incorrect password. Please try again.")
+                
             else:
                 self.confirm_login_allowed(self.user_cache)
 
@@ -32,6 +35,7 @@ class LoginForm(AuthenticationForm):
             "Invalid email or password. Please try again.",
             code='invalid_login',
         )
+
 
 class EvaluatorRegisterForm(UserCreationForm):
     name = forms.CharField(
@@ -59,16 +63,16 @@ class EvaluatorRegisterForm(UserCreationForm):
         model = User
         fields = ('name', 'last_name', 'email', 'password1', 'password2')
 
-
     def save(self, commit=True):
-        print("Saving form...")
         user = super().save(commit=False)
         user.first_name = self.cleaned_data['name']
         user.last_name = self.cleaned_data['last_name']
+
         if commit:
             user.save()
-            print("User saved:", user)
+
         return user
+
 
 class RegisterForm(UserCreationForm):
     first_name = forms.CharField(
@@ -95,6 +99,7 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ('first_name', 'last_name', 'email', 'password1', 'password2')
 
+
 class AgencyRegisterForm(UserCreationForm):
     agency_name = forms.CharField(
         label='Agentūros pavadinimas', 
@@ -119,15 +124,18 @@ class AgencyRegisterForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
+
         if commit:
             user.save()
             self.save_meta(user)
+
         return user
 
     def save_meta(self, user):
         UserMeta.objects.update_or_create(
             user=user, meta_key='agency_name', defaults={'meta_value': self.cleaned_data['agency_name']}
         )
+
 
 class UserEditForm(UserChangeForm):
     first_name = forms.CharField(
@@ -157,15 +165,18 @@ class UserEditForm(UserChangeForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
+
         if commit:
             user.save()
             self.save_meta(user)
+
         return user
 
     def save_meta(self, user):
         UserMeta.objects.update_or_create(
             user=user, meta_key='phone_num', defaults={'meta_value': self.cleaned_data['phone_num']}
         )
+
 
 class UserPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(

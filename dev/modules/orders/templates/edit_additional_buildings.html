@@ -14,14 +14,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Additional Buildings</title>
-    <!-- Link to external CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 <div class="content-page">
     <div class="content">
         <div class='container-fluid col-10'>
-            <!--end of page title-->
             <form action="{% url 'modules.orders:edit_additional_buildings' object.id %}" method="POST">{% csrf_token %}
                 {% if garage_form %}
                 <div class="form-section">

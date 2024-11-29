@@ -13,14 +13,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Order</title>
-    <!-- Link to external CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 <div class="content-page">
     <div class="content">
         <div class='container-fluid col-10'>
-            <!--end of page title-->
             <form action="{% url 'modules.orders:object_update' object.id %}" method="POST">{% csrf_token %}
                 <div class="form-section">
                     <div class="col-sm-12">

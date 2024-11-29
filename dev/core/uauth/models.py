@@ -24,13 +24,14 @@ USER_GROUPS = [
     'Admin',
 ]
 
-
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
     def _create_user(self, email, password, **extra_fields):
+
         if not email:
             raise ValueError('The Email must be set')
+        
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -45,10 +46,13 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
+
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
+        
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
+        
         return self._create_user(email, password, **extra_fields)
 
 
@@ -99,7 +103,7 @@ class User(AbstractUser):
             "The groups this user belongs to. A user will get all permissions "
             "granted to each of their groups."
         ),
-        related_name="uauth_user_set",  # Add related_name to avoid clash
+        related_name="uauth_user_set",
         related_query_name="uauth_user",
     )
     user_permissions = models.ManyToManyField(
@@ -107,14 +111,16 @@ class User(AbstractUser):
         verbose_name="user permissions",
         blank=True,
         help_text="Specific permissions for this user.",
-        related_name="uauth_user_set",  # Add related_name to avoid clash
+        related_name="uauth_user_set",
         related_query_name="uauth_user",
     )
 
     @classmethod
     def get_meta(self, user, key):
+
         try:
             return UserMeta.objects.values_list('meta_value', flat=True).get(user=user, meta_key=key)
+        
         except (MultipleObjectsReturned, UserMeta.DoesNotExist):
             return ''
 
@@ -173,5 +179,6 @@ class UserMeta(models.Model):
     def get_meta(cls, user, key):
         try:
             return cls.objects.values_list('meta_value', flat=True).get(user=user, meta_key=key)
+        
         except (cls.DoesNotExist, MultipleObjectsReturned):
             return ''

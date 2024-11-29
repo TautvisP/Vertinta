@@ -8,18 +8,19 @@ from core.uauth.models import *
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import UpdateView, CreateView
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.utils.decorators import method_decorator
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 def index(request):
     return render(request, 'agency/index.html')
 
-@method_decorator(login_required, name='dispatch')
-class EditAgencyAccountView(UserPassesTestMixin, UpdateView):
+
+class EditAgencyAccountView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = User
     form_class = AgencyEditForm
     template_name = 'edit_agency_account.html'
     success_url = reverse_lazy('modules.agency:edit_agency_account')
+    login_url = 'core.uauth:login'
+    redirect_field_name = 'next'
 
     def test_func(self):
         return self.request.user.groups.filter(name='Agency').exists()
@@ -45,12 +46,14 @@ class EditAgencyAccountView(UserPassesTestMixin, UpdateView):
     def form_valid(self, form):
         user = form.save()
         password_form = AgencyPasswordChangeForm(user, self.request.POST)
+
         if password_form.is_valid():
             user = password_form.save()
             update_session_auth_hash(self.request, user)
             messages.success(self.request, 'Your profile was successfully updated!')
         else:
             messages.error(self.request, 'Please correct the error below.')
+
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -62,11 +65,13 @@ class EditAgencyAccountView(UserPassesTestMixin, UpdateView):
         context['password_form'] = AgencyPasswordChangeForm(self.request.user)
         return context
 
-@method_decorator(login_required, name='dispatch')
-class EvaluatorListView(UserPassesTestMixin, ListView):
+
+class EvaluatorListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = User
     template_name = 'evaluator_list.html'
     context_object_name = 'evaluators'
+    login_url = 'core.uauth:login'
+    redirect_field_name = 'next'
 
     def test_func(self):
         return self.request.user.groups.filter(name='Agency').exists()
@@ -82,6 +87,7 @@ class EvaluatorListView(UserPassesTestMixin, ListView):
         context = super().get_context_data(**kwargs)
         evaluators = self.get_queryset()
         evaluator_data = []
+
         for evaluator in evaluators:
             evaluator_data.append({
                 'id': evaluator.id,
@@ -91,17 +97,20 @@ class EvaluatorListView(UserPassesTestMixin, ListView):
                 'phone_num': UserMeta.get_meta(evaluator, 'phone_num'),
                 'date_joined': evaluator.date_joined,
             })
+
         context['evaluator_data'] = evaluator_data
+        context['is_agency'] = self.request.user.groups.filter(name='Agency').exists()
         context['title'] = 'Evaluators in Agency'
         return context
     
-
-@method_decorator(login_required, name='dispatch')
-class CreateEvaluatorAccountView(UserPassesTestMixin, CreateView):
+    
+class CreateEvaluatorAccountView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = User
     form_class = EvaluatorCreationForm
     template_name = 'create_evaluator_account.html'
     success_url = reverse_lazy('modules.agency:evaluator_list')
+    login_url = 'core.uauth:login'
+    redirect_field_name = 'next'
 
     def test_func(self):
         return self.request.user.groups.filter(name='Agency').exists()

@@ -36,6 +36,7 @@ class EvaluatorEditForm(UserChangeForm):
         user = super().save(commit=False)
         user.first_name = self.cleaned_data['name']
         user.last_name = self.cleaned_data['last_name']
+
         if commit:
             user.save()
             self.save_meta(user)
@@ -43,8 +44,10 @@ class EvaluatorEditForm(UserChangeForm):
 
     def save_meta(self, user):
         meta_fields = ['qualification_certificate_number', 'date_of_issue_of_certificate', 'phone_num']
+        
         for field in meta_fields:
             value = self.cleaned_data.get(field)
+            
             if value:
                 UserMeta.objects.update_or_create(
                     user=user, meta_key=field, defaults={'meta_value': value}

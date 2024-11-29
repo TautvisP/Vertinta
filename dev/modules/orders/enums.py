@@ -89,12 +89,23 @@ DECO_CHOICES = [
 FLOOR_CHOICE1 = _('betonas')
 FLOOR_CHOICE2 = _('parketas')
 FLOOR_CHOICE3 = _('laminatas')
-FLOOR_CHOICE4 = _('minoliaumas')
+FLOOR_CHOICE4 = _('linoleumas')
+FLOOR_CHOICE5 = _('keraminės plytelės')
+FLOOR_CHOICE6 = _('akmens masės plytelės')
+FLOOR_CHOICE7 = _('kiliminė danga')
+FLOOR_CHOICE8 = _('medinės lentos')
+FLOOR_CHOICE9 = _('vinilinė danga')
+
 FLOOR_CHOICES = [
     (FLOOR_CHOICE1, FLOOR_CHOICE1),
     (FLOOR_CHOICE2, FLOOR_CHOICE2),
     (FLOOR_CHOICE3, FLOOR_CHOICE3),
     (FLOOR_CHOICE4, FLOOR_CHOICE4),
+    (FLOOR_CHOICE5, FLOOR_CHOICE5),
+    (FLOOR_CHOICE6, FLOOR_CHOICE6),
+    (FLOOR_CHOICE7, FLOOR_CHOICE7),
+    (FLOOR_CHOICE8, FLOOR_CHOICE8),
+    (FLOOR_CHOICE9, FLOOR_CHOICE9),
 ]
 
 
@@ -108,18 +119,19 @@ OUTDOOR_DECO_CHOICES = [
 FOUNDATION_TYPE_1 = _('Gręžtiniai')
 FOUNDATION_TYPE_2 = _('Monolitiniai')
 FOUNDATION_TYPE_3 = _('Juostiniai')
-FOUNDATION_TYPE_4 = _('Monolitiniai')
-FOUNDATION_TYPE_5 = _('Plokštuminiai')
-FOUNDATION_TYPE_6 = _('Iš blokų')
+FOUNDATION_TYPE_4 = _('Plokštuminiai')
+FOUNDATION_TYPE_5 = _('Iš blokų')
+FOUNDATION_TYPE_6 = _('Poliniai')
 
 FOUNDATION_CHOICES = [
     (FOUNDATION_TYPE_1,  _('Gręžtiniai')),
     (FOUNDATION_TYPE_2, _('Monolitiniai')),
     (FOUNDATION_TYPE_3, _('Juostiniai')),
-    (FOUNDATION_TYPE_4, _('Monolitiniai')),
-    (FOUNDATION_TYPE_5, _('Plokštuminiai')),
-    (FOUNDATION_TYPE_6, _('Iš blokų')),
+    (FOUNDATION_TYPE_4, _('Plokštuminiai')),
+    (FOUNDATION_TYPE_5, _('Iš blokų')),
+    (FOUNDATION_TYPE_6, _('Poliniai')),
 ]
+
 WALLS_TYPE_1 = _('Blokelių mūras')
 WALLS_TYPE_2 = _('Medis')
 WALLS_TYPE_3 = _('Betonas')
@@ -129,6 +141,7 @@ WALLS_TYPE_6 = _('Silikatiniai blokeliai')
 WALLS_TYPE_7 = _('Akytojo betono blokeliai')
 WALLS_TYPE_8 = _('Keramzitbetonio blokeliai')
 WALLS_TYPE_9 = _('Karkasinės')
+
 WALLS_CHOICES = [
     (WALLS_TYPE_1, _('Blokelių mūras')),
     (WALLS_TYPE_2, _('Medis')),
@@ -140,31 +153,61 @@ WALLS_CHOICES = [
     (WALLS_TYPE_8, _('Keramzitbetonio blokeliai')),
     (WALLS_TYPE_8, _('Karkasinės')),
 ]
+
+
 PARTITION_TYPE_1 = _('Gipso kartono')
 PARTITION_TYPE_2 = _('Mūrinė')
+PARTITION_TYPE_3 = _('Medinės')
+
 PARTITION_CHOICES = [
     (PARTITION_TYPE_1, _('Gipso kartono')),
     (PARTITION_TYPE_2, _('Mūrinė')),
+    (PARTITION_TYPE_3, _('Medinės')),
 ]
+
+
 OVERLAY_TYPE_1 = _('Gelžbetonio plokštės')
+OVERLAY_TYPE_2 = _('Medinės sijos')
+OVERLAY_TYPE_3 = _('Plieninės sijos')
+
 OVERLAY_CHOICES = [
     (OVERLAY_TYPE_1, _('Gelžbetonio plokštės')),
+    (OVERLAY_TYPE_2, _('Medinės sijos')),
+    (OVERLAY_TYPE_3, _('Plieninės sijos')),
 ]
+
+
 ROOF_TYPE_1 = _('Šlaitinis')
 ROOF_TYPE_2 = _('Plokščias')
+ROOF_TYPE_3 = _('Bituminės čerpės')
+ROOF_TYPE_4 = _('Keramikinės čerpės')
+ROOF_TYPE_5 = _('Plieninė danga')
+ROOF_TYPE_6 = _('Prilydoma danga')
+ROOF_TYPE_7 = _('Skalūnas')
+ROOF_TYPE_8 = _('Fibrocementinės plokštelės')
+
 ROOF_CHOICES = [
     (ROOF_TYPE_1, _('Šlaitinis')),
-    # šiferis,skarda,bituminė danga, betoninės čerpės, keramikinės čerpės
     (ROOF_TYPE_2, _('Plokščias')),
-    # plieninė danga, prilydoma danga, bituminės čerpės, skalūnas,fibrocementinės plokštelės
+    (ROOF_TYPE_3, _('Bituminės čerpės')),
+    (ROOF_TYPE_4, _('Keramikinės čerpės')),
+    (ROOF_TYPE_5, _('Plieninė danga')),
+    (ROOF_TYPE_6, _('Prilydoma danga')),
+    (ROOF_TYPE_7, _('Skalūnas')),
+    (ROOF_TYPE_8, _('Fibrocementinės plokštelės')),
 ]
+
 
 SHED_TYPE_1 = _('Karkasinis')
 SHED_TYPE_2 = _('Mūrinis')
+SHED_TYPE_3 = _('Metalinė konstrukcija')
+
 SHED_CHOICES = [
     (SHED_TYPE_1, _('Karkasinis')),
     (SHED_TYPE_2, _('Mūrinis')),
+    (SHED_TYPE_3, _('Metalinė konstrukcija')),
 ]
+
 
 EXIST_TYPE_1 = _('Yra')
 EXIST_TYPE_2 = _('Nėra')
@@ -172,6 +215,7 @@ EXIST_CHOICES = [
     (EXIST_TYPE_1, _('Yra')),
     (EXIST_TYPE_2, _('Nėra')),
 ]
+
 
 BOOL_TYPE_1 = _('Taip')
 BOOL_TYPE_2 = _('Ne')
@@ -198,6 +242,7 @@ ELECTRICITY_GAS_CHOICES = [
     (ELECTRICITY_TYPE_2, _('ESO')),
 ]
 
+
 HEATING_TYPE_1 = _('Nėra')
 HEATING_TYPE_2 = _('Centralizuotas')
 HEATING_TYPE_3 = _('Vietinis')
@@ -209,26 +254,35 @@ HEATING_CHOICES = [
     (HEATING_TYPE_4, _('Kita')),
 ]
 
+
 WATER_SUPPLY_CHOICES = [
     (EXIST_TYPE_1, EXIST_TYPE_1),
     (EXIST_TYPE_2, EXIST_TYPE_2),
 ]
 
-WASTEWATER_CHOICE2 = _('Komunalinis nuotekų šalinimas')
+
+WASTEWATER_CHOICE1 = _('Komunalinis nuotekų šalinimas')
+WASTEWATER_CHOICE2 = _('Individualus nuotekų valymas')
+
 WASTEWATER_CHOICES = [
     (EXIST_TYPE_2, EXIST_TYPE_2),
+    (WASTEWATER_CHOICE1, WASTEWATER_CHOICE1),
     (WASTEWATER_CHOICE2, WASTEWATER_CHOICE2),
 ]
+
 
 VENTILATION_CHOICES = [
     (EXIST_TYPE_1, EXIST_TYPE_1),
     (EXIST_TYPE_2, EXIST_TYPE_2),
 ]
 
+
 SECURITY_CHOICES = [
     (EXIST_TYPE_1, EXIST_TYPE_1),
     (EXIST_TYPE_2, EXIST_TYPE_2),
 ]
+
+
 ENERGY_CHOICE1 = _('Nenustatyta')
 ENERGY_CHOICE2 = _('A++')
 ENERGY_CHOICE3 = _('A+')
@@ -240,6 +294,7 @@ ENERGY_CHOICE8 = _('D')
 ENERGY_CHOICE9 = _('E')
 ENERGY_CHOICE10 = _('F')
 ENERGY_CHOICE11 = _('G')
+
 ENERGY__EFFICIENCY_CHOICES = [
     (ENERGY_CHOICE1, ENERGY_CHOICE1),
     (ENERGY_CHOICE2, ENERGY_CHOICE2),
@@ -254,16 +309,24 @@ ENERGY__EFFICIENCY_CHOICES = [
     (ENERGY_CHOICE11, ENERGY_CHOICE11)
 ]
 
+
 COOLING_TYPE_1 = _('Oras-oras')
+COOLING_TYPE_2 = _('Oras-vanduo')
+COOLING_TYPE_3 = _('Geoterminis')
+
 COOLING_CHOICES = [
     (COOLING_TYPE_1, _('Oras-oras')),
+    (COOLING_TYPE_2, _('Oras-vanduo')),
+    (COOLING_TYPE_3, _('Geoterminis')),
     (EXIST_TYPE_2, EXIST_TYPE_2),
 ]
+
 
 WINDOW_TYPE_1 = _('plastikiniai')
 WINDOW_TYPE_2 = _('aliuminio')
 WINDOW_TYPE_3 = _('mediniai')
 WINDOW_TYPE_4 = _('aliuminio-medienios')
+
 WINDOW_CHOICES = [
     (WINDOW_TYPE_1, _('plastikiniai')),
     (WINDOW_TYPE_2, _('aliuminio')),
@@ -271,21 +334,30 @@ WINDOW_CHOICES = [
     (WINDOW_TYPE_4, _('aliuminio-medienios')),
 ]
 
+
 INNER_DOOR_TYPE_1 = _('laminuotos')
 INNER_DOOR_TYPE_2 = _('medinės')
 INNER_DOOR_TYPE_3 = _('faneruotos')
 INNER_DOOR_TYPE_4 = _('plastikinės')
+
 INNER_DOOR_CHOICES = [
     (INNER_DOOR_TYPE_1, _('laminuotos')),
     (INNER_DOOR_TYPE_2, _('medinės')),
     (INNER_DOOR_TYPE_3, _('faneruotos')),
     (INNER_DOOR_TYPE_4, _('plastikinės')),
 ]
+
+
 OUTER_DOOR_TYPE_1 = _('medinės')
 OUTER_DOOR_TYPE_2 = _('šarvo')
+OUTER_DOOR_TYPE_3 = _('plastikinės')
+OUTER_DOOR_TYPE_4 = _('aliuminio')
+
 OUTER_DOOR_CHOICES = [
     (OUTER_DOOR_TYPE_1, _('medinės')),
     (OUTER_DOOR_TYPE_2, _('šarvo')),
+    (OUTER_DOOR_TYPE_3, _('plastikinės')),
+    (OUTER_DOOR_TYPE_4, _('aliuminio')),
 ]
 
 
@@ -293,6 +365,7 @@ PURPOSE_TYPE_1 = _('Gyvenamoji')
 PURPOSE_TYPE_2 = _('Žemės ūkio')
 PURPOSE_TYPE_3 = _('Komercinė')
 PURPOSE_TYPE_4 = _('Kita')
+
 PURPOSE_CHOICES = [
     (PURPOSE_TYPE_1,PURPOSE_TYPE_1),
     (PURPOSE_TYPE_2,PURPOSE_TYPE_2),

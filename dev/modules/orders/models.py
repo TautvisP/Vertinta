@@ -24,6 +24,7 @@ class Object(models.Model):
 
     @classmethod
     def get_meta(cls, obj, key):
+        
         try:
             return ObjectMeta.objects.values_list('meta_value', flat=True).get(ev_object=obj, meta_key=key)
         except (MultipleObjectsReturned, ObjectMeta.DoesNotExist):

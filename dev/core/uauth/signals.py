@@ -40,6 +40,7 @@ def create_user_groups_and_permissions(sender, **kwargs):
 
     for group_name, perm_codes in groups_permissions.items():
         group, created = Group.objects.get_or_create(name=group_name)
+        
         for perm_code in perm_codes:
             perm, created = Permission.objects.get_or_create(
                 codename=perm_code,

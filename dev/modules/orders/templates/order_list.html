@@ -1,42 +1,58 @@
-{% block content %}
-<h1>Order List</h1>
-<table>
-    <thead>
-        <tr>
-            <th>Object Type</th>
-            <th>Street</th>
-            <th>House Number</th>
-            <th>Municipality</th>
-            <th>Publishing Date</th>
-            <th>Customer Name</th>
-            <th>Order Status</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for order in orders %}
-        <tr>
-            <td>{{ order.object.object_type }}</td>
-            <td>{{ order.object.street }}</td>
-            <td>{{ order.object.house_no }}</td>
-            <td>{{ order.object.municipality }}</td>
-            <td>{{ order.created }}</td>
-            <td>{{ order.customer_name }}</td>
-            <td>{{ order.order_status }}</td>
-            <td>
-                <a href="{% url 'modules.orders:object_update' order.object.id %}" class="btn btn-primary">Edit Object</a>
-                {% if order.object.has_additional_buildings %}
-                <a href="{% url 'modules.orders:edit_additional_buildings' order.object.id %}" class="btn btn-primary">Edit Buildings</a>
-                {% else %}
-                <span class="btn btn-secondary disabled">No Buildings</span>
-                {% endif %}
-                <form action="{% url 'modules.orders:delete_order' order.id %}" method="post" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endblock %}
+<!-- dev/modules/orders/templates/order_list.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order List</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {% include 'shared/header.html' %}
+    <div class="content-page">
+        {% block content %}
+        <h1>Order List</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Object Type</th>
+                    <th>Street</th>
+                    <th>House Number</th>
+                    <th>Municipality</th>
+                    <th>Publishing Date</th>
+                    <th>Customer Name</th>
+                    <th>Order Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.object.object_type }}</td>
+                    <td>{{ order.object.street }}</td>
+                    <td>{{ order.object.house_no }}</td>
+                    <td>{{ order.object.municipality }}</td>
+                    <td>{{ order.created }}</td>
+                    <td>{{ order.client.get_full_name }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>
+                        <a href="{% url 'modules.orders:object_update' order.object.id %}" class="btn btn-primary">Edit Object</a>
+                        {% if order.object.has_additional_buildings %}
+                        <a href="{% url 'modules.orders:edit_additional_buildings' order.object.id %}" class="btn btn-primary">Edit Buildings</a>
+                        {% else %}
+                        <span class="btn btn-secondary disabled">No Buildings</span>
+                        {% endif %}
+                        <form action="{% url 'modules.orders:delete_order' order.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endblock %}
+    </div>
+</body>
+</html>

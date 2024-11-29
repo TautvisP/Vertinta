@@ -2,10 +2,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from core.uauth.models import UserMeta
 from modules.evaluator.forms import EvaluatorEditForm, EvaluatorPasswordChangeForm
 from core.uauth.models import User
@@ -14,14 +13,15 @@ def index(request):
     return render(request, 'evaluator/index.html')
 
 
-@method_decorator(login_required, name='dispatch')
-class EditEvaluatorAccountView(UserPassesTestMixin, UpdateView):
+class EditEvaluatorAccountView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = User
     form_class = EvaluatorEditForm
     template_name = 'edit_evaluator_account.html'
+    login_url = 'core.uauth:login'
+    redirect_field_name = 'next'
 
     def get_success_url(self):
-        return reverse_lazy('modules.evaluator:edit_evaluator_account', kwargs={'pk': self.object.pk})
+        return reverse_lazy('modules.evaluator:edit_own_evaluator_account')
 
     def test_func(self):
         user = self.request.user
@@ -32,8 +32,10 @@ class EditEvaluatorAccountView(UserPassesTestMixin, UpdateView):
         return redirect('core.uauth:login')
 
     def get_object(self, queryset=None):
+
         if self.request.user.groups.filter(name='Agency').exists() and 'pk' in self.kwargs:
             return User.objects.get(pk=self.kwargs['pk'])
+        
         return self.request.user
 
     def get_initial(self):
@@ -51,12 +53,14 @@ class EditEvaluatorAccountView(UserPassesTestMixin, UpdateView):
     def form_valid(self, form):
         user = form.save()
         password_form = EvaluatorPasswordChangeForm(user, self.request.POST)
+
         if password_form.is_valid():
             user = password_form.save()
             update_session_auth_hash(self.request, user)
             messages.success(self.request, 'Your profile was successfully updated!')
         else:
             messages.error(self.request, 'Please correct the error below.')
+            
         return super().form_valid(form)
 
     def form_invalid(self, form):

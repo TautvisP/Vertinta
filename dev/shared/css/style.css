@@ -188,7 +188,7 @@ form {
 }
 
 .content-page {
-    padding-top: 100px; /* Adjust this value to ensure the content is below the header */
+    padding-top: 100px;
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -210,4 +210,79 @@ form {
 .btn-secondary.disabled {
     opacity: 0.65;
     cursor: not-allowed;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Header Styling */
+:root {
+    --header-height: 60px; /* Adjust this value as needed */
+}
+
+header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #f8f8f8;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    z-index: 1000;
+    height: var(--header-height);
+}
+
+.navbar {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    gap: 15px;
+}
+
+.nav-list li {
+    display: flex;
+    align-items: center;
+}
+
+.nav-list a,
+.nav-list button {
+    font-size: 1em;
+    color: #333;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.nav-list a:hover,
+.nav-list button:hover {
+    color: #007bff;
+}
+
+.nav-list form {
+    display: flex;
+    align-items: center;
+}
+
+/* Content Styling */
+.content-page {
+    padding-top: calc(var(--header-height) + 20px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    width: 100%;
 }

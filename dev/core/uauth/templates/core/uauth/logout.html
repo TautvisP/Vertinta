@@ -1,0 +1,18 @@
+<!-- dev/core/uauth/templates/uauth/logout.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logout</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="registration-container">
+        <h2>Logout</h2>
+        <form method="post" action="{% url 'core.uauth:logout' %}">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+</body>
+</html>

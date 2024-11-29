@@ -1,3 +1,4 @@
+<!-- dev/shared/templates/shared/header.html -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -6,34 +7,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/marea.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <!-- Add Font Awesome or similar library for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>VertiNTa Header</title>
+    <title>{% block title %}Vertinta{% endblock %}</title>
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
-            <!-- Website Title / Logo -->
-            <div class="logo">
-                <h1>VertiNTa</h1>
-            </div>
-            <!-- Navigation Links -->
-            <nav class="nav-links">
-                <p>Uzsakymai</p>
-            </nav>
-            <!-- Notification and Profile -->
-            <div class="user-icons">
-                <!-- Notification Icon -->
-                <div class="notification">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-dot"></span>
-                </div>
-                <!-- User Profile Icon -->
-                <div class="profile">
-                    <img src="{% static 'icons/profile.svg' %}" alt="User Profile">
-                </div>
-            </div>
-        </div>
+    <header>
+        <nav class="navbar">
+            <ul class="nav-list">
+                <li><a href="{% url 'core.uauth:login' %}">Login</a></li>
+                <li><a href="{% url 'core.uauth:register' %}">Register</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'modules.orders:order_list' %}">Order List</a></li>
+                    {% if is_agency %}
+                        <li><a href="{% url 'modules.orders:order_list' %}">Užsakymai</a></li>
+                        <li><a href="{% url 'modules.agency:evaluator_list' %}">Vertintojai</a></li>
+                    {% endif %}
+                    <li>
+                        <form method="post" action="{% url 'core.uauth:logout' %}">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
+                    </li>
+                    <li>
+                        {% if is_agency %}
+                            <a href="{% url 'modules.agency:edit_agency_account' %}">Edit Agency Account</a>
+                        {% elif is_evaluator %}
+                            <a href="{% url 'modules.evaluator:edit_own_evaluator_account' %}">Edit Evaluator Account</a>
+                        {% else %}
+                            <a href="{% url 'core.uauth:edit_profile' %}">Edit Profile</a>
+                        {% endif %}
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
     </header>
 </body>
 </html>

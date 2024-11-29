@@ -11,17 +11,23 @@ default_errors = {
     'max_value': _('Užtikrinkite, kad ši reikšmė yra mažesnė arba lygi %(limit_value)s.')
 }
 
+
 class HouseRequestConditionForm(forms.Form):
     foundation = forms.ChoiceField(label=_('Pamatai'), choices=FOUNDATION_CHOICES,
                                    widget=forms.Select(attrs={'class': 'form-control'}))
+    
     walls = forms.ChoiceField(label=_('Sienos'), choices=WALLS_CHOICES,
                               widget=forms.Select(attrs={'class': 'form-control'}))
+    
     partition = forms.ChoiceField(label=_('Pertvaros'), choices=PARTITION_CHOICES,
                                   widget=forms.Select(attrs={'class': 'form-control'}))
+    
     overlay = forms.ChoiceField(label=_('Perdanga'), choices=OVERLAY_CHOICES,
                                 widget=forms.Select(attrs={'class': 'form-control'}))
+    
     roof = forms.ChoiceField(label=_('Stogas'), choices=ROOF_CHOICES,
                              widget=forms.Select(attrs={'class': 'form-control'}))
+    
 #    window = forms.ChoiceField(label=_('Langai'), choices=WINDOW_CHOICES,
 #                               widget=forms.Select(attrs={'class': 'form-control'}))
 #    inner_door = forms.ChoiceField(label=_('Vidaus durys'), choices=INNER_DOOR_CHOICES,
@@ -59,11 +65,14 @@ class HouseRequestConditionForm(forms.Form):
 #    energy_use_class = forms.ChoiceField(label=_('Energ. naud. klasė'), choices=ENERGY_CHOICES,
 #                                         widget=forms.Select(attrs={'class': 'form-control'}))
 
+
 class ObjectLocationForm(forms.Form):
     municipality = forms.ChoiceField(
         label=_('Savivaldybė'), choices=MUNICIPALITY_CHOICES, widget=forms.Select( attrs={'class': 'form-control'}))
+    
     street = forms.CharField(
         label=_('Gatvė'), max_length=100, error_messages=default_errors)
+    
     house_no = forms.IntegerField(
         label=_('Namo nr.'),  min_value=1, error_messages=default_errors)
 
@@ -71,17 +80,23 @@ class ObjectLocationForm(forms.Form):
         super(ObjectLocationForm, self).__init__(*args, **kwargs)
         field_dict = self.fields
         field_list = []
+
         for key in field_dict.keys():
             field_list.append(key)
+
         return field_list
+
 
 class DecorationForm(forms.Form):
     outside_deco = forms.ChoiceField(
         label=_('Išorės apdaila'), choices=OUTDOOR_DECO_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     ceiling_deco = forms.ChoiceField(
         label=_('Lubos'), choices=DECO_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     interior_floors = forms.ChoiceField(
         label=_('Grindys'), choices=FLOOR_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     interior_deco = forms.ChoiceField(
         label=_('Sienos'), choices=DECO_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
 
@@ -89,27 +104,37 @@ class DecorationForm(forms.Form):
         super(DecorationForm, self).__init__(*args, **kwargs)
         field_dict = self.fields
         field_list = []
+
         for key in field_dict.keys():
             field_list.append(key)
+
         return field_list
     
 class UtilityForm(forms.Form):
     electricity = forms.ChoiceField(
         label=_('Elektra'), choices=ELECTRICITY_GAS_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     water = forms.ChoiceField(
         label=_('Vandentiekis'), choices=WATER_SUPPLY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     gas = forms.ChoiceField(
         label=_('Dujos'), choices=ELECTRICITY_GAS_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     wastewater = forms.ChoiceField(
         label=_('Nuotekų valymas'), choices=WASTEWATER_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     heating = forms.ChoiceField(
         label=_('Šildymas'), choices=HEATING_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     security = forms.ChoiceField(
         label=_('Signalizacija'), choices=SECURITY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     energy_efficiency = forms.ChoiceField(
         label=_('Energinis naudingumas'), choices=ENERGY__EFFICIENCY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     air_conditioning = forms.ChoiceField(
         label=_('Vėdinimas/kondicionavimas'), choices=COOLING_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     parking_spaces = forms.IntegerField(
         label=_('Vieta automobiliui'),  min_value=0, error_messages=default_errors)
 
@@ -117,37 +142,53 @@ class UtilityForm(forms.Form):
         super(UtilityForm, self).__init__(*args, **kwargs)
         field_dict = self.fields
         field_list = []
+
         for key in field_dict.keys():
             field_list.append(key)
+            
         return field_list
+
 
 class CommonInformationForm(forms.Form):
     foundation = forms.ChoiceField(
         label=_('Pamatai'), choices=FOUNDATION_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     walls = forms.ChoiceField(
         label=_('Sienos'), choices=WALLS_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     inside_walls = forms.ChoiceField(
         label=_('Pertvaros'), choices=PARTITION_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     subfloor = forms.ChoiceField(
         label=_('Perdanga'), choices=OVERLAY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     basement = forms.ChoiceField(
         label=_('Rusys'), choices=EXIST_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     balcony = forms.ChoiceField(
         label=_('Balkonas'), choices=EXIST_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     roof = forms.ChoiceField(
         label=_('Stogas'), choices=ROOF_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     windows = forms.ChoiceField(
         label=_('Langai'), choices=WINDOW_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     inside_doors = forms.ChoiceField(
         label=_('Vidaus durys'), choices=INNER_DOOR_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     outside_doors = forms.ChoiceField(
         label=_('Išorės durys'), choices=OUTER_DOOR_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     build_years = forms.DateField(
         label=_('Pastatymo metai'), widget=forms.SelectDateWidget(years=range(1900, 2100), attrs={'class': 'form-control'}))
+    
     renovation_years = forms.DateField(
         label=_('Renovacijos metai'), widget=forms.SelectDateWidget(years=range(1900, 2100), attrs={'class': 'form-control'}))
+    
     room_count = forms.IntegerField(
         label=_('Kambarių skaičius'), min_value=1, error_messages=default_errors)
+    
     living_size = forms.IntegerField(
         label=_('Kvadratūra, m2'), min_value=1, error_messages=default_errors)
     
@@ -168,16 +209,20 @@ class CommonInformationForm(forms.Form):
         super(CommonInformationForm, self).__init__(*args, **kwargs)
         field_dict = self.fields
         field_list = []
+
         for key in field_dict.keys():
             field_list.append(key)
+
         return field_list
 
 
 class GarageForm(forms.Form):
     garage_attached = forms.ChoiceField(
         label=_('Sujungtas su namu'), choices=BOOL_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     garage_size = forms.IntegerField(
         label=_('Kvadratūra, m2'), min_value=1, error_messages=default_errors)
+    
     garage_cars_count = forms.IntegerField(
         label=_('Telpa automobilių'), min_value=0, error_messages=default_errors)
 
@@ -185,15 +230,19 @@ class GarageForm(forms.Form):
         super(GarageForm, self).__init__(*args, **kwargs)
         field_dict = self.fields
         field_list = []
+
         for key in field_dict.keys():
             field_list.append(key)
+
         return field_list
     
 class ShedForm(forms.Form):
     shed_electricity = forms.ChoiceField(
         label=_('Elektros instaliacija'), choices=EXIST_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     shed_size = forms.IntegerField(
         label=_('Kvadratūra, m2'), min_value=1, error_messages=default_errors)
+    
     shed_type = forms.ChoiceField(
         label=_('Tipas'), choices=SHED_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
 
@@ -201,15 +250,19 @@ class ShedForm(forms.Form):
         super(ShedForm, self).__init__(*args, **kwargs)
         field_dict = self.fields
         field_list = []
+
         for key in field_dict.keys():
             field_list.append(key)
+
         return field_list
     
 class GazeboForm(forms.Form):
     gazebo_electricity = forms.ChoiceField(
         label=_('Elektros instaliacija'), choices=EXIST_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     gazebo_size = forms.IntegerField(
         label=_('Kvadratūra, m2'), min_value=1, error_messages=default_errors)
+    
     gazebo_type = forms.ChoiceField(
         label=_('Tipas'), choices=GAZEBO_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
 
@@ -217,14 +270,17 @@ class GazeboForm(forms.Form):
         super(ShedForm, self).__init__(*args, **kwargs)
         field_dict = self.fields
         field_list = []
+
         for key in field_dict.keys():
             field_list.append(key)
+
         return field_list
     
 
 class LandForm(forms.Form):
     land_purpose = forms.ChoiceField(
         label=_('Sklypo paskirtis'), choices=PURPOSE_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     land_size = forms.IntegerField(
         label=_('Sklypo plotas, a'), min_value=1, error_messages=default_errors)
 
@@ -232,15 +288,20 @@ class LandForm(forms.Form):
         super(LandForm, self).__init__(*args, **kwargs)
         field_dict = self.fields
         field_list = []
+
         for key in field_dict.keys():
             field_list.append(key)
+
         return field_list
     
+
 class HouseForm(forms.Form):
     land_purpose = forms.ChoiceField(
         label=_('Sklypo paskirtis'), choices=PURPOSE_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     land_size = forms.IntegerField(
         label=_('Sklypo plotas, a'), min_value=1, error_messages=default_errors)
+    
     floor_count = forms.IntegerField(
         label=_('Aukštų skaičius'), min_value=1, error_messages=default_errors)
 
@@ -248,10 +309,13 @@ class HouseForm(forms.Form):
         super(HouseForm, self).__init__(*args, **kwargs)
         field_dict = self.fields
         field_list = []
+
         for key in field_dict.keys():
             field_list.append(key)
+
         return field_list
     
+
 class CottageForm(forms.Form):
     floor_count = forms.IntegerField(
         label=_('Aukštų skaičius'), min_value=1, error_messages=default_errors)
@@ -260,13 +324,17 @@ class CottageForm(forms.Form):
         super(CottageForm, self).__init__(*args, **kwargs)
         field_dict = self.fields
         field_list = []
+
         for key in field_dict.keys():
             field_list.append(key)
+
         return field_list
     
+
 class ApartamentForm(forms.Form):
     building_floor_count = forms.IntegerField(
         label=_('Pastato aukštų skaičius'), min_value=1, error_messages=default_errors)
+    
     apartament_floor = forms.IntegerField(
         label=_('Buto aukštas'), min_value=1, error_messages=default_errors)
 
@@ -274,6 +342,8 @@ class ApartamentForm(forms.Form):
         super(ApartamentForm, self).__init__(*args, **kwargs)
         field_dict = self.fields
         field_list = []
+
         for key in field_dict.keys():
             field_list.append(key)
+            
         return field_list

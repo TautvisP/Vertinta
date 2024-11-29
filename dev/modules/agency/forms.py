@@ -32,19 +32,24 @@ class AgencyEditForm(UserChangeForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
+
         if commit:
             user.save()
             self.save_meta(user)
+            
         return user
 
     def save_meta(self, user):
         meta_fields = ['agency_name', 'main_city', 'phone_num', 'evaluation_starting_price']
+
         for field in meta_fields:
             value = self.cleaned_data.get(field)
+
             if value:
                 UserMeta.objects.update_or_create(
                     user=user, meta_key=field, defaults={'meta_value': value}
                 )
+
 
 class AgencyPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(
@@ -59,6 +64,7 @@ class AgencyPasswordChangeForm(PasswordChangeForm):
         label='Pakartokite naują slaptažodį', 
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
+
 
 class EvaluatorCreationForm(UserCreationForm):
     first_name = forms.CharField(
@@ -89,6 +95,8 @@ class EvaluatorCreationForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.is_active = True
+
         if commit:
             user.save()
+
         return user
