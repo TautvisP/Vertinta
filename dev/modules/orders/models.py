@@ -231,9 +231,29 @@ class ObjectMeta(models.Model):
         return self.meta_key
 
 
+class ObjectImage(models.Model):
+    object = models.ForeignKey(Object, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='object_images/')
+    comment = models.CharField(max_length=255, blank=True)
+    category = models.CharField(choices=IMAGE_CHOICES, max_length=45)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+
+
+class ImageAnnotation(models.Model):
+    image = models.ForeignKey(ObjectImage, related_name='annotations', on_delete=models.CASCADE)
+    x_coordinate = models.FloatField()
+    y_coordinate = models.FloatField()
+    annotation_text = models.TextField(blank=True)
+    annotation_image = models.ImageField(upload_to='annotation_images/', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+
 class Order(models.Model):
     client = models.ForeignKey(User, on_delete=models.CASCADE, related_name='order_client')
     agency = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    evaluator = models.ForeignKey(User, related_name='evaluator_orders', on_delete=models.SET_NULL, null=True, blank=True)
     object = models.ForeignKey(Object, on_delete=models.CASCADE, null=True, blank=True)
     created = models.DateTimeField(default=timezone.now)
     status = models.CharField(choices=STATUS_CHOICES, max_length=45)

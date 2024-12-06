@@ -1,0 +1,56 @@
+<!-- dev/modules/orders/templates/evaluator_order_list.html -->
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertintojo užsakymai</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {% include 'shared/header.html' %}
+    <div class="content-page">
+        <div class="container">
+            <h2 class="title">Vertintojo užsakymai</h2>
+
+            <!-- Filter Section -->
+            <form method="GET" action="{% url 'modules.orders:evaluator_order_list' %}">
+                <div class="filters">
+                    <select class="dropdown" name="municipality">
+                        <option value="">Miestas</option>
+                        {% for key, value in municipality_choices %}
+                        <option value="{{ key }}" {% if key|stringformat:"d" == request.GET.municipality %}selected{% endif %}>{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="filter-button">Filtruoti</button>
+                    <a href="{% url 'modules.orders:evaluator_order_list' %}" class="clear-button">Išvalyti</a>
+                </div>
+            </form>
+
+            <!-- Requests List -->
+            <div class="requests-list">
+                {% for order in orders %}
+                <div class="request-item">
+                    <div class="request-details">
+                        <p class="request-title">#{{ forloop.counter }} {{ order.object.street }} {{ order.object.house_no }}, {{ order.object.municipality|get_municipality_name }}</p>
+                        <p class="request-info">
+                            <span class="priority {{ request.priority_class }}"></span>
+                            {{ order.status }}
+                            · {{ order.client.get_full_name }} · {{ order.created }}
+                        </p>
+                    </div>
+                    <div class="request-actions">
+                        <button class="icon-button"><i class="icon icon-document"></i></button>
+                        <a href="{% url 'modules.evaluator:evaluation_steps' order.id %}" class="evaluate-button">Vertinti</a>
+                        <button class="icon-button"><i class="icon icon-image"></i></button>
+                        <button class="icon-button"><i class="icon icon-trash"></i></button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

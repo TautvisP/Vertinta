@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'modules.orders',
     'modules.agency',
     'modules.evaluator',
+    'shared',
 ]
 
 MIDDLEWARE = [

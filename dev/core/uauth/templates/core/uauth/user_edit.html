@@ -4,13 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile</title>
+    <title>Profilio Redagavimas</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
+    {% include 'shared/header.html' %}
     <div class="registration-container">
-        <h2>Edit Profile</h2>
+        <h2>Profilio Redagavimas</h2>
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -48,7 +49,7 @@
                 {{ password_form.new_password2.label_tag }}
                 {{ password_form.new_password2 }}
             </div>
-            <button type="submit" class="btn-submit">Save Changes</button>
+            <button type="submit" class="btn-submit">Išsaugoti</button>
         </form>
     </div>
 </body>

@@ -1,0 +1,32 @@
+<!-- dev/modules/evaluator/templates/evaluation_steps.html -->
+{% include 'shared/header.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertinimo Žingsniai</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="content-page">
+        <div class="container">
+            <h2 class="title">Vertinimo žingsniai</h2>
+
+            <div class="steps-list">
+                <a href="{% url 'modules.evaluator:edit_object_data' order.id order.object.id %}" class="step-button">1. Pildyti vertinamo objekto duomenis</a>
+                <a href="{% url 'modules.evaluator:edit_additional_buildings' order.id order.object.id %}" class="step-button">2. Vertinamo objekto papildomi statiniai</a>
+                <a href="{% url 'modules.evaluator:edit_RC_data' order.id order.object.id %}" class="step-button">3. Gauti duomenis iš Registrų centro</a>
+                <a href="{% url 'modules.evaluator:edit_gallery' order.id order.object.id %}" class="step-button">4. Vertinamo objekto nuotraukos</a>
+                <button class="step-button">5. Panašių objektų paieška</button>
+                <button class="step-button">6. Dokumentų pridėjimas</button>
+                <button class="step-button">7. Netoliese esančios įstaigos</button>
+                <button class="step-button">8. Ataskaitos generavimas</button>
+            </div>
+
+            <button class="start-button">Pradėti</button>
+        </div>
+    </div>
+</body>
+</html>

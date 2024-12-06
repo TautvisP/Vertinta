@@ -1,0 +1,28 @@
+<!-- shared/templates/shared/progress_bar.html -->
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Bar</title>
+    <link rel="stylesheet" href="{% static 'css/progress_bar.css' %}">
+</head>
+<body>
+    <div class="progress-container">
+        <div class="progress-bar">
+            {% with steps=1|range_filter:total_steps %}
+                {% for step in steps %}
+                    <div class="progress-bar-step {% if step < current_step %}progress-bar-completed{% elif step == current_step %}progress-bar-current{% endif %}">{{ step }}</div>
+                    {% if step < total_steps %}
+                        <div class="progress-bar-line {% if step < current_step %}progress-bar-completed{% endif %}"></div>
+                    {% endif %}
+                {% endfor %}
+            {% endwith %}
+        </div>
+    </div>
+
+    <script src="{% static 'js/progress_bar.js' %}"></script>
+</body>
+</html>

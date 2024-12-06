@@ -58,17 +58,6 @@ h2 {
     background-color: #0056b3;
 }
 
-
-/* Registration Container */
-.registration-container {
-    background-color: #fff;
-    padding: 20px 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 100%;
-    max-width: 400px;
-}
 .registration-container h2 {
     margin-bottom: 20px;
     font-size: 24px;
@@ -76,7 +65,6 @@ h2 {
     color: #000;
 }
 
-/* Submit Button */
 .btn-submit {
     background-color: #3b82f6;
     color: #fff;
@@ -93,7 +81,6 @@ h2 {
     background-color: #2563eb;
 }
 
-/* Additional Links */
 .registration-container p {
     margin-top: 20px;
     font-size: 14px;
@@ -110,7 +97,6 @@ h2 {
     text-decoration: underline;
 }
 
-/* Registration Container */
 .registration-container {
     background-color: #fff;
     padding: 20px 30px;
@@ -119,6 +105,8 @@ h2 {
     text-align: center;
     width: 100%;
     max-width: 400px;
+    margin-top: calc(var(--header-height) + 20px);
+
 }
 
 .registration-container h2 {
@@ -128,7 +116,6 @@ h2 {
     color: #000;
 }
 
-/* Form Styles */
 form {
     display: flex;
     flex-direction: column;
@@ -153,7 +140,6 @@ form {
     box-shadow: 0 0 5px rgba(108, 99, 255, 0.5);
 }
 
-/* Submit Button */
 .btn-submit {
     background-color: #3b82f6;
     color: #fff;
@@ -170,7 +156,6 @@ form {
     background-color: #2563eb;
 }
 
-/* Additional Links */
 .registration-container p {
     margin-top: 20px;   
     font-size: 14px;
@@ -218,9 +203,8 @@ form {
     box-sizing: border-box;
 }
 
-/* Header Styling */
 :root {
-    --header-height: 60px; /* Adjust this value as needed */
+    --header-height: 60px;
 }
 
 header {
@@ -277,7 +261,6 @@ header {
     align-items: center;
 }
 
-/* Content Styling */
 .content-page {
     padding-top: calc(var(--header-height) + 20px);
     display: flex;
@@ -285,4 +268,201 @@ header {
     align-items: flex-start;
     min-height: 100vh;
     width: 100%;
+}
+
+
+
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.filters {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.dropdown {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: #fff;
+    min-width: 150px;
+}
+
+.clear-button {
+    padding: 10px 15px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+}
+
+.clear-button:hover {
+    background-color: #e0e0e0;
+}
+/* Requests List */
+.requests-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Request Item */
+.request-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.request-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.request-title {
+    font-weight: bold;
+    margin: 0;
+    font-size: 16px;
+}
+
+.request-info {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.step-button {
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+
+/* Annotation styles */
+.marker {
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50%;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+.marker-number {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.new-annotation form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.new-annotation label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.new-annotation textarea {
+    resize: none;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.new-annotation input[type="file"] {
+    padding: 5px;
+    font-size: 0.9rem;
+}
+
+.new-annotation button {
+    background-color: #3b82f6;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.new-annotation button:hover {
+    background-color: #2563eb;
+}
+
+
+.existing-marker {
+    background-color: red;
+}
+.new-marker {
+    background-color: blue;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }

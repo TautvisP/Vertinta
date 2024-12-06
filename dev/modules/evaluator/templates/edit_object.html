@@ -1,4 +1,4 @@
-<!-- orders/templates/edit_additional_buildings.html -->
+<!-- dev/modules/evaluator/templates/edit_object.html -->
 {% load static %}
 {% load i18n %}
 {% include 'shared/header.html' %}
@@ -8,62 +8,40 @@
 {# {% include 'parea/menu.html' %} #}
 {% endif %}
 {% block content %}
-{% if show_progress_bar %}
-    {% include 'shared/progress_bar.html' %}
-{% endif %}
+{% include 'shared/progress_bar.html' %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redaguoti papildomus statinius</title>
+    <title>1. Redaguoti Užsakymą</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 <div class="content-page">
     <div class="content">
         <div class='container-fluid col-10'>
-            {% if is_evaluator %}
-                <form action="{% url 'modules.evaluator:edit_additional_buildings' order_id pk %}" method="POST">{% csrf_token %}
-            {% else %}
-                <form action="{% url 'modules.orders:edit_additional_buildings' object.id %}" method="POST">{% csrf_token %}
-            {% endif %}
-                {% if garage_form %}
+            <form action="{% url 'modules.evaluator:edit_object_data' order_id pk %}" method="POST">{% csrf_token %}
                 <div class="form-section">
                     <div class="col-sm-12">
                         <div class="card-box">
-                            <h3 class="header-title">{% trans "Garažas" %}</h3>
+                            <h3 class="header-title">{% trans "Lokacijos duomenys" %}</h3>
                             <div class="col-lg-12">
                                 <div class="form-row">
-                                    {{ garage_form.as_p }}
+                                    {{ location_form.as_p }}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                {% endif %}
-                {% if shed_form %}
+                {% if additional_form %}
                 <div class="form-section">
                     <div class="col-sm-12">
                         <div class="card-box">
-                            <h3 class="header-title">{% trans "Shed" %}</h3>
+                            <h3 class="header-title">{% trans "Papildoma informacija" %}</h3>
                             <div class="col-lg-12">
                                 <div class="form-row">
-                                    {{ shed_form.as_p }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-                {% if gazebo_form %}
-                <div class="form-section">
-                    <div class="col-sm-12">
-                        <div class="card-box">
-                            <h3 class="header-title">{% trans "Gazebo" %}</h3>
-                            <div class="col-lg-12">
-                                <div class="form-row">
-                                    {{ gazebo_form.as_p }}
+                                    {{ additional_form.as_p }}
                                 </div>
                             </div>
                         </div>
@@ -72,6 +50,10 @@
                 {% endif %}
                 <button type="submit" class="btn btn-primary">Išsaugoti</button>
             </form>
+        </div>
+        <div class="navigation-buttons">
+            <a href="{% url 'modules.evaluator:evaluation_steps' order_id %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
+            <a href="{% url 'modules.evaluator:edit_evaluation_decoration' order_id pk %}" class="btn btn-primary">{% trans "Pirmyn" %}</a>
         </div>
     </div>
 </div>

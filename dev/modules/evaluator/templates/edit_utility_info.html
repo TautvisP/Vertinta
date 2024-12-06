@@ -1,0 +1,48 @@
+<!-- dev/modules/evaluator/templates/edit_evaluation_deco_info.html -->
+{% load static %}
+{% load i18n %}
+{% include 'shared/header.html' %}
+{% if user.is_authenticated %}
+{# {% include 'marea/menu_member.html' %} #}
+{% else %}
+{# {% include 'parea/menu.html' %} #}
+{% endif %}
+{% block content %}
+{% include 'shared/progress_bar.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1. Redaguoti užsakymą</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<div class="content-page">
+    <div class="content">
+        <div class='container-fluid col-10'>
+            <form action="{% url 'modules.evaluator:edit_utility_info' order_id pk %}" method="POST">{% csrf_token %}
+                <div class="form-section">
+                    <div class="col-sm-12">
+                        <div class="card-box">
+                            <h3 class="header-title">{% trans "Inžinerinė įranga" %}</h3>
+                            <div class="col-lg-12">
+                                <div class="form-row">
+                                    {{ utility_form.as_p }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Išsaugoti</button>
+            </form>
+        </div>
+        <div class="navigation-buttons">
+            <a href="{% url 'modules.evaluator:edit_common_info' order_id pk %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
+            <a href="{% url 'modules.evaluator:edit_additional_buildings' order_id pk %}" class="btn btn-primary">{% trans "Pirmyn" %}</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+{% endblock %}

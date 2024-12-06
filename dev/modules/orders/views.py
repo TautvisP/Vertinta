@@ -9,12 +9,11 @@ from django.forms import formset_factory
 from modules.orders.enums import *
 from modules.orders.models import *
 from modules.orders.forms import *
-from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.decorators import login_required
 from core.uauth.models import User, UserMeta
 from django.db.models import Count, Q
 from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from shared.mixins.mixins import UserRoleContextMixin
 
 def index(request):
     return render(request, 'orders/index.html')
@@ -23,7 +22,7 @@ def test_view(request):
     return render(request, 'shared/header.html')
 
 
-class LandingView(LoginRequiredMixin, ListView):
+class LandingView(LoginRequiredMixin, UserRoleContextMixin, ListView):
     template_name = "object_select.html"
     login_url = 'core.uauth:login'
     redirect_field_name = 'next'
@@ -49,13 +48,11 @@ class LandingView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = _('Užsisakykite NT vertinimą')
-        context['is_agency'] = self.request.user.groups.filter(name='Agency').exists()
-        context['is_evaluator'] = self.request.user.groups.filter(name='Evaluator').exists()
         return context
 
 
 #possibly get_context_data POST part is repetative with the post function, could be refactored
-class FirsStepView(LoginRequiredMixin, TemplateView):
+class FirsStepView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
     template_name = "order_first_step.html"
 
     def get_queryset(self):
@@ -76,7 +73,6 @@ class FirsStepView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['is_agency'] = self.request.user.groups.filter(name='Agency').exists()
         form_classes = self.get_form_classes()
         selected_obj_type = self.request.session.get('selected_obj_type')
 
@@ -302,7 +298,7 @@ class AdditionalBuildingsView(TemplateView):
         return self.render_to_response(context)
     
 
-class OrderListView(LoginRequiredMixin, ListView):
+class OrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView):
     model = Order
     template_name = "order_list.html"
     context_object_name = "orders"
@@ -314,15 +310,32 @@ class OrderListView(LoginRequiredMixin, ListView):
 
         if user.groups.filter(name='Agency').exists():
             return Order.objects.filter(agency=user)
-            
+        
         return Order.objects.filter(client=user)
+
+
+class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView):
+    model = Order
+    template_name = "evaluator_order_list.html"
+    context_object_name = "orders"
+    login_url = 'core.uauth:login'
+    redirect_field_name = 'next'
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Order.objects.filter(evaluator=user)
+
+        municipality = self.request.GET.get('municipality')
+        if municipality:
+            queryset = queryset.filter(object__objectmeta__meta_key='municipality', object__objectmeta__meta_value=municipality)
+
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['is_agency'] = self.request.user.groups.filter(name='Agency').exists()
-        context['is_evaluator'] = self.request.user.groups.filter(name='Evaluator').exists()
+        context['municipality_choices'] = MUNICIPALITY_CHOICES
         return context
-
+    
 
 class OrderDeleteView(View):
     def post(self, request, *args, **kwargs):
@@ -467,6 +480,8 @@ class EditAdditionalBuildingsView(UpdateView):
         context = super().get_context_data(**kwargs)
         forms = self.get_forms()
         context.update(forms)
+        context['show_progress_bar'] = False
+        context['is_evaluator'] = False 
         return context
 
     def post(self, request, *args, **kwargs):
@@ -563,7 +578,17 @@ class AgencySelectionView(LoginRequiredMixin, ListView):
                 order_id = request.session.get('main_object_id')
                 order = Order.objects.get(object_id=order_id)
                 order.agency = selected_agency
+
+                # Select the appraiser with the least amount of orders
+                appraisers = User.objects.filter(groups__name='Evaluator', agency=selected_agency)
+                appraiser_with_least_orders = min(appraisers, key=lambda appraiser: appraiser.orders.count())
+
+
+                #appraiser_with_least_orders = User.objects.get(id=13)
+                # Associate the order with the selected appraiser
+                order.evaluator = appraiser_with_least_orders
                 order.save()
+
                 return redirect('modules.orders:order_list')
             except User.DoesNotExist:
                 return redirect('modules.orders:select_agency')

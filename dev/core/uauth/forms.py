@@ -21,9 +21,9 @@ class LoginForm(AuthenticationForm):
             if self.user_cache is None:
 
                 if not User.objects.filter(email=email).exists():
-                    raise forms.ValidationError("No account found with this email address.")
+                    raise forms.ValidationError("Paskyra su šiuo El. paštu nerasta.")
                 else:
-                    raise forms.ValidationError("Incorrect password. Please try again.")
+                    raise forms.ValidationError("Neteisingas slaptažodis.")
                 
             else:
                 self.confirm_login_allowed(self.user_cache)
@@ -139,19 +139,19 @@ class AgencyRegisterForm(UserCreationForm):
 
 class UserEditForm(UserChangeForm):
     first_name = forms.CharField(
-        label='First Name', 
+        label='Vardas', 
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     last_name = forms.CharField(
-        label='Last Name', 
+        label='Pavardė', 
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     email = forms.EmailField(
-        label='Email', 
+        label='El. paštas', 
         widget=forms.EmailInput(attrs={'class': 'form-control'})
     )
     phone_num = forms.CharField(
-        label='Phone Number', 
+        label='Tel. Nr.', 
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
 
@@ -180,14 +180,14 @@ class UserEditForm(UserChangeForm):
 
 class UserPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(
-        label='Old Password', 
+        label='Senas slaptažodis', 
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
     new_password1 = forms.CharField(
-        label='New Password', 
+        label='Naujas slaptažodis', 
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
     new_password2 = forms.CharField(
-        label='Confirm New Password', 
+        label='Pakartokite slaptažodį', 
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )

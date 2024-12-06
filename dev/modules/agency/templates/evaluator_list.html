@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluators in Agency</title>
+    <title>Agentūros Vertintojai</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
@@ -13,17 +13,17 @@
     <div class="content-page">
         <div class="content">
             <div class='container-fluid col-10'>
-                <h2>Evaluators in Agency</h2>
-                <a href="{% url 'modules.agency:create_evaluator_account' %}" class="btn btn-primary">Create Evaluator Account</a>
+                <h2>Agentūros vertintojai</h2>
+                <a href="{% url 'modules.agency:create_evaluator_account' %}" class="btn btn-primary">Sukurti Vertintojo Paskyrą</a>
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Last Name</th>
-                            <th>Email</th>
-                            <th>Phone Number</th>
-                            <th>Date Joined</th>
-                            <th>Actions</th>
+                            <th>Vardas</th>
+                            <th>Pavardė</th>
+                            <th>El. Paštas</th>
+                            <th>Tel. Nr.</th>
+                            <th>Prisijungimo Data</th>
+                            <th>Veiksmai</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,7 +35,7 @@
                             <td>{{ evaluator.phone_num }}</td>
                             <td>{{ evaluator.date_joined }}</td>
                             <td>
-                                <a href="{% url 'modules.evaluator:edit_evaluator_account' evaluator.id %}" class="btn btn-primary">Edit Profile</a>
+                                <a href="{% url 'modules.evaluator:edit_evaluator_account' evaluator.id %}" class="btn btn-primary">Redaguoti Profilį</a>
                             </td>
                         </tr>
                         {% endfor %}

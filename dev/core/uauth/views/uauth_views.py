@@ -5,7 +5,6 @@ from core.uauth.forms import *
 from core.uauth.models import *
 from django.contrib.auth.models import Group
 from django.contrib.auth import update_session_auth_hash, logout, authenticate
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -21,7 +20,7 @@ class CustomLoginView(LoginView):
         return reverse_lazy('modules.orders:selection')
 
     def form_valid(self, form):
-        messages.success(self.request, "Login successful!")
+        messages.success(self.request, "Pavyko prisijungti!")
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -42,11 +41,11 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('core.uauth:login')
 
     def form_valid(self, form):
-        messages.success(self.request, "Registration successful! Please log in.")
+        messages.success(self.request, "Registracija sėkminga! Prisijunkite.")
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, "Registration failed. Please correct the errors below.")
+        messages.error(self.request, "Registracija nepavyko. Ištaisykite klaidas.")
         return super().form_invalid(form)
     
 
@@ -60,11 +59,11 @@ class AgencyRegisterView(CreateView):
         user = form.save()
         agency_group = Group.objects.get(name='Agency')
         user.groups.add(agency_group)
-        messages.success(self.request, "Agency registration successful! Please log in.")
+        messages.success(self.request, "Agentūros registracija sėkminga! Prisijunkite.")
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, "Registration failed. Please correct the errors below.")
+        messages.error(self.request, "Registracija nepavyko. Ištaisykite klaidas.")
         return super().form_invalid(form)
     
 
@@ -78,11 +77,11 @@ class EvaluatorRegisterView(CreateView):
         user = form.save()
         evaluator_group = Group.objects.get(name='Evaluator')
         user.groups.add(evaluator_group)
-        messages.success(self.request, "Evaluator registration successful! Please log in.")
+        messages.success(self.request, "Vertintojo registracija sėkminga! Prisijunkite.")
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, "Registration failed. Please correct the errors below.")
+        messages.error(self.request, "Registracija nepavyko. Ištaisykite klaidas.")
         return super().form_invalid(form)
 
 
@@ -104,15 +103,15 @@ class UserEditView(LoginRequiredMixin, UpdateView):
         if password_form.is_valid():
             user = password_form.save()
             update_session_auth_hash(self.request, user)
-            messages.success(self.request, 'Your profile was successfully updated!')
+            messages.success(self.request, 'Profilis sėkmingai atnaujintas!')
 
         else:
-            messages.error(self.request, 'Please correct the error below.')
+            messages.error(self.request, 'Ištaisykite klaidas.')
 
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, 'Please correct the error below.')
+        messages.error(self.request, 'Ištaisykite klaidas.')
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):

@@ -68,23 +68,23 @@ class AgencyPasswordChangeForm(PasswordChangeForm):
 
 class EvaluatorCreationForm(UserCreationForm):
     first_name = forms.CharField(
-        label='First Name', 
+        label='Vardas', 
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     last_name = forms.CharField(
-        label='Last Name', 
+        label='Pavardė', 
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     email = forms.EmailField(
-        label='Email', 
+        label='El. paštas', 
         widget=forms.EmailInput(attrs={'class': 'form-control'})
     )
     password1 = forms.CharField(
-        label='Password', 
+        label='Slaptažodis', 
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
     password2 = forms.CharField(
-        label='Confirm Password', 
+        label='Pakartokite slaptažodį', 
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
 

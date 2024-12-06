@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from modules.agency.forms import *
@@ -26,7 +25,7 @@ class EditAgencyAccountView(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
         return self.request.user.groups.filter(name='Agency').exists()
 
     def handle_no_permission(self):
-        messages.error(self.request, "You do not have permission to access this page.")
+        messages.error(self.request, "Neturite leidimo prieiti prie šio puslapio.")
         return redirect('core.uauth:login')
 
     def get_object(self, queryset=None):
@@ -50,14 +49,14 @@ class EditAgencyAccountView(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
         if password_form.is_valid():
             user = password_form.save()
             update_session_auth_hash(self.request, user)
-            messages.success(self.request, 'Your profile was successfully updated!')
+            messages.success(self.request, 'Profilis sėkmingai atnaujintas!')
         else:
-            messages.error(self.request, 'Please correct the error below.')
+            messages.error(self.request, 'Pataisykite klaidas.')
 
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, 'Please correct the error below.')
+        messages.error(self.request, 'Pataisykite klaidas.')
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
@@ -77,7 +76,7 @@ class EvaluatorListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return self.request.user.groups.filter(name='Agency').exists()
 
     def handle_no_permission(self):
-        messages.error(self.request, "You do not have permission to access this page.")
+        messages.error(self.request, "Neturite leidimo prieiti prie šio puslapio.")
         return redirect('core.uauth:login')
 
     def get_queryset(self):
@@ -102,8 +101,8 @@ class EvaluatorListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         context['is_agency'] = self.request.user.groups.filter(name='Agency').exists()
         context['title'] = 'Evaluators in Agency'
         return context
-    
-    
+
+
 class CreateEvaluatorAccountView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = User
     form_class = EvaluatorCreationForm
@@ -116,7 +115,7 @@ class CreateEvaluatorAccountView(LoginRequiredMixin, UserPassesTestMixin, Create
         return self.request.user.groups.filter(name='Agency').exists()
 
     def handle_no_permission(self):
-        messages.error(self.request, "You do not have permission to access this page.")
+        messages.error(self.request, "Neturite leidimo prieiti prie šio puslapio.")
         return redirect('core.uauth:login')
 
     def form_valid(self, form):
@@ -125,9 +124,9 @@ class CreateEvaluatorAccountView(LoginRequiredMixin, UserPassesTestMixin, Create
         user.save()
         evaluator_group = Group.objects.get(name='Evaluator')
         user.groups.add(evaluator_group)
-        messages.success(self.request, "Evaluator account created successfully!")
+        messages.success(self.request, "Vertintojo paskyra sėkmingai sukurta!")
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, "Failed to create evaluator account. Please correct the errors below.")
+        messages.error(self.request, "Vertintojo paskyra nebuvo sukurta. Pataisykite klaidas.")
         return super().form_invalid(form)

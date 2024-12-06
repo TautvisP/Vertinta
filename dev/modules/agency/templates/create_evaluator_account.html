@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Evaluator Account</title>
+    <title>Sukurti Vertintojo Paskyrą</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     {% include 'shared/header.html' %}
     <div class="registration-container">
-        <h2>Create Evaluator Account</h2>
+        <h2>Sukurti Vertintojo Paskyrą</h2>
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -41,7 +41,7 @@
                 {{ form.password2.label_tag }}
                 {{ form.password2 }}
             </div>
-            <button type="submit" class="btn-submit">Create Account</button>
+            <button type="submit" class="btn-submit">Sukurti Paskyrą</button>
         </form>
     </div>
 </body>

@@ -1,0 +1,47 @@
+/* shared/static/css/progress_bar.css */
+
+.progress-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 50px;
+    padding-top: 100px;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.progress-bar {
+    display: flex;
+    align-items: center;
+    width: 80%;
+}
+
+.progress-bar-step {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    color: white;
+    z-index: 1;
+}
+
+.progress-bar-line {
+    height: 4px;
+    flex-grow: 1;
+    background-color: #ccc;
+    margin: 0 -2px;
+}
+
+.progress-bar-completed {
+    background-color: #4E78D2;
+}
+
+.progress-bar-current {
+    background-color: green;
+}
