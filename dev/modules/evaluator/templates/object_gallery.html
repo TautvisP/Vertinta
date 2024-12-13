@@ -56,8 +56,8 @@
                         </form>
                     </div>
                     <p class="image-name">{{ image.image.name }}</p>
-                    <a href="{% url 'modules.evaluator:image_annotation' order_id=order.id image_id=image.id %}" class="btn btn-secondary">{% trans "Annotate" %}</a>
-                    <button type="submit" name="delete_image" class="delete-buttons">{% trans "Delete" %}</button>
+                    <a href="{% url 'modules.evaluator:image_annotation' order_id=order.id image_id=image.id %}" class="btn btn-secondary">{% trans "Anotuoti" %}</a>
+                    <button type="submit" name="delete_image" class="delete-buttons">{% trans "Ištrinti" %}</button>
                 </div>
                 {% endfor %}
             </div>
@@ -69,14 +69,14 @@
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ image_form.as_p }}
-                    <button type="submit" name="upload_image" class="btn btn-primary">{% trans "Upload Image" %}</button>
+                    <button type="submit" name="upload_image" class="btn btn-primary">{% trans "Pridėti nuotrauką" %}</button>
                 </form>
             </div>
         </div>
 
         <div class="navigation-buttons">
             <a href="{% url 'modules.evaluator:edit_RC_data' order_id pk %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
-            <a href="{% url 'modules.evaluator:evaluation_steps' order_id %}" class="btn btn-primary">{% trans "Pirmyn" %}</a>
+            <a href="{% url 'modules.evaluator:similar_object_search' order_id pk %}" class="btn btn-primary">{% trans "Pirmyn" %}</a>
         </div>
     </div>
     <script>

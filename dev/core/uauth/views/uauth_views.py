@@ -17,6 +17,9 @@ class CustomLoginView(LoginView):
         if user.groups.filter(name='Agency').exists():
             return reverse_lazy('modules.orders:order_list')
         
+        elif user.groups.filter(name='Evaluator').exists():
+            return reverse_lazy('modules.orders:evaluator_order_list')
+        
         return reverse_lazy('modules.orders:selection')
 
     def form_valid(self, form):

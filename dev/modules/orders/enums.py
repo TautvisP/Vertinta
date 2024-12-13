@@ -36,6 +36,23 @@ OBJECT_TYPE_CHOICES = (
     (ObjectTypes.OTHER_TYPE, ObjectTypes.OTHER_TYPE)
 )
 
+HOUSE_TYPE_1 = _('Namas (gyvenamasis)')
+HOUSE_TYPE_2 = _('Namo dalis')
+HOUSE_TYPE_3 = _('Sodo namas')
+HOUSE_TYPE_4 = _('Sublokuotas namas')
+HOUSE_TYPE_5 = _('Sodyba')
+HOUSE_TYPE_6 = _('Kita (nukeliamas, projektas, kt.)')
+
+HOUSE_TYPE_CHOICES = [
+    (HOUSE_TYPE_1, HOUSE_TYPE_1),
+    (HOUSE_TYPE_2, HOUSE_TYPE_2),
+    (HOUSE_TYPE_3, HOUSE_TYPE_3),
+    (HOUSE_TYPE_4, HOUSE_TYPE_4),
+    (HOUSE_TYPE_5, HOUSE_TYPE_5),
+    (HOUSE_TYPE_6, HOUSE_TYPE_6),
+]
+
+
 STATUS_CHOICES = (
     (_('Naujas'), _('Naujas')),
     (_('Patvirtintas'), _('Patvirtintas')),
@@ -55,12 +72,12 @@ KAUNAS_CITY = _('Kaunas')
 KLAIPEDA_CITY = _('Klaipėda')
 SIAULIAI_CITY = _('Šiauliai')
 PANEVEZYS_CITY = _('Panevėžys')
+ALYTUS_CITY = _('Alytus')
 VILNIUS_DISTRICT = _('Vilniaus r.')
 KAUNAS_DISTRICT = _('Kauno r.')
 KLAIPEDA_DISTRICT = _('Klaipėdos r.')
 SIAULIAI_DISTRICT = _('Šiaulių r.')
 PANEVEZYS_DISTRICT = _('Panevėžio r.')
-ALYTUS_CITY = _('Alytus')
 MARIJAMPOLE_CITY = _('Marijampolė')
 UTENA_CITY = _('Utena')
 TAURAGE_CITY = _('Tauragė')
@@ -119,6 +136,18 @@ FLOOR_CHOICES = [
 ]
 
 
+FLOOR_COUNT_CHOICE1 = _('1')
+FLOOR_COUNT_CHOICE2 = _('2')
+FLOOR_COUNT_CHOICE3 = _('Daugiau nei 2')
+
+FLOOR_COUNT_CHOICES = [
+    (FLOOR_COUNT_CHOICE1, FLOOR_COUNT_CHOICE1),
+    (FLOOR_COUNT_CHOICE2, FLOOR_COUNT_CHOICE2),
+    (FLOOR_COUNT_CHOICE3, FLOOR_COUNT_CHOICE3),
+]
+
+
+
 OUTDOOR_DECO_1 = _('Medinės lentos')
 OUTDOOR_DECO_2 = _('Tinkas')
 OUTDOOR_DECO_CHOICES = [
@@ -164,6 +193,26 @@ WALLS_CHOICES = [
     (WALLS_TYPE_8, _('Karkasinės')),
 ]
 
+
+BUILDING_TYPE_1 = _('Mūrinis')
+BUILDING_TYPE_2 = _('Blokinis')
+BUILDING_TYPE_3 = _('Monolitinis')
+BUILDING_TYPE_4 = _('Medinis')
+BUILDING_TYPE_5 = _('Karkasinis')
+BUILDING_TYPE_6 = _('Rastinis')
+BUILDING_TYPE_7 = _('Skydinis')
+BUILDING_TYPE_8 = _('Kita')
+
+BUILDING_CHOICES = [
+    (BUILDING_TYPE_1, _('Mūrinis')),
+    (BUILDING_TYPE_2, _('Blokinis')),
+    (BUILDING_TYPE_3, _('Monolitinis')),
+    (BUILDING_TYPE_4, _('Medinis')),
+    (BUILDING_TYPE_5, _('Karkasinis')),
+    (BUILDING_TYPE_6, _('Rastinis')),
+    (BUILDING_TYPE_7, _('Skydinis')),
+    (BUILDING_TYPE_8, _('Kita')),
+]
 
 PARTITION_TYPE_1 = _('Gipso kartono')
 PARTITION_TYPE_2 = _('Mūrinė')
@@ -252,18 +301,29 @@ ELECTRICITY_GAS_CHOICES = [
     (ELECTRICITY_TYPE_2, _('ESO')),
 ]
 
+HEATING_TYPE_1 = _('Centrinis')
+HEATING_TYPE_2 = _('Centrinis kolektorinis')
+HEATING_TYPE_3 = _('Dujinis')
+HEATING_TYPE_4 = _('Elektra')
+HEATING_TYPE_5 = _('Aeroterminis')
+HEATING_TYPE_6 = _('Geoterminis')
+HEATING_TYPE_7 = _('Skystu kuru')
+HEATING_TYPE_8 = _('Kietu kuru')
+HEATING_TYPE_9 = _('Saules energija')
+HEATING_TYPE_10 = _('Kita')
 
-HEATING_TYPE_1 = _('Nėra')
-HEATING_TYPE_2 = _('Centralizuotas')
-HEATING_TYPE_3 = _('Vietinis')
-HEATING_TYPE_4 = _('Kita')
 HEATING_CHOICES = [
-    (HEATING_TYPE_1, _('Nėra')),
-    (HEATING_TYPE_2, _('Centralizuotas')),
-    (HEATING_TYPE_3, _('Vietinis')),
-    (HEATING_TYPE_4, _('Kita')),
+    (HEATING_TYPE_1, _('Centrinis')),
+    (HEATING_TYPE_2, _('Centrinis kolektorinis')),
+    (HEATING_TYPE_3, _('Dujinis')),
+    (HEATING_TYPE_4, _('Elektra')),
+    (HEATING_TYPE_5, _('Aeroterminis')),
+    (HEATING_TYPE_6, _('Geoterminis')),
+    (HEATING_TYPE_7, _('Skystu kuru')),
+    (HEATING_TYPE_8, _('Kietu kuru')),
+    (HEATING_TYPE_9, _('Saules energija')),
+    (HEATING_TYPE_10, _('Kita')),
 ]
-
 
 WATER_SUPPLY_CHOICES = [
     (EXIST_TYPE_1, EXIST_TYPE_1),
@@ -370,18 +430,53 @@ OUTER_DOOR_CHOICES = [
     (OUTER_DOOR_TYPE_4, _('aliuminio')),
 ]
 
+COMERCIAL_TYPE_1 = _('Administracinė')
+COMERCIAL_TYPE_2 = _('Prekybos')
+COMERCIAL_TYPE_3 = _('Viešbučių')
+COMERCIAL_TYPE_4 = _('Paslaugų')
+COMERCIAL_TYPE_5 = _('Sandėliavimo')
+COMERCIAL_TYPE_6 = _('Gsamybos ir pramonės')
+COMERCIAL_TYPE_7 = _('Maitinimo')
+COMERCIAL_TYPE_8 = _('Medicinos')
+COMERCIAL_TYPE_9 = _('Kita')
 
-PURPOSE_TYPE_1 = _('Gyvenamoji')
-PURPOSE_TYPE_2 = _('Žemės ūkio')
-PURPOSE_TYPE_3 = _('Komercinė')
-PURPOSE_TYPE_4 = _('Kita')
-
-PURPOSE_CHOICES = [
-    (PURPOSE_TYPE_1,PURPOSE_TYPE_1),
-    (PURPOSE_TYPE_2,PURPOSE_TYPE_2),
-    (PURPOSE_TYPE_3,PURPOSE_TYPE_3),
-    (PURPOSE_TYPE_4,PURPOSE_TYPE_4),
+COMERCIAL_CHOICES = [
+    (COMERCIAL_TYPE_1, _('Administracinė')),
+    (COMERCIAL_TYPE_2, _('Prekybos')),
+    (COMERCIAL_TYPE_3, _('Viešbučių')),
+    (COMERCIAL_TYPE_4, _('Paslaugų')),
+    (COMERCIAL_TYPE_5, _('Sandėliavimo')),
+    (COMERCIAL_TYPE_6, _('Gsamybos ir pramonės')),
+    (COMERCIAL_TYPE_7, _('Maitinimo')),
+    (COMERCIAL_TYPE_8, _('Medicinos')),
+    (COMERCIAL_TYPE_9, _('Kita')),
 ]
+
+
+PURPOSE_TYPE_1 = _('Namų valda')
+PURPOSE_TYPE_2 = _('Daugiabučių statyba')
+PURPOSE_TYPE_3 = _('Žemės ūkio')
+PURPOSE_TYPE_4 = _('Sklypas soduose')
+PURPOSE_TYPE_5 = _('Miškų ūkio')
+PURPOSE_TYPE_6 = _('Pramonės')
+PURPOSE_TYPE_7 = _('Sandėliavimo')
+PURPOSE_TYPE_8 = _('Komercinė')
+PURPOSE_TYPE_9 = _('Rekreacine')
+PURPOSE_TYPE_10 = _('Kita')
+
+LAND_PURPOSE_CHOICES = [
+    (PURPOSE_TYPE_1, _('Namų valda')),
+    (PURPOSE_TYPE_2, _('Daugiabučių statyba')),
+    (PURPOSE_TYPE_3, _('Žemės ūkio')),
+    (PURPOSE_TYPE_4, _('Sklypas soduose')),
+    (PURPOSE_TYPE_5, _('Miškų ūkio')),
+    (PURPOSE_TYPE_6, _('Pramonės')),
+    (PURPOSE_TYPE_7, _('Sandėliavimo')),
+    (PURPOSE_TYPE_8, _('Komercinė')),
+    (PURPOSE_TYPE_9, _('Rekreacine')),
+    (PURPOSE_TYPE_10, _('Kita')),
+]
+
 
 EVALUATION_PURPOSE_TYPE_1 = _('Pirkimas')
 EVALUATION_PURPOSE_TYPE_2 = _('Pardavimas')
@@ -413,4 +508,67 @@ IMAGE_CHOICES = [
     (IMAGE_TYPE_2, IMAGE_TYPE_2),
     (IMAGE_TYPE_3, IMAGE_TYPE_3),
     (IMAGE_TYPE_4, IMAGE_TYPE_4),
+]
+
+
+
+
+
+SIMILAR_OBJECT_TYPE_1 = _('Butai pardavimui')
+SIMILAR_OBJECT_TYPE_2 = _('Namai pardavimui')
+SIMILAR_OBJECT_TYPE_3 = _('Patalpos pardavimui')
+SIMILAR_OBJECT_TYPE_4 = _('Sklypai')
+
+SIMILAR_OBJECT_CHOICES = [
+    ('butai', SIMILAR_OBJECT_TYPE_1),
+    ('namai', SIMILAR_OBJECT_TYPE_2),
+    ('patalpos', SIMILAR_OBJECT_TYPE_3),
+    ('sklypai-pardavimui', SIMILAR_OBJECT_TYPE_4),
+]
+
+
+
+
+
+SIMILAR_OBJECT_MUNICIPALITY_CHOICES = [
+    (VILNIUS_CITY, VILNIUS_CITY),
+    (KAUNAS_CITY, KAUNAS_CITY),
+    (KLAIPEDA_CITY, KLAIPEDA_CITY),
+    (SIAULIAI_CITY, SIAULIAI_CITY),
+    (PANEVEZYS_CITY, PANEVEZYS_CITY),
+    (VILNIUS_DISTRICT, VILNIUS_DISTRICT),
+    (KAUNAS_DISTRICT, KAUNAS_DISTRICT),
+    (KLAIPEDA_DISTRICT, KLAIPEDA_DISTRICT),
+    (SIAULIAI_DISTRICT, SIAULIAI_DISTRICT),
+    (PANEVEZYS_DISTRICT, PANEVEZYS_DISTRICT),
+    (ALYTUS_CITY, ALYTUS_CITY),
+    (MARIJAMPOLE_CITY, MARIJAMPOLE_CITY),
+    (UTENA_CITY, UTENA_CITY),
+    (TAURAGE_CITY, TAURAGE_CITY),
+    (TELŠIAI_CITY, TELŠIAI_CITY),
+]
+
+
+EQUIPMENT_TYPE_1 = _('Įrengtas')
+EQUIPMENT_TYPE_2 = _('Dalinė apdaila')
+EQUIPMENT_TYPE_3 = _('Neįrengtas')
+EQUIPMENT_TYPE_4 = _('Nebaigtas statyti')
+EQUIPMENT_TYPE_5 = _('Pamatai')
+EQUIPMENT_TYPE_6 = _('Kita')
+
+EQUIPMENT_CHOICES = [
+    (EQUIPMENT_TYPE_1, EQUIPMENT_TYPE_1),
+    (EQUIPMENT_TYPE_2, EQUIPMENT_TYPE_2),
+    (EQUIPMENT_TYPE_3, EQUIPMENT_TYPE_3),
+    (EQUIPMENT_TYPE_4, EQUIPMENT_TYPE_4),
+    (EQUIPMENT_TYPE_5, EQUIPMENT_TYPE_5),
+    (EQUIPMENT_TYPE_6, EQUIPMENT_TYPE_6),
+]
+
+SIMILAR_ACTION_TYPE_1 = _('Pardavimui')
+SIMILAR_ACTION_TYPE_2 = _('Nuomai')
+
+SIMILAR_ACTION_CHOICES = [
+    (SIMILAR_ACTION_TYPE_1, SIMILAR_ACTION_TYPE_1),
+    (SIMILAR_ACTION_TYPE_2, SIMILAR_ACTION_TYPE_2),
 ]

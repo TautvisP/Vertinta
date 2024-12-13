@@ -20,13 +20,30 @@ allow agency to change order evaluator
 
 + Fix evaluator/forms.py with correct input fields and enums, make it so that the first step of evaluating an order consists of many different templates with at most 2 forms populated with order data.
 
-+ If i change the forms in order/forms.py from forms.Form to forms.ModelForm, the users editOrder throws errors while the evaluator edit order is fine.
++ If I change the forms in order/forms.py from forms.Form to forms.ModelForm, the users editOrder throws errors while the evaluator edit order is fine.
 
 Input fields should have validation checks and display what information has been inputed incorrectly
 
-Complete gallery logic, in models.py add comment and category fields, enums. Make migration.
++ Complete gallery logic, in models.py add comment and category fields, enums. Make migration.
 
 Back button in image_annotation is in the wrong place, need to fix styling
 
+Uploaded images are possibly not getting ignored by .gitignore. Need to change the name of the folder
 
-Uploaded images are possibly not getting ignored by .gitignore
+add build type to house object form; object type kita should have COMERCIAL_CHOICES for purpose; house type shouldnt have selection for land purpose type, but for house type. Add FLOOR_COUNT_CHOICES to house type.
+
++ Similar object search for some reason doesnt get the object type in post method
+
++ Similar object addition should use evaluation first step forms and views, need to adapt their logic to check if the object is an additional one and correct saving to database
+
++ Need to remove if else statement for saving regular object in similar object addition. Also need to add if statement to tempaltes, because navigation buttons are meant for original object
+
++ When adding a new similar object, the forms get populated with data from the previously added object when they shouldn't. edit_object.html navigation buttons point to incorrect links.
+
++ Add an if statement to templates for progress bar showing.
+
+Need to check with mentor, but possibly would be a good idea to seperate evaluator view into a couple of views
+
+In AgencySelectionView the appraiser_with_least_orders function doesnt seem to be working, possibly the evaluator order fields are not saved in the database.
+
+Make constant context['total_steps'] = 8

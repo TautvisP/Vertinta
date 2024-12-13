@@ -101,10 +101,173 @@ class ObjectImageForm(forms.ModelForm):
     
 
 class ImageAnnotationForm(forms.ModelForm):
-    x_coordinate = forms.FloatField(widget=forms.HiddenInput())
-    y_coordinate = forms.FloatField(widget=forms.HiddenInput())
-    annotation_text = forms.CharField(label='Anotacijos tekstas', widget=forms.Textarea(attrs={'class': 'form-control'}), required=False)
-    annotation_image = forms.ImageField(label='Anotacijos nuotrauka', widget=forms.ClearableFileInput(attrs={'class': 'form-control'}), required=False)
+    x_coordinate = forms.FloatField(
+        widget=forms.HiddenInput())
+    
+    y_coordinate = forms.FloatField(
+        widget=forms.HiddenInput())
+    
+    annotation_text = forms.CharField(
+        label='Anotacijos tekstas', widget=forms.Textarea(attrs={'class': 'form-control'}), required=False)
+    
+    annotation_image = forms.ImageField(
+        label='Anotacijos nuotrauka', widget=forms.ClearableFileInput(attrs={'class': 'form-control'}), required=False)
     class Meta:
         model = ImageAnnotation
         fields = ['x_coordinate', 'y_coordinate', 'annotation_text', 'annotation_image']
+
+
+# This is used for collecting search criteria for butas object in aruodas website
+class ButasSearchForm(forms.Form):
+    municipality = forms.ChoiceField(
+        choices=MUNICIPALITY_CHOICES, label='Savivaldybė')
+    
+    area_from = forms.IntegerField(
+        label='Plotas, nuo (m2)', min_value=0)
+    
+    area_to = forms.IntegerField(
+        label='Plotas, iki (m2)', min_value=0)
+    
+    equipment = forms.ChoiceField(
+        choices=EQUIPMENT_CHOICES, label='Įrengimas')
+    
+    room_count_from = forms.IntegerField(
+        label='Kambarių skaičius nuo', min_value=1)
+    
+    room_count_to = forms.IntegerField(
+        label='Kambarių skaičius iki', min_value=1)
+    
+    price_from = forms.IntegerField(
+        label='Kaina nuo', min_value=0)
+    
+    price_to = forms.IntegerField(
+        label='Kaina iki', min_value=0)
+
+
+
+# This is used for collecting search criteria for namas object in aruodas website
+class NamasSearchForm(forms.Form):
+    house_type = forms.ChoiceField(
+        choices=HOUSE_TYPE_CHOICES, label='Namo tipas')
+    
+    municipality = forms.ChoiceField(
+        choices=MUNICIPALITY_CHOICES, label='Savivaldybė')
+    
+    area_from = forms.IntegerField(
+        label='Plotas, nuo (m2)', min_value=0)
+    
+    area_to = forms.IntegerField(
+        label='Plotas, iki (m2)', min_value=0)
+    
+    equipment = forms.ChoiceField(
+        choices=EQUIPMENT_CHOICES, label='Įrengimas')
+    
+    price_from = forms.IntegerField(
+        label='Kaina nuo', min_value=0)
+    
+    price_to = forms.IntegerField(
+        label='Kaina iki', min_value=0)
+    
+    land_area_from = forms.IntegerField(
+        label='Sklypo plotas nuo (a)', min_value=0)
+    
+    land_area_to = forms.IntegerField(
+        label='Sklypo plotas iki (a)', min_value=0)
+    
+    floors = forms.ChoiceField(
+        choices=FLOOR_COUNT_CHOICES, label='Aukštų skaičius')
+    
+    heating = forms.ChoiceField(
+        choices=HEATING_CHOICES, label='Šildymas')
+    
+    building_type = forms.ChoiceField(
+        choices=BUILDING_CHOICES, label='Pastato tipas')
+
+
+
+# This is used for collecting search criteria for patalpos object in aruodas website
+class PatalposSearchForm(forms.Form):
+    municipality = forms.ChoiceField(
+        choices=MUNICIPALITY_CHOICES, label='Savivaldybė')
+    
+    area_from = forms.IntegerField(
+        label='Plotas, nuo (m2)', min_value=0)
+    
+    area_to = forms.IntegerField(
+        label='Plotas, iki (m2)', min_value=0)
+    
+    equipment = forms.ChoiceField(
+        choices=EQUIPMENT_CHOICES, label='Įrengimas')
+    
+    price_from = forms.IntegerField(
+        label='Kaina nuo', min_value=0)
+    
+    price_to = forms.IntegerField(
+        label='Kaina iki', min_value=0)
+    
+    purpose = forms.ChoiceField(
+        choices=COMERCIAL_CHOICES, label='Paskirtis')
+
+
+
+# This is used for collecting search criteria for sklypas object in aruodas website
+class SklypaiSearchForm(forms.Form):
+    action = forms.ChoiceField(
+        choices=SIMILAR_ACTION_CHOICES, label='Veiksmas')
+    
+    land_area_from = forms.IntegerField(
+        label='Sklypo plotas nuo (a)', min_value=0)
+    
+    land_area_to = forms.IntegerField(
+        label='Sklypo plotas iki (a)', min_value=0)
+    
+    municipality = forms.ChoiceField(
+        choices=MUNICIPALITY_CHOICES, label='Savivaldybė')
+    
+    equipment = forms.ChoiceField(
+        choices=EQUIPMENT_CHOICES, label='Įrengimas')
+    
+    price_from = forms.IntegerField(
+        label='Kaina nuo', min_value=0)
+    
+    price_to = forms.IntegerField(
+        label='Kaina iki', min_value=0)
+    
+    purpose = forms.ChoiceField(
+        choices=LAND_PURPOSE_CHOICES, label='Paskirtis')
+
+
+class SimilarObjectTypeSelectionForm(forms.Form):
+    object_type = forms.ChoiceField(
+        choices=SIMILAR_OBJECT_CHOICES, label='Panašaus objekto tipas')
+
+# similar object type = butai pardavimui
+# search criteria: plotas nuo, iki; savivaldybe; kambariu skaicius nuo, iki; irengimas;  kaina nuo, iki; 
+
+# similar object type = namai pardavimui
+# search criteria: namo tipas (enum: namas, namo dalis, sodo namas, sublokuotas namas, sodyba, kita); plotas nuo, iki; savivaldybe; kambariu skaicius nuo, iki; irengimas;  kaina nuo, iki; sklypo plotas nuo, iki; aukstu skaicius(enum: 1, 2, daugiau nei 2); šildymas (enum: Centrinis, centrinis kolektorinis, dujinis, elektra, aeroterminis, geoterminis, skystu kuru, kietu kuru, saules energija, kita); pastato tipas(enum: murinis, blokinis, monolitinis, medinis, karkasinis, rastinis, skydinis, kita)
+
+# similar object type = patalpos pardavimui
+# search criteria: plotas nuo, iki; savivaldybe; irengimas;  kaina nuo, iki; paskirtis (enum: administracine, prekybos, viesbuciu, paslaugu, sandeliavimo, gamybos ir pramones, maitinimo, medicinos kita)
+
+# similar object type = sklypai
+# search criteria: veiksmas(enum: pardavimui, nuomai) sklypo plotas nuo, iki; savivaldybe; irengimas;  kaina nuo, iki; paskirtis (enum: namu valda, daugiabuciu statyba, zemes ukio, sklypas soduose, misku ukio, pramones, sandeliavimo, komenrcine, rekreacine, kita)
+
+# similar object type = sodybos
+# search criteria: veiksmas(enum: pardavimui, nuomai) sklypo plotas nuo, iki; savivaldybe; irengimas;  kaina nuo, iki; paskirtis (enum: namu valda, daugiabuciu statyba, zemes ukio, sklypas soduose, misku ukio, pramones, sandeliavimo, komenrcine, rekreacine, kita)
+
+
+
+class SimilarObjectForm(forms.Form):
+    price = forms.FloatField(
+        label='Objekto kaina', min_value=0)
+    
+    link = forms.CharField(
+        label='Skelbimo nuoroda', 
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+
+    description = forms.CharField(
+        label='Panašaus objekto aprašymas', 
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )

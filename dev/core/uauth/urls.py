@@ -14,3 +14,4 @@ urlpatterns = [
     path('register/evaluator/', EvaluatorRegisterView.as_view(), name='evaluator_register'),
     path('edit/', UserEditView.as_view(), name='edit_profile'),
 ]
+# http://127.0.0.1:8000/auth/login/ is the starting, main, initial url of the project

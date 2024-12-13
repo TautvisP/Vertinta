@@ -1,0 +1,8 @@
+<!-- dev/modules/orders/templates/orders/dynamic_form.html -->
+{% load i18n %}
+<form method="post" id="dynamic-form">
+    {% csrf_token %}
+    <input type="hidden" name="object_type" value="{{ object_type }}">
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">{% trans "Search" %}</button>
+</form>

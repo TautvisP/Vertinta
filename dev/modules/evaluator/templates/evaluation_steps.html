@@ -19,7 +19,7 @@
                 <a href="{% url 'modules.evaluator:edit_additional_buildings' order.id order.object.id %}" class="step-button">2. Vertinamo objekto papildomi statiniai</a>
                 <a href="{% url 'modules.evaluator:edit_RC_data' order.id order.object.id %}" class="step-button">3. Gauti duomenis iš Registrų centro</a>
                 <a href="{% url 'modules.evaluator:edit_gallery' order.id order.object.id %}" class="step-button">4. Vertinamo objekto nuotraukos</a>
-                <button class="step-button">5. Panašių objektų paieška</button>
+                <a href="{% url 'modules.evaluator:similar_object_search' order.id order.object.id %}" class="step-button">5. Panašių objektų paieška</a>
                 <button class="step-button">6. Dokumentų pridėjimas</button>
                 <button class="step-button">7. Netoliese esančios įstaigos</button>
                 <button class="step-button">8. Ataskaitos generavimas</button>

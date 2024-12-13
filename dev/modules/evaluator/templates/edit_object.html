@@ -8,20 +8,38 @@
 {# {% include 'parea/menu.html' %} #}
 {% endif %}
 {% block content %}
-{% include 'shared/progress_bar.html' %}
+{% if show_progress_bar %}
+    {% include 'shared/progress_bar.html' %}
+{% endif %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1. Redaguoti Užsakymą</title>
+    <title>{% trans "Edit Object" %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 <div class="content-page">
     <div class="content">
         <div class='container-fluid col-10'>
-            <form action="{% url 'modules.evaluator:edit_object_data' order_id pk %}" method="POST">{% csrf_token %}
+            <form action="{% if is_similar_object %}{% url 'modules.evaluator:edit_similar_object_data' order_id pk %}{% else %}{% url 'modules.evaluator:edit_object_data' order_id pk %}{% endif %}" method="POST">{% csrf_token %}
+                <input type="hidden" name="is_similar_object" value="{{ is_similar_object }}">
+                {% if is_similar_object %}
+                <input type="hidden" name="edit_id" value="{{ similar_object_id }}">
+                <div class="form-section">
+                    <div class="col-sm-12">
+                        <div class="card-box">
+                            <h3 class="header-title">{% trans "Panašaus objekto duomenys" %}</h3>
+                            <div class="col-lg-12">
+                                <div class="form-row">
+                                    {{ similar_object_form.as_p }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
                 <div class="form-section">
                     <div class="col-sm-12">
                         <div class="card-box">
@@ -48,12 +66,12 @@
                     </div>
                 </div>
                 {% endif %}
-                <button type="submit" class="btn btn-primary">Išsaugoti</button>
+                <button type="submit" class="btn btn-primary">{% trans "Išsaugoti" %}</button>
             </form>
-        </div>
-        <div class="navigation-buttons">
-            <a href="{% url 'modules.evaluator:evaluation_steps' order_id %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
-            <a href="{% url 'modules.evaluator:edit_evaluation_decoration' order_id pk %}" class="btn btn-primary">{% trans "Pirmyn" %}</a>
+            <div class="navigation-buttons">
+                <a href="{% if is_similar_object %}{% url 'modules.evaluator:similar_object_search' order_id pk %}{% else %}{% url 'modules.evaluator:evaluation_steps' order_id %}{% endif %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
+                <a href="{% if is_similar_object %}{% url 'modules.evaluator:edit_similar_object_decoration' order_id pk similar_object_id %}{% else %}{% url 'modules.evaluator:edit_evaluation_decoration' order_id pk %}{% endif %}" class="btn btn-primary">{% trans "Pirmyn" %}</a>
+            </div>
         </div>
     </div>
 </div>

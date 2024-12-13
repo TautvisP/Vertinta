@@ -73,6 +73,12 @@
                 <button type="submit" class="btn btn-primary">Išsaugoti</button>
             </form>
         </div>
+        {% if is_evaluator %}
+        <div class="navigation-buttons">
+            <a href="{% url 'modules.evaluator:edit_utility_info' order_id pk %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
+            <a href="{% url 'modules.evaluator:edit_RC_data' order_id pk %}" class="btn btn-primary">{% trans "Pirmyn" %}</a>
+        </div>
+        {% endif %}
     </div>
 </div>
 </body>

@@ -1,0 +1,23 @@
+<!-- dev/modules/evaluator/templates/add_similar_object.html -->
+{% load static %}
+{% load i18n %}
+{% include 'shared/header.html' %}
+{% block content %}
+{% if show_progress_bar %}
+    {% include 'shared/progress_bar.html' %}
+{% endif %}
+<div class="container">
+    <h2>{% trans "Add Similar Object" %}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ similar_object_form.as_p }}
+        <h3>{% trans "Utilities" %}</h3>
+        {{ utilities_form.as_p }}
+        <h3>{% trans "Common Info" %}</h3>
+        {{ common_info_form.as_p }}
+        <h3>{% trans "Decoration" %}</h3>
+        {{ decoration_form.as_p }}
+        <button type="submit" class="btn btn-primary">{% trans "Add" %}</button>
+    </form>
+</div>
+{% endblock %}

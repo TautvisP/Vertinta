@@ -1,0 +1,114 @@
+<!-- dev/modules/orders/templates/orders/similar_object_search.html -->
+{% load static %}
+{% load i18n %}
+{% include 'shared/header.html' %}
+{% block content %}
+{% load custom_filters %}
+{% if show_progress_bar %}
+    {% include 'shared/progress_bar.html' %}
+{% endif %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans "Search for Similar Objects" %}</title>
+    <link rel="stylesheet" href="{% static 'css/tabletStyle.css' %}">
+</head>
+<body>
+    <div class="tablet-container">
+        <div class="form-container">
+            <div class="rc-data">
+                <div class='container-fluid col-10'>
+                    <h3 class="header-title">{% trans "5. Panašių objektų paieška" %}</h3>
+                </div>
+            </div>
+            <div class='container-fluid col-10'>
+                <h3>{% trans "Vertinamas turtas" %}</h3>
+                <div class="order-data">
+                    <p> {{ object.object_type }} {{ object.street }} {{ object.house_no }}, {{ object.municipality|get_municipality_name }}</p>
+                    <p><strong>{% trans "Klientas:" %}</strong> {{ client.first_name }} {{ client.last_name }}</p>
+                    <p>{{ phone_number }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="gallery-container">
+
+            <div class="tabs">
+                <a href="{% url 'modules.evaluator:similar_object_search' order_id pk %}" class="tab active">{% trans "Paieška" %}</a>
+                <a href="{% url 'modules.evaluator:similar_object_results' order_id pk %}" class="tab">{% trans "Paieškos rezultatai" %}</a>
+                <a href="{% url 'modules.evaluator:similar_object_list' order_id pk %}" class="tab">{% trans "Sąrašas" %}</a>
+            </div>
+            
+            <div class="header">
+                <h2>{% trans "Paieškos informacija" %}</h2>
+            </div>
+
+            <div class="gallery">
+                <form method="post" id="object-type-form">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="button" id="load-form-button" class="btn btn-primary">{% trans "Select" %}</button>
+                </form>
+                <div id="dynamic-form-container"></div>
+            </div>
+        </div>
+    </div>
+    <div class="navigation-buttons">
+        <a href="{% url 'modules.evaluator:edit_gallery' order_id pk %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
+    </div>
+</div>
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    document.getElementById('load-form-button').addEventListener('click', function(event) {
+        var form = document.getElementById('object-type-form');
+        var formData = new FormData(form);
+        var objectType = formData.get('object_type');
+        console.log(`Selected object type: ${objectType}`);  // Debugging statement
+        fetch(`/evaluator/evaluation_steps/{{ order_id }}/similar_object_search/{{ pk }}/?object_type=${objectType}`, {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('dynamic-form-container').innerHTML = data.form;
+        });
+    });
+
+    document.getElementById('dynamic-form-container').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var form = event.target;
+        var formData = new FormData(form);
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+        })
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('dynamic-form-container').innerHTML = html;
+        });
+    });
+</script>
+</body>
+</html>
+{% endblock %}

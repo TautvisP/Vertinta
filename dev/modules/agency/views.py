@@ -62,8 +62,10 @@ class EditAgencyAccountView(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['password_form'] = AgencyPasswordChangeForm(self.request.user)
-        return context
+        context['is_agency'] = self.request.user.groups.filter(name='Agency').exists()
 
+        return context
+    
 
 class EvaluatorListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = User
@@ -130,3 +132,8 @@ class CreateEvaluatorAccountView(LoginRequiredMixin, UserPassesTestMixin, Create
     def form_invalid(self, form):
         messages.error(self.request, "Vertintojo paskyra nebuvo sukurta. Pataisykite klaidas.")
         return super().form_invalid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_agency'] = self.request.user.groups.filter(name='Agency').exists()
+        return context

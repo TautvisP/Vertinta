@@ -1,6 +1,6 @@
-#This class is needed, because if i describe permissions in apps.py, because it will try to
+#This class is needed, because if I describe permissions in apps.py, because it will try to
 # perform database operations(like adding permissions and groups) before the Django app 
-# registry is fully initialized. By using a signal i ensure that the groups and permissions 
+# registry is fully initialized. By using a signal I ensure that the groups and permissions 
 # are created after all migrations have been applied
 
 from django.contrib.auth import get_user_model

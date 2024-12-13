@@ -279,7 +279,7 @@ class GazeboForm(forms.Form):
 
 class LandForm(forms.Form):
     land_purpose = forms.ChoiceField(
-        label=_('Sklypo paskirtis'), choices=PURPOSE_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+        label=_('Sklypo paskirtis'), choices=LAND_PURPOSE_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
     
     land_size = forms.IntegerField(
         label=_('Sklypo plotas, a'), min_value=1, error_messages=default_errors)
@@ -297,7 +297,7 @@ class LandForm(forms.Form):
 
 class HouseForm(forms.Form):
     land_purpose = forms.ChoiceField(
-        label=_('Sklypo paskirtis'), choices=PURPOSE_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+        label=_('Sklypo paskirtis'), choices=LAND_PURPOSE_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
     
     land_size = forms.IntegerField(
         label=_('Sklypo plotas, a'), min_value=1, error_messages=default_errors)

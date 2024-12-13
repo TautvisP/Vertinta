@@ -31,4 +31,16 @@ urlpatterns = [
     path('evaluation_steps/<int:order_id>/edit_gallery/<int:pk>/', EditObjectGalleryView.as_view(), name='edit_gallery'),
     path('evaluation_steps/<int:order_id>/image_annotation/<int:image_id>/', ImageAnnotationView.as_view(), name='image_annotation'),
     path('api/annotations/<int:annotation_id>/', AnnotationDetailView.as_view(), name='annotation_detail'),
+
+    #5
+    path('evaluation_steps/<int:order_id>/similar_object_search/<int:pk>/', SimilarObjectSearchView.as_view(), name='similar_object_search'),
+    path('evaluation_steps/<int:order_id>/similar_object_list/<int:pk>/', SimilarObjectListView.as_view(), name='similar_object_list'),
+    path('evaluation_steps/<int:order_id>/similar_object_results/<int:pk>/', SimilarObjectResultsView.as_view(), name='similar_object_results'),
+
+    path('evaluation_steps/<int:order_id>/edit_similar_object_data/<int:pk>/', EditSimilarObjectDataView.as_view(), name='edit_similar_object_data'),
+    path('evaluation_steps/<int:order_id>/edit_similar_object_decoration/<int:pk>/<int:similar_object_id>/', EditSimilarObjectDecorationView.as_view(), name='edit_similar_object_decoration'),
+    path('evaluation_steps/<int:order_id>/edit_similar_object_common_info/<int:pk>/<int:similar_object_id>/', EditSimilarObjectCommonInfoView.as_view(), name='edit_similar_object_common_info'),
+    path('evaluation_steps/<int:order_id>/edit_similar_object_utility_info/<int:pk>/<int:similar_object_id>/', EditSimilarObjectUtilityInfoView.as_view(), name='edit_similar_object_utility_info'),
+
+
 ]
