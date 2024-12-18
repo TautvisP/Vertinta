@@ -1,17 +1,17 @@
-<!-- dev/core/uauth/templates/uauth/user_edit.html -->
+{% load static %}
+{% include 'shared/header.html' %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profilio Redagavimas</title>
-    {% load static %}
+    <title>{% trans 'Profilio Redagavimas' %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    {% include 'shared/header.html' %}
     <div class="registration-container">
-        <h2>Profilio Redagavimas</h2>
+        <h2>{% trans 'Profilio Redagavimas' %}</h2>
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -49,7 +49,7 @@
                 {{ password_form.new_password2.label_tag }}
                 {{ password_form.new_password2 }}
             </div>
-            <button type="submit" class="btn-submit">Išsaugoti</button>
+            <button type="submit" class="btn-submit">{% trans 'Išsaugoti' %}</button>
         </form>
     </div>
 </body>

@@ -1,4 +1,3 @@
-<!-- dev/modules/evaluator/templates/object_gallery.html -->
 {% load static %}
 {% load i18n %}
 {% load custom_filters %}
@@ -17,7 +16,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Object Gallery</title>
+    <title>{% trans 'Objekto Galerija' %}</title>
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
     <link rel="stylesheet" href="{% static 'css/tabletStyle.css' %}">
 </head>
@@ -53,11 +52,11 @@
                         <form method="post" style="display:inline;">
                             {% csrf_token %}
                             <input type="hidden" name="image_id" value="{{ image.id }}">
+                            <button type="submit" name="delete_image" class="delete-buttons">{% trans "Ištrinti" %}</button>
                         </form>
                     </div>
                     <p class="image-name">{{ image.image.name }}</p>
                     <a href="{% url 'modules.evaluator:image_annotation' order_id=order.id image_id=image.id %}" class="btn btn-secondary">{% trans "Anotuoti" %}</a>
-                    <button type="submit" name="delete_image" class="delete-buttons">{% trans "Ištrinti" %}</button>
                 </div>
                 {% endfor %}
             </div>

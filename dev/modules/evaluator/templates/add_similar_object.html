@@ -1,4 +1,3 @@
-<!-- dev/modules/evaluator/templates/add_similar_object.html -->
 {% load static %}
 {% load i18n %}
 {% include 'shared/header.html' %}
@@ -7,17 +6,17 @@
     {% include 'shared/progress_bar.html' %}
 {% endif %}
 <div class="container">
-    <h2>{% trans "Add Similar Object" %}</h2>
+    <h2>{% trans "Pridėti Panašų Objektą" %}</h2>
     <form method="post">
         {% csrf_token %}
         {{ similar_object_form.as_p }}
-        <h3>{% trans "Utilities" %}</h3>
+        <h3>{% trans "Inžinerinė įranga" %}</h3>
         {{ utilities_form.as_p }}
-        <h3>{% trans "Common Info" %}</h3>
+        <h3>{% trans "Bendra Informacija" %}</h3>
         {{ common_info_form.as_p }}
-        <h3>{% trans "Decoration" %}</h3>
+        <h3>{% trans "Apdaila" %}</h3>
         {{ decoration_form.as_p }}
-        <button type="submit" class="btn btn-primary">{% trans "Add" %}</button>
+        <button type="submit" class="btn btn-primary">{% trans "Pridėti" %}</button>
     </form>
 </div>
 {% endblock %}

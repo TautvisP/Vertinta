@@ -1,4 +1,3 @@
-<!-- dev/modules/evaluator/templates/edit_RC_data.html -->
 {% load static %}
 {% load i18n %}
 {% load custom_filters %}
@@ -17,7 +16,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrų Centro Duomenys</title>
+    <title>{% trans 'Registrų Centro Duomenys' %}</title>
     <link rel="stylesheet" href="{% static 'css/tabletStyle.css' %}">
 </head>
 <body>
@@ -39,7 +38,7 @@
     </div>
     <form>
         {% csrf_token %}
-        <p>Šiuo metu duomenų neturime</p>
+        <p>{% trans 'Šiuo metu duomenų neturime' %}</p>
     </form>
     <div class="navigation-buttons">
         <a href="{% url 'modules.evaluator:edit_additional_buildings' order_id pk %}" class="btn btn-secondary">{% trans "Atgal" %}</a>

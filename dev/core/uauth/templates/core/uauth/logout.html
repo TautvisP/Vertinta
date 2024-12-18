@@ -1,9 +1,9 @@
-<!-- dev/core/uauth/templates/uauth/logout.html -->
+{% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Logout</title>
-    {% load static %}
+    <title>{% trans 'Atsijungti' %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
@@ -11,7 +11,7 @@
         <h2>Logout</h2>
         <form method="post" action="{% url 'core.uauth:logout' %}">
             {% csrf_token %}
-            <button type="submit">Logout</button>
+            <button type="submit">{% trans 'Atsijungti' %}</button>
         </form>
     </div>
 </body>

@@ -2,19 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager, Group
 from django.conf import settings
 from django.contrib.auth.models import Group, Permission
-from django.forms.forms import NON_FIELD_ERRORS
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import EmailMessage
-from django.db import IntegrityError
-from django.shortcuts import redirect
-from smtplib import SMTPException
 from django.core.exceptions import MultipleObjectsReturned
-from django.apps import apps
-from django.db.models import Count
-from django.shortcuts import render
-from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes
 from django.utils.translation import gettext as _
 
 USER_GROUPS = [
@@ -30,7 +18,7 @@ class UserManager(BaseUserManager):
     def _create_user(self, email, password, **extra_fields):
 
         if not email:
-            raise ValueError('The Email must be set')
+            raise ValueError(_('Nenustatytas el. pašto adresas'))
         
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
@@ -48,10 +36,10 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
 
         if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
+            raise ValueError(_('Superuser must have is_staff=True.'))
         
         if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
+            raise ValueError(_('Superuser must have is_superuser=True.'))
         
         return self._create_user(email, password, **extra_fields)
 
@@ -59,7 +47,7 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     username = None
     email = models.EmailField(verbose_name="email address", unique=True, error_messages={
-        'required': 'Šis laukas yra privalomas'
+        'required': _('Šis laukas yra privalomas')
     })
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
@@ -100,8 +88,7 @@ class User(AbstractUser):
         verbose_name="groups",
         blank=True,
         help_text=(
-            "The groups this user belongs to. A user will get all permissions "
-            "granted to each of their groups."
+            "The groups this user belongs to. A user will get all permissions granted to each of their groups."
         ),
         related_name="uauth_user_set",
         related_query_name="uauth_user",

@@ -1,31 +1,31 @@
-<!-- dev/modules/evaluator/templates/evaluation_steps.html -->
 {% include 'shared/header.html' %}
+{% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vertinimo Žingsniai</title>
-    {% load static %}
+    <title>{% trans 'Vertinimo Žingsniai' %}</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <div class="content-page">
         <div class="container">
-            <h2 class="title">Vertinimo žingsniai</h2>
+            <h2 class="title">{% trans 'Vertinimo Žingsniai' %}</h2>
 
             <div class="steps-list">
-                <a href="{% url 'modules.evaluator:edit_object_data' order.id order.object.id %}" class="step-button">1. Pildyti vertinamo objekto duomenis</a>
-                <a href="{% url 'modules.evaluator:edit_additional_buildings' order.id order.object.id %}" class="step-button">2. Vertinamo objekto papildomi statiniai</a>
-                <a href="{% url 'modules.evaluator:edit_RC_data' order.id order.object.id %}" class="step-button">3. Gauti duomenis iš Registrų centro</a>
-                <a href="{% url 'modules.evaluator:edit_gallery' order.id order.object.id %}" class="step-button">4. Vertinamo objekto nuotraukos</a>
-                <a href="{% url 'modules.evaluator:similar_object_search' order.id order.object.id %}" class="step-button">5. Panašių objektų paieška</a>
-                <button class="step-button">6. Dokumentų pridėjimas</button>
-                <button class="step-button">7. Netoliese esančios įstaigos</button>
-                <button class="step-button">8. Ataskaitos generavimas</button>
+                <a href="{% url 'modules.evaluator:edit_object_data' order.id order.object.id %}" class="step-button">{% trans '1. Pildyti vertinamo objekto duomenis' %}</a>
+                <a href="{% url 'modules.evaluator:edit_additional_buildings' order.id order.object.id %}" class="step-button">{% trans '2. Vertinamo objekto papildomi statiniai' %}</a>
+                <a href="{% url 'modules.evaluator:edit_RC_data' order.id order.object.id %}" class="step-button">{% trans '3. Gauti duomenis iš Registrų centro' %}</a>
+                <a href="{% url 'modules.evaluator:edit_gallery' order.id order.object.id %}" class="step-button">{% trans '4. Vertinamo objekto nuotraukos' %}</a>
+                <a href="{% url 'modules.evaluator:similar_object_search' order.id order.object.id %}" class="step-button">{% trans '5. Panašių objektų paieška' %}</a>
+                <button class="step-button">{% trans '6. Dokumentų pridėjimas' %}</button>
+                <button class="step-button">{% trans '7. Netoliese esančios įstaigos' %}</button>
+                <button class="step-button">{% trans '8. Ataskaitos generavimas' %}</button>
             </div>
 
-            <button class="start-button">Pradėti</button>
+            <button class="start-button">{% trans 'Pradėti' %}</button>
         </div>
     </div>
 </body>

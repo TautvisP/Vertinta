@@ -1,22 +1,23 @@
 {% load static %}
+{% include 'shared/header.html' %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vertinamo Objekto Papildomi Statiniai</title>
+    <title>{% trans 'Vertinamo Objekto Papildomi Statiniai' %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/additional_buildings.css' %}">
 </head>
 <body>
-    {% include 'shared/header.html' %}
     <div class="content-page">
         <div class="content">
             <div class='container-fluid col-10'>
-                <h2>2. Vertinamo Objekto Papildomi Statiniai</h2>
+                <h2>{% trans '2. Vertinamo Objekto Papildomi Statiniai' %}</h2>
 
                 <div class="form-section" id="garage-section">
-                    <h3>GARAŽAS</h3>
+                    <h3>{% trans 'GARAŽAS' %}</h3>
                     <form method="post">
                         {% csrf_token %}
                         {{ garage_formset.management_form }}
@@ -27,12 +28,12 @@
                                 </div>
                             {% endfor %}
                         </div>
-                        <button type="submit" name="add_garage">Pridėti garažą</button>
+                        <button type="submit" name="add_garage">{% trans 'Pridėti garažą' %}</button>
                     </form>
                 </div>
 
                 <div class="form-section" id="shed-section">
-                    <h3>SANDĖLIUKAS</h3>
+                    <h3>{% trans 'SANDĖLIUKAS' %}</h3>
                     <form method="post">
                         {% csrf_token %}
                         {{ shed_formset.management_form }}
@@ -43,12 +44,12 @@
                                 </div>
                             {% endfor %}
                         </div>
-                        <button type="submit" name="add_shed">Pridėti sandėliuką</button>
+                        <button type="submit" name="add_shed">{% trans 'Pridėti sandėliuką' %}</button>
                     </form>
                 </div>
 
                 <div class="form-section" id="gazebo-section">
-                    <h3>PAVĖSINĖ</h3>
+                    <h3>{% trans 'PAVĖSINĖ' %}</h3>
                     <form method="post">
                         {% csrf_token %}
                         {{ gazebo_formset.management_form }}
@@ -59,7 +60,7 @@
                                 </div>
                             {% endfor %}
                         </div>
-                        <button type="submit" name="add_gazebo">Pridėti pavėsinę</button>
+                        <button type="submit" name="add_gazebo">{% trans 'Pridėti pavėsinę' %}</button>
                     </form>
                 </div>
                 

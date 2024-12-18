@@ -11,7 +11,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans "Search for Similar Objects" %}</title>
+    <title>{% trans "Panašių objektų paieška" %}</title>
     <link rel="stylesheet" href="{% static 'css/tabletStyle.css' %}">
 </head>
 <body>
@@ -54,17 +54,18 @@
                         </div>
                         <p>{{ similar_object.price }} EUR</p>
                         <div class="request-actions">
-                            <a href="{% url 'modules.evaluator:edit_similar_object_data' order_id=order_id pk=pk %}?edit={{ similar_object.id }}" class="btn btn-primary">{% trans "Edit" %}</a>
+                            <a href="{% url 'modules.evaluator:edit_similar_object_data' order_id=order_id pk=pk %}?edit={{ similar_object.id }}" class="btn btn-primary">{% trans "Redaguoti" %}</a>
                             <form action="{% url 'modules.evaluator:similar_object_list' order_id=order_id pk=pk %}" method="POST" style="display:inline;">
                                 {% csrf_token %}
                                 <input type="hidden" name="similar_object_id" value="{{ similar_object.id }}">
-                                <button type="submit" class="btn btn-danger">{% trans "Delete" %}</button>
+                                <button type="submit" class="btn btn-danger">{% trans "Ištrinti" %}</button>
                             </form>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
             </div>
+            <a href="{% url 'modules.evaluator:edit_similar_object_data' order_id pk %}" class="btn btn-primary">{% trans "Pridėti Panašų Objektą" %}</a>
         </div>
     </div>
     <div class="navigation-buttons">

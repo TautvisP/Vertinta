@@ -1,31 +1,31 @@
-<!-- dev/modules/orders/templates/evaluator_order_list.html -->
 {% load static %}
+{% include 'shared/header.html' %}
+{% load i18n %}
 {% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vertintojo užsakymai</title>
+    <title>{% trans 'Vertintojo užsakymai' %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    {% include 'shared/header.html' %}
     <div class="content-page">
         <div class="container">
-            <h2 class="title">Vertintojo užsakymai</h2>
+            <h2 class="title">{% trans 'Vertintojo užsakymai' %}</h2>
 
             <!-- Filter Section -->
             <form method="GET" action="{% url 'modules.orders:evaluator_order_list' %}">
                 <div class="filters">
                     <select class="dropdown" name="municipality">
-                        <option value="">Miestas</option>
+                        <option value="">{% trans 'Miestas' %}</option>
                         {% for key, value in municipality_choices %}
                         <option value="{{ key }}" {% if key|stringformat:"d" == request.GET.municipality %}selected{% endif %}>{{ value }}</option>
                         {% endfor %}
                     </select>
-                    <button type="submit" class="filter-button">Filtruoti</button>
-                    <a href="{% url 'modules.orders:evaluator_order_list' %}" class="clear-button">Išvalyti</a>
+                    <button type="submit" class="filter-button">{% trans 'Filtruoti' %}</button>
+                    <a href="{% url 'modules.orders:evaluator_order_list' %}" class="clear-button">{% trans 'Išvalyti' %}</a>
                 </div>
             </form>
 
@@ -43,7 +43,7 @@
                     </div>
                     <div class="request-actions">
                         <button class="icon-button"><i class="icon icon-document"></i></button>
-                        <a href="{% url 'modules.evaluator:evaluation_steps' order.id %}" class="evaluate-button">Vertinti</a>
+                        <a href="{% url 'modules.evaluator:evaluation_steps' order.id %}" class="evaluate-button">{% trans 'Vertinti' %}</a>
                         <button class="icon-button"><i class="icon icon-image"></i></button>
                         <button class="icon-button"><i class="icon icon-trash"></i></button>
                     </div>

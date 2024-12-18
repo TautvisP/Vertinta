@@ -1,8 +1,6 @@
 from django.db import models
-from .enums import *
+from .enums import OBJECT_TYPE_CHOICES, IMAGE_CHOICES, STATUS_CHOICES
 from django.core.exceptions import MultipleObjectsReturned
-from django.dispatch import receiver
-from django.db.models.signals import post_save
 from django.utils import timezone
 from core.uauth.models import User
 

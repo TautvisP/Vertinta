@@ -2,27 +2,27 @@ from django import forms
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm, UserCreationForm
 from core.uauth.models import User, UserMeta
 from modules.orders.enums import MUNICIPALITY_CHOICES
-
+from django.utils.translation import gettext as _
 class AgencyEditForm(UserChangeForm):
     agency_name = forms.CharField(
-        label='Agentūros pavadinimas', 
+        label=_('Agentūros pavadinimas'), 
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     main_city = forms.ChoiceField(
-        label='Pagrindinis miestas', 
+        label=_('Pagrindinis miestas'), 
         choices=MUNICIPALITY_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
     email = forms.EmailField(
-        label='El. paštas', 
+        label=_('El. paštas'), 
         widget=forms.EmailInput(attrs={'class': 'form-control'})
     )
     phone_num = forms.CharField(
-        label='Telefono numeris', 
+        label=_('Telefono numeris'), 
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     evaluation_starting_price = forms.DecimalField(
-        label='Vertinimo pradinė kaina', 
+        label=_('Vertinimo pradinė kaina'), 
         widget=forms.NumberInput(attrs={'class': 'form-control'})
     )
 
@@ -53,38 +53,38 @@ class AgencyEditForm(UserChangeForm):
 
 class AgencyPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(
-        label='Senas slaptažodis', 
+        label=_('Senas slaptažodis'), 
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
     new_password1 = forms.CharField(
-        label='Naujas slaptažodis', 
+        label=_('Naujas slaptažodis'), 
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
     new_password2 = forms.CharField(
-        label='Pakartokite naują slaptažodį', 
+        label=_('Pakartokite naują slaptažodį'), 
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
 
 
 class EvaluatorCreationForm(UserCreationForm):
     first_name = forms.CharField(
-        label='Vardas', 
+        label=_('Vardas'), 
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     last_name = forms.CharField(
-        label='Pavardė', 
+        label=_('Pavardė'), 
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
     email = forms.EmailField(
-        label='El. paštas', 
+        label=_('El. paštas'), 
         widget=forms.EmailInput(attrs={'class': 'form-control'})
     )
     password1 = forms.CharField(
-        label='Slaptažodis', 
+        label=_('Slaptažodis'), 
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
     password2 = forms.CharField(
-        label='Pakartokite slaptažodį', 
+        label=_('Pakartokite slaptažodį'), 
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
 

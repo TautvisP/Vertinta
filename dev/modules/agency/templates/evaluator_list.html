@@ -1,29 +1,29 @@
-<!-- dev/modules/agency/templates/agency/evaluator_list.html -->
+{% load static %}
 {% include 'shared/header.html' %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agentūros Vertintojai</title>
-    {% load static %}
+    <title>{% trans 'Agentūros Vertintojai' %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <div class="content-page">
         <div class="content">
             <div class='container-fluid col-10'>
-                <h2>Agentūros vertintojai</h2>
-                <a href="{% url 'modules.agency:create_evaluator_account' %}" class="btn btn-primary">Sukurti Vertintojo Paskyrą</a>
+                <h2>{% trans 'Agentūros Vertintojai' %}</h2>
+                <a href="{% url 'modules.agency:create_evaluator_account' %}" class="btn btn-primary">{% trans 'Sukurti Vertintojo Paskyrą' %}</a>
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Vardas</th>
-                            <th>Pavardė</th>
-                            <th>El. Paštas</th>
-                            <th>Tel. Nr.</th>
-                            <th>Prisijungimo Data</th>
-                            <th>Veiksmai</th>
+                            <th>{% trans 'Vardas' %}</th>
+                            <th>{% trans 'Pavardė' %}</th>
+                            <th>{% trans 'El. Paštas' %}</th>
+                            <th>{% trans 'Tel. Nr.' %} </th>
+                            <th>{% trans 'Prisijungimo Data' %}</th>
+                            <th>{% trans 'Veiksmais' %}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,7 +35,7 @@
                             <td>{{ evaluator.phone_num }}</td>
                             <td>{{ evaluator.date_joined }}</td>
                             <td>
-                                <a href="{% url 'modules.evaluator:edit_evaluator_account' evaluator.id %}" class="btn btn-primary">Redaguoti Profilį</a>
+                                <a href="{% url 'modules.evaluator:edit_evaluator_account' evaluator.id %}" class="btn btn-primary">{% trans 'Redaguoti Profilį' %}</a>
                             </td>
                         </tr>
                         {% endfor %}

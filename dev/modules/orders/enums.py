@@ -1,5 +1,4 @@
 from django.utils.translation import gettext as _
-from enum import Enum
 
 class ObjectTypes:
     LAND_TYPE = _('Sklypas')

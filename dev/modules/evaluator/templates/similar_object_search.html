@@ -1,4 +1,3 @@
-<!-- dev/modules/orders/templates/orders/similar_object_search.html -->
 {% load static %}
 {% load i18n %}
 {% include 'shared/header.html' %}
@@ -12,7 +11,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans "Search for Similar Objects" %}</title>
+    <title>{% trans "Ieškoti panašių objektų" %}</title>
     <link rel="stylesheet" href="{% static 'css/tabletStyle.css' %}">
 </head>
 <body>
@@ -49,7 +48,7 @@
                 <form method="post" id="object-type-form">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <button type="button" id="load-form-button" class="btn btn-primary">{% trans "Select" %}</button>
+                    <button type="button" id="load-form-button" class="btn btn-primary">{% trans "Pasirinkti" %}</button>
                 </form>
                 <div id="dynamic-form-container"></div>
             </div>

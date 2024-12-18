@@ -1,16 +1,16 @@
-<!-- dev/core/uauth/templates/uauth/evaluator_register.html -->
+{% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vertintojo Registracija</title>
-    {% load static %}
+    <title>{% trans 'Vertintojo Registracija' %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <div class="registration-container">
-        <h2>Vertintojo registracija</h2>
+        <h2>{% trans 'Vertintojo registracija' %}</h2>
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -40,9 +40,9 @@
                 {{ form.password2.label_tag }}
                 {{ form.password2 }}
             </div>
-            <button type="submit" class="btn-submit">Registruotis</button>
+            <button type="submit" class="btn-submit">{% trans 'Registruotis' %}</button>
         </form>
-        <p>Jau turite paskyrą? <a href="{% url 'core.uauth:login' %}">Prisijunkite</a></p>
+        <p>Jau turite paskyrą? <a href="{% url 'core.uauth:login' %}">{% trans 'Prisijunkite' %}</a></p>
     </div>
 </body>
 </html>

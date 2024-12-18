@@ -1,22 +1,22 @@
-<!-- dev/modules/orders/templates/object_select.html -->
 {% load static %}
+{% include 'shared/header.html' %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Objekto pasirinkimas</title>
+    <title>{% trans 'Objekto pasirinkimas' %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    {% include 'shared/header.html' %}
     <div class="content-page">
         {% block content %}
         <div class="content">
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box">
-                        <h1><b class="landing-page-title">ĮSIVERTINKITE SAVO NT</b></h1>
+                        <h1><b class="landing-page-title">{% trans 'ĮSIVERTINKITE SAVO NT' %}</b></h1>
                     </div>
                 </div>
             </div>

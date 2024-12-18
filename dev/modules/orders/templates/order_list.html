@@ -1,30 +1,30 @@
-<!-- dev/modules/orders/templates/order_list.html -->
 {% load static %}
 {% load custom_filters %}
+{% include 'shared/header.html' %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Užsakymų sąrašas</title>
+    <title>{% trans 'Užsakymų sąrašas' %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    {% include 'shared/header.html' %}
     <div class="content-page">
         {% block content %}
-        <h1>Užsakymų sąrašas</h1>
+        <h1>{% trans 'Užsakymų sąrašas' %}</h1>
         <table>
             <thead>
                 <tr>
-                    <th>Objekto tipas</th>
-                    <th>Gatvė</th>
-                    <th>Namo Nr.</th>
-                    <th>Rajonas</th>
-                    <th>Paskelbimo data</th>
-                    <th>Kliento vardas</th>
-                    <th>Užsakymo statusas</th>
-                    <th>Veiksmai</th>
+                    <th>{% trans 'Objekto tipas' %}</th>
+                    <th>{% trans 'Gatvė' %}</th>
+                    <th>{% trans 'Namo Nr.' %}</th>
+                    <th>{% trans 'Rajonas' %}</th>
+                    <th>{% trans 'Paskelbimo data' %}</th>
+                    <th>{% trans 'Kliento vardas' %}</th>
+                    <th>{% trans 'Užsakymo statusas' %}</th>
+                    <th>{% trans 'Veiksmai' %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,15 +38,15 @@
                     <td>{{ order.client.get_full_name }}</td>
                     <td>{{ order.status }}</td>
                     <td>
-                        <a href="{% url 'modules.orders:object_update' order.object.id %}" class="btn btn-primary">Redaguoti Objektą</a>
+                        <a href="{% url 'modules.orders:object_update' order.object.id %}" class="btn btn-primary">{% trans 'Redaguoti Objektą' %}</a>
                         {% if order.object.has_additional_buildings %}
-                        <a href="{% url 'modules.orders:edit_additional_buildings' order.object.id %}" class="btn btn-primary">Redaguoti Statinius</a>
+                        <a href="{% url 'modules.orders:edit_additional_buildings' order.object.id %}" class="btn btn-primary">{% trans 'Redaguoti Statinius' %}</a>
                         {% else %}
-                        <span class="btn btn-secondary disabled">Nėra Pastatų</span>
+                        <span class="btn btn-secondary disabled">{% trans 'Nėra Pastatų' %}</span>
                         {% endif %}
                         <form action="{% url 'modules.orders:delete_order' order.id %}" method="post" style="display:inline;">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Ištrinti</button>
+                            <button type="submit" class="btn btn-danger">{% trans 'Ištrinti' %}</button>
                         </form>
                     </td>
                 </tr>

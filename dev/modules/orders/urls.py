@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import *
+from .views import LandingView, FirsStepView, AdditionalBuildingsView, OrderListView, EvaluatorOrderListView, AgencySelectionView, EditAdditionalBuildingsView, OrderDeleteView
 
 app_name = 'modules.orders'
 

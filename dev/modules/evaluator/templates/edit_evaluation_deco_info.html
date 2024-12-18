@@ -1,4 +1,3 @@
-<!-- dev/modules/evaluator/templates/edit_evaluation_deco_info.html -->
 {% load static %}
 {% load i18n %}
 {% include 'shared/header.html' %}
@@ -16,7 +15,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2. Redaguoti Dekoracijos Informaciją</title>
+    <title>{% trans '2. Redaguoti Dekoracijos Informaciją' %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
@@ -51,7 +50,7 @@
                     </div>
                 </div>
                 {% endif %}
-                <button type="submit" class="btn btn-primary">Išsaugoti</button>
+                <button type="submit" class="btn btn-primary">{% trans 'Išsaugoti' %}</button>
             </form>
         <div class="navigation-buttons">
             <a href="{% if is_similar_object %}{% url 'modules.evaluator:edit_similar_object_data' order_id pk %}{% else %}{% url 'modules.evaluator:edit_object_data' order_id pk %}{% endif %}" class="btn btn-secondary">{% trans "Atgal" %}</a>

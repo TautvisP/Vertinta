@@ -47,3 +47,5 @@ Need to check with mentor, but possibly would be a good idea to seperate evaluat
 In AgencySelectionView the appraiser_with_least_orders function doesnt seem to be working, possibly the evaluator order fields are not saved in the database.
 
 Make constant context['total_steps'] = 8
+
+In gallery different images have different sizes, also need to test what would happen if i upload an image named the same as an already existing one. Also image deletion doesnt seem to work. Also need to fix styling.

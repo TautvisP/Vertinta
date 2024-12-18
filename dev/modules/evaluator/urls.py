@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import *
+from .views import EditEvaluatorAccountView, EvaluationStepsView, EditObjectDataView, EditEvaluationAndDecoInfo, EditCommonInfo, EditUtilityInfo, EvaluatorEditAdditionalBuildings, RCDataEditView, EditObjectGalleryView, ImageAnnotationView, AnnotationDetailView, SimilarObjectSearchView, SimilarObjectListView, SimilarObjectResultsView, EditSimilarObjectDataView, EditSimilarObjectDecorationView, EditSimilarObjectCommonInfoView, EditSimilarObjectUtilityInfoView
 
 app_name = 'modules.evaluator'
 
@@ -37,6 +37,7 @@ urlpatterns = [
     path('evaluation_steps/<int:order_id>/similar_object_list/<int:pk>/', SimilarObjectListView.as_view(), name='similar_object_list'),
     path('evaluation_steps/<int:order_id>/similar_object_results/<int:pk>/', SimilarObjectResultsView.as_view(), name='similar_object_results'),
 
+    #Similar object addition and editing
     path('evaluation_steps/<int:order_id>/edit_similar_object_data/<int:pk>/', EditSimilarObjectDataView.as_view(), name='edit_similar_object_data'),
     path('evaluation_steps/<int:order_id>/edit_similar_object_decoration/<int:pk>/<int:similar_object_id>/', EditSimilarObjectDecorationView.as_view(), name='edit_similar_object_decoration'),
     path('evaluation_steps/<int:order_id>/edit_similar_object_common_info/<int:pk>/<int:similar_object_id>/', EditSimilarObjectCommonInfoView.as_view(), name='edit_similar_object_common_info'),

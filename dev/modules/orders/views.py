@@ -1,18 +1,16 @@
-from django.conf import settings
 from django.shortcuts import render, redirect
 from modules.orders.enums import ObjectImages
 from django.http import HttpResponseRedirect
-from django.views.generic import TemplateView, CreateView, ListView, FormView, View, UpdateView
+from django.views.generic import TemplateView, ListView, View, UpdateView
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.forms import formset_factory
-from modules.orders.enums import *
-from modules.orders.models import *
-from modules.orders.forms import *
+from modules.orders.enums import MUNICIPALITY_CHOICES
+from modules.orders.models import Order, Object, ObjectMeta
+from modules.orders.forms import HouseForm, LandForm, ApartamentForm, CottageForm, ObjectLocationForm, DecorationForm, UtilityForm, CommonInformationForm, GarageForm, ShedForm, GazeboForm
 from core.uauth.models import User, UserMeta
 from django.db.models import Count, Q
-from django.contrib import messages
-from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from shared.mixins.mixins import UserRoleContextMixin
 
 def index(request):
@@ -23,12 +21,18 @@ def test_view(request):
 
 
 class LandingView(LoginRequiredMixin, UserRoleContextMixin, ListView):
+    """
+    Displays a list of object images for the landing page.
+    Requires the user to be logged in and have the appropriate role.
+    """
+
     template_name = "object_select.html"
     login_url = 'core.uauth:login'
     redirect_field_name = 'next'
 
     def get_queryset(self):
         return ObjectImages
+
 
     def get_selected_obj_type(self, request):
 
@@ -40,10 +44,12 @@ class LandingView(LoginRequiredMixin, UserRoleContextMixin, ListView):
         
         return None
 
+
     def post(self, request, **kwargs):
         selected_obj_type = request.POST.get('object_type')
         request.session['selected_obj_type'] = selected_obj_type
         return HttpResponseRedirect(reverse_lazy('modules.orders:order_first_step'))
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -51,27 +57,53 @@ class LandingView(LoginRequiredMixin, UserRoleContextMixin, ListView):
         return context
 
 
+
+
 #possibly get_context_data POST part is repetative with the post function, could be refactored
 class FirsStepView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+    """
+    Handles the first step of the order creation process.
+    Includes forms for location, decoration, utility, and common information.
+    """
+
+    model = Order
+    model_object = Object
     template_name = "order_first_step.html"
+
+    form_house = HouseForm
+    form_land = LandForm
+    form_apartament = ApartamentForm
+    form_cottage = CottageForm
+    form_location = ObjectLocationForm
+    form_decoration = DecorationForm
+    form_utility = UtilityForm
+    form_common_info = CommonInformationForm
+
 
     def get_queryset(self):
         user = self.request.user
 
         if user.groups.filter(name='Agency').exists():
-            return Order.objects.filter(agency=user)
+            return self.model.objects.filter(agency=user)
         
-        return Order.objects.none()
+        return self.model.objects.none()
+
 
     def get_form_classes(self):
         return {
-            'location_form': ObjectLocationForm,
-            'decoration_form': DecorationForm,
-            'utility_form': UtilityForm,
-            'common_info_form': CommonInformationForm,
+            'location_form': self.form_location,
+            'decoration_form': self.form_decoration,
+            'utility_form': self.form_utility,
+            'common_info_form': self.form_common_info,
         }
 
+
     def get_context_data(self, **kwargs):
+        """
+        Prepares the context data for rendering the template.
+        Initializes the forms based on the selected object type.
+        """
+
         context = super().get_context_data(**kwargs)
         form_classes = self.get_form_classes()
         selected_obj_type = self.request.session.get('selected_obj_type')
@@ -84,20 +116,24 @@ class FirsStepView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
                 'common_info_form': form_classes['common_info_form'](self.request.POST),
             })
 
-            if selected_obj_type == 'Namas':
-                context['additional_form'] = HouseForm(self.request.POST)
+            match selected_obj_type:
+                case 'Namas':
+                    context['additional_form'] = self.form_house(self.request.POST)
 
-            elif selected_obj_type == 'Sklypas':
-                context['additional_form'] = LandForm(self.request.POST)
+                case 'Sklypas':
+                    context['additional_form'] = self.form_land(self.request.POST)
 
-            elif selected_obj_type == 'Butas':
-                context['additional_form'] = ApartamentForm(self.request.POST)
+                case 'Butas':
+                    context['additional_form'] = self.form_apartament(self.request.POST)
 
-            elif selected_obj_type == 'Kotedžas':
-                context['additional_form'] = CottageForm(self.request.POST)
+                case 'Kotedžas':
+                    context['additional_form'] = self.form_cottage(self.request.POST)
 
-            elif selected_obj_type == 'Sodas':
-                context['additional_form'] = HouseForm(self.request.POST)
+                case 'Sodas':
+                    context['additional_form'] = self.form_house(self.request.POST)
+
+                case _:
+                    context['additional_form'] = None
 
         else:
             context.update({
@@ -107,25 +143,35 @@ class FirsStepView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
                 'common_info_form': form_classes['common_info_form'](),
             })
 
-            if selected_obj_type == 'Namas':
-                context['additional_form'] = HouseForm()
+            match selected_obj_type:
+                case 'Namas':
+                    context['additional_form'] = self.form_house()
 
-            elif selected_obj_type == 'Sklypas':
-                context['additional_form'] = LandForm()
+                case 'Sklypas':
+                    context['additional_form'] = self.form_land()
 
-            elif selected_obj_type == 'Butas':
-                context['additional_form'] = ApartamentForm()
+                case 'Butas':
+                    context['additional_form'] = self.form_apartament()
 
-            elif selected_obj_type == 'Kotedžas':
-                context['additional_form'] = CottageForm()
+                case 'Kotedžas':
+                    context['additional_form'] = self.form_cottage()
 
-            elif selected_obj_type == 'Sodas':
-                context['additional_form'] = HouseForm()
+                case 'Sodas':
+                    context['additional_form'] = self.form_house()
+
+                case _:
+                    context['additional_form'] = None
 
         context['selected_obj_type'] = selected_obj_type
         return context
 
+
     def post(self, request, *args, **kwargs):
+        """
+        Handles the POST request to create a new order.
+        Validates the forms and saves the data if valid.
+        """
+        
         form_classes = self.get_form_classes()
         location_form = form_classes['location_form'](request.POST)
         decoration_form = form_classes['decoration_form'](request.POST)
@@ -133,28 +179,29 @@ class FirsStepView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
         common_info_form = form_classes['common_info_form'](request.POST)
         selected_obj_type = self.request.session.get('selected_obj_type')
 
-        if selected_obj_type == 'Namas':
-            additional_form = HouseForm(request.POST)
+        match selected_obj_type:
+            case 'Namas':
+                additional_form = self.form_house(request.POST)
 
-        elif selected_obj_type == 'Sklypas':
-            additional_form = LandForm(request.POST)
+            case 'Sklypas':
+                additional_form = self.form_land(request.POST)
 
-        elif selected_obj_type == 'Butas':
-            additional_form = ApartamentForm(request.POST)
+            case 'Butas':
+                additional_form = self.form_apartament(request.POST)
 
-        elif selected_obj_type == 'Kotedžas':
-            additional_form = CottageForm(request.POST)
+            case 'Kotedžas':
+                additional_form = self.form_cottage(request.POST)
 
-        elif selected_obj_type == 'Sodas':
-            additional_form = HouseForm(request.POST)
+            case 'Sodas':
+                additional_form = self.form_house(request.POST)
 
-        else:
-            additional_form = None
+            case _:
+                additional_form = None
 
         if location_form.is_valid() and decoration_form.is_valid() and utility_form.is_valid() and common_info_form.is_valid() and (additional_form is None or additional_form.is_valid()):
             
             try:
-                obj = Object.objects.create(object_type=selected_obj_type)
+                obj = self.model_object.objects.create(object_type=selected_obj_type)
                 request.session['main_object_id'] = obj.id
                 print("Object created with ID:", obj.id)
 
@@ -176,7 +223,7 @@ class FirsStepView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
                 if not default_agency:
                     raise Exception("No active agency found")
                 
-                Order.objects.create(
+                self.model.objects.create(
                     client=request.user,
                     agency=default_agency,
                     object=obj,
@@ -203,10 +250,11 @@ class FirsStepView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
 
         return self.form_invalid(location_form, decoration_form, utility_form, common_info_form, additional_form)
 
-    def save_form_data(self, obj, cleaned_data):
 
+    def save_form_data(self, obj, cleaned_data):
         for key, value in cleaned_data.items():
             ObjectMeta.objects.create(ev_object=obj, meta_key=key, meta_value=value)
+
 
     def form_invalid(self, location_form, decoration_form, utility_form, common_info_form, additional_form=None):
         context = self.get_context_data()
@@ -223,9 +271,16 @@ class FirsStepView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
         return self.render_to_response(context)
 
 
+
+
 class AdditionalBuildingsView(TemplateView):
+    """
+    Handles the additional buildings step in the order creation process.
+    Includes formsets for garage, shed, and gazebo data.
+    """
+        
+    model = Object
     template_name = 'additional_buildings.html'
-    #success_url = 'modules.orders:additional_buildings'
     success_url = 'modules.orders:select_agency'
 
     def get_formsets(self):
@@ -238,6 +293,7 @@ class AdditionalBuildingsView(TemplateView):
             'shed_formset': ShedFormSet,
             'gazebo_formset': GazeboFormSet,
         }
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -259,6 +315,7 @@ class AdditionalBuildingsView(TemplateView):
 
         return context
 
+
     def post(self, request, *args, **kwargs):
         formsets = self.get_formsets()
         garage_formset = formsets['garage_formset'](request.POST, prefix='garages')
@@ -267,7 +324,7 @@ class AdditionalBuildingsView(TemplateView):
 
         if garage_formset.is_valid() or shed_formset.is_valid() or gazebo_formset.is_valid():
             obj_id = request.session.get('main_object_id')
-            obj = Object.objects.get(id=obj_id)
+            obj = self.model.objects.get(id=obj_id)
 
             for garage_form in garage_formset:
                 self.save_form_data(obj, garage_form.cleaned_data)
@@ -282,10 +339,12 @@ class AdditionalBuildingsView(TemplateView):
         
         return self.form_invalid(garage_formset, shed_formset, gazebo_formset)
     
+
     def save_form_data(self, obj, cleaned_data):
 
         for key, value in cleaned_data.items():
-            Object.save_meta(obj, key, value)
+            self.model.save_meta(obj, key, value)
+
 
     def form_invalid(self, garage_formset, shed_formset, gazebo_formset):
         context = self.get_context_data()
@@ -298,7 +357,14 @@ class AdditionalBuildingsView(TemplateView):
         return self.render_to_response(context)
     
 
+    
+
 class OrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView):
+    """
+    Displays a list of orders for the current user.
+    Requires the user to be logged in and have the appropriate role.
+    """
+        
     model = Order
     template_name = "order_list.html"
     context_object_name = "orders"
@@ -309,12 +375,17 @@ class OrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView):
         user = self.request.user
 
         if user.groups.filter(name='Agency').exists():
-            return Order.objects.filter(agency=user)
+            return self.model.objects.filter(agency=user)
         
-        return Order.objects.filter(client=user)
+        return self.model.objects.filter(client=user)
 
 
 class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView):
+    """
+    Displays a list of orders for the evaluator.
+    Requires the user to be logged in and have the appropriate role.
+    """
+
     model = Order
     template_name = "evaluator_order_list.html"
     context_object_name = "orders"
@@ -323,7 +394,7 @@ class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView)
 
     def get_queryset(self):
         user = self.request.user
-        queryset = Order.objects.filter(evaluator=user)
+        queryset = self.model.objects.filter(evaluator=user)
 
         municipality = self.request.GET.get('municipality')
         if municipality:
@@ -331,13 +402,21 @@ class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView)
 
         return queryset
 
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['municipality_choices'] = MUNICIPALITY_CHOICES
         return context
     
 
+
+
 class OrderDeleteView(View):
+    """
+    Handles the deletion of an order.
+    Deletes the associated object and its metadata.
+    """
+    
     def post(self, request, *args, **kwargs):
         order_id = kwargs.get('pk')
         order = Order.objects.get(id=order_id)
@@ -349,11 +428,29 @@ class OrderDeleteView(View):
 
         return HttpResponseRedirect(reverse_lazy('modules.orders:order_list'))
 
+
+
 class ObjectUpdateView(UpdateView):
+    """
+    Handles the updating of object data.
+    Includes forms for location, decoration, utility, and common information.
+    """
+        
     model = Object
     template_name = "user_edit_order.html"
     success_url = reverse_lazy('modules.orders:order_list')
     fields = []
+
+    form_object_location = ObjectLocationForm
+    form_decoration = DecorationForm
+    form_utility = UtilityForm
+    form_common_info = CommonInformationForm
+    form_house = HouseForm
+    form_land = LandForm
+    form_apartament = ApartamentForm
+    form_cottage = CottageForm
+
+
 
     def get_initial_data(self, obj):
         initial_data = {}
@@ -364,58 +461,72 @@ class ObjectUpdateView(UpdateView):
 
         return initial_data
 
+
     def get_context_data(self, **kwargs):
+        """
+        Prepares the context data for rendering the template.
+        Initializes the forms based on the object's metadata.
+        """
+                
         context = super().get_context_data(**kwargs)
         obj = self.get_object()
         initial_data = self.get_initial_data(obj)
-        context['location_form'] = ObjectLocationForm(initial=initial_data)
-        context['decoration_form'] = DecorationForm(initial=initial_data)
-        context['utility_form'] = UtilityForm(initial=initial_data)
-        context['common_info_form'] = CommonInformationForm(initial=initial_data)
+        context['location_form'] = self.form_object_location(initial=initial_data)
+        context['decoration_form'] = self.form_decoration(initial=initial_data)
+        context['utility_form'] = self.form_utility(initial=initial_data)
+        context['common_info_form'] = self.form_common_info(initial=initial_data)
 
-        if obj.object_type == 'Namas':
-            context['additional_form'] = HouseForm(initial=initial_data)
+        match obj.object_type:
+            case 'Namas':
+                context['additional_form'] = self.form_house(initial=initial_data)
 
-        elif obj.object_type == 'Sklypas':
-            context['additional_form'] = LandForm(initial=initial_data)
+            case 'Sklypas':
+                context['additional_form'] = self.form_land(initial=initial_data)
 
-        elif obj.object_type == 'Butas':
-            context['additional_form'] = ApartamentForm(initial=initial_data)
+            case 'Butas':
+                context['additional_form'] = self.form_apartament(initial=initial_data)
 
-        elif obj.object_type == 'Kotedžas':
-            context['additional_form'] = CottageForm(initial=initial_data)
+            case 'Kotedžas':
+                context['additional_form'] = self.form_cottage(initial=initial_data)
 
-        elif obj.object_type == 'Sodas':
-            context['additional_form'] = HouseForm(initial=initial_data)
+            case 'Sodas':
+                context['additional_form'] = self.form_house(initial=initial_data)
 
         return context
 
+
     def post(self, request, *args, **kwargs):
+        """
+        Handles the POST request to update the object data.
+        Validates the forms and saves the data if valid.
+        """
+                
         obj = self.get_object()
         self.object = obj
         initial_data = self.get_initial_data(obj)
-        location_form = ObjectLocationForm(request.POST, initial=initial_data)
-        decoration_form = DecorationForm(request.POST, initial=initial_data)
-        utility_form = UtilityForm(request.POST, initial=initial_data)
-        common_info_form = CommonInformationForm(request.POST, initial=initial_data)
+        location_form = self.form_object_location(request.POST, initial=initial_data)
+        decoration_form = self.form_decoration(request.POST, initial=initial_data)
+        utility_form = self.form_utility(request.POST, initial=initial_data)
+        common_info_form = self.form_common_info(request.POST, initial=initial_data)
 
-        if obj.object_type == 'Namas':
-            additional_form = HouseForm(request.POST, initial=initial_data)
+        match obj.object_type:
+            case 'Namas':
+                additional_form = self.form_house(request.POST, initial=initial_data)
 
-        elif obj.object_type == 'Sklypas':
-            additional_form = LandForm(request.POST, initial=initial_data)
+            case 'Sklypas':
+                additional_form = self.form_land(request.POST, initial=initial_data)
 
-        elif obj.object_type == 'Butas':
-            additional_form = ApartamentForm(request.POST, initial=initial_data)
+            case 'Butas':
+                additional_form = self.form_apartament(request.POST, initial=initial_data)
 
-        elif obj.object_type == 'Kotedžas':
-            additional_form = CottageForm(request.POST, initial=initial_data)
+            case 'Kotedžas':
+                additional_form = self.form_cottage(request.POST, initial=initial_data)
 
-        elif obj.object_type == 'Sodas':
-            additional_form = HouseForm(request.POST, initial=initial_data)
+            case 'Sodas':
+                additional_form = self.form_house(request.POST, initial=initial_data)
 
-        else:
-            additional_form = None
+            case _:
+                additional_form = None
 
         if location_form.is_valid() and decoration_form.is_valid() and utility_form.is_valid() and common_info_form.is_valid() and (additional_form is None or additional_form.is_valid()):
             self.save_form_data(obj, location_form.cleaned_data)
@@ -429,6 +540,7 @@ class ObjectUpdateView(UpdateView):
             return redirect(self.success_url)
         
         return self.form_invalid(location_form, decoration_form, utility_form, common_info_form, additional_form)
+
 
     def form_invalid(self, location_form, decoration_form, utility_form, common_info_form, additional_form=None, garage_form=None, shed_form=None, gazebo_form=None):
         context = self.get_context_data()
@@ -446,35 +558,49 @@ class ObjectUpdateView(UpdateView):
 
     def save_form_data(self, obj, cleaned_data):
         for key, value in cleaned_data.items():
-            Object.save_meta(obj, key, value)
+            self.model.save_meta(obj, key, value)
+
+
 
 
 class EditAdditionalBuildingsView(UpdateView):
+    """
+    Handles the editing of additional buildings associated with an object.
+    Includes forms for garage, shed, and gazebo data.
+    """
+        
     model = Object
+    model_object = ObjectMeta
     template_name = "edit_additional_buildings.html"
     success_url = reverse_lazy('modules.orders:order_list')
     fields = []
 
+    form_garage = GarageForm
+    form_shed = ShedForm
+    form_gazebo = GazeboForm
+
+
     def get_forms(self):
-        garage_data = ObjectMeta.objects.filter(ev_object=self.object, meta_key__startswith='garage_')
-        shed_data = ObjectMeta.objects.filter(ev_object=self.object, meta_key__startswith='shed_')
-        gazebo_data = ObjectMeta.objects.filter(ev_object=self.object, meta_key__startswith='gazebo_')
+        garage_data = self.model_object.objects.filter(ev_object=self.object, meta_key__startswith='garage_')
+        shed_data = self.model_object.objects.filter(ev_object=self.object, meta_key__startswith='shed_')
+        gazebo_data = self.model_object.objects.filter(ev_object=self.object, meta_key__startswith='gazebo_')
         
         forms = {}
 
         if garage_data.exists():
             garage_initial = {meta.meta_key: meta.meta_value for meta in garage_data}
-            forms['garage_form'] = GarageForm(initial=garage_initial, prefix='garage')
+            forms['garage_form'] = self.form_garage(initial=garage_initial, prefix='garage')
 
         if shed_data.exists():
             shed_initial = {meta.meta_key: meta.meta_value for meta in shed_data}
-            forms['shed_form'] = ShedForm(initial=shed_initial, prefix='shed')
+            forms['shed_form'] = self.form_shed(initial=shed_initial, prefix='shed')
 
         if gazebo_data.exists():
             gazebo_initial = {meta.meta_key: meta.meta_value for meta in gazebo_data}
-            forms['gazebo_form'] = GazeboForm(initial=gazebo_initial, prefix='gazebo')
+            forms['gazebo_form'] = self.form_gazebo(initial=gazebo_initial, prefix='gazebo')
         
         return forms
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -484,6 +610,7 @@ class EditAdditionalBuildingsView(UpdateView):
         context['is_evaluator'] = False 
         return context
 
+
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         forms = self.get_forms()
@@ -492,13 +619,13 @@ class EditAdditionalBuildingsView(UpdateView):
         gazebo_form = forms.get('gazebo_form')
 
         if garage_form:
-            garage_form = GarageForm(request.POST, prefix='garage')
+            garage_form = self.form_garage(request.POST, prefix='garage')
 
         if shed_form:
-            shed_form = ShedForm(request.POST, prefix='shed')
+            shed_form = self.form_shed(request.POST, prefix='shed')
 
         if gazebo_form:
-            gazebo_form = GazeboForm(request.POST, prefix='gazebo')
+            gazebo_form = self.form_gazebo(request.POST, prefix='gazebo')
 
         if (not garage_form or garage_form.is_valid()) and (not shed_form or shed_form.is_valid()) and (not gazebo_form or gazebo_form.is_valid()):
             self.save_additional_buildings(self.object, garage_form, shed_form, gazebo_form)
@@ -521,6 +648,7 @@ class EditAdditionalBuildingsView(UpdateView):
 
         return self.render_to_response(context)
 
+
     def save_additional_buildings(self, obj, garage_form, shed_form, gazebo_form):
 
         if garage_form:
@@ -534,21 +662,31 @@ class EditAdditionalBuildingsView(UpdateView):
 
     def save_form_data(self, obj, cleaned_data):
         for key, value in cleaned_data.items():
-            Object.save_meta(obj, key, value)
+            self.model.save_meta(obj, key, value)
+
+
 
 
 class AgencySelectionView(LoginRequiredMixin, ListView):
+    """
+    Displays a list of agencies for the user to select from.
+    Requires the user to be logged in.
+    """
+
     model = User
+    model_order = Order
+    model_user_meta = UserMeta
     template_name = 'agency_selection.html'
     context_object_name = 'agencies'
     login_url = 'core.uauth:login'
     redirect_field_name = 'next'
 
     def get_queryset(self):
-        return User.objects.filter(groups__name='Agency').annotate(
+        return self.model.objects.filter(groups__name='Agency').annotate(
             evaluator_count=Count('evaluators'),
             completed_orders=Count('orders', filter=Q(orders__status='completed'))
         )
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -558,29 +696,31 @@ class AgencySelectionView(LoginRequiredMixin, ListView):
         for agency in agencies:
             agency_data.append({
                 'id': agency.id,
-                'name': UserMeta.get_meta(agency, 'agency_name'),
+                'name': self.model_user_meta.get_meta(agency, 'agency_name'),
                 'date_joined': agency.date_joined,
                 'evaluator_count': agency.evaluator_count,
                 'completed_orders': agency.completed_orders,
-                'evaluation_starting_price': UserMeta.get_meta(agency, 'evaluation_starting_price'),
+                'evaluation_starting_price': self.model_user_meta.get_meta(agency, 'evaluation_starting_price'),
             })
 
         context['agency_data'] = agency_data
         context['title'] = 'Select an Agency'
         return context
 
+
     def post(self, request, *args, **kwargs):
         selected_agency_id = request.POST.get('selected_agency_id')
 
         if selected_agency_id:
             try:
-                selected_agency = User.objects.get(id=selected_agency_id, groups__name='Agency')
+                selected_agency = self.model.objects.get(id=selected_agency_id, groups__name='Agency')
                 order_id = request.session.get('main_object_id')
-                order = Order.objects.get(object_id=order_id)
+                order = self.model_order.objects.get(object_id=order_id)
                 order.agency = selected_agency
 
                 # Select the appraiser with the least amount of orders
-                appraisers = User.objects.filter(groups__name='Evaluator', agency=selected_agency)
+                # Possibly this function isnt working, because the same evaluator is assigned to all orders
+                appraisers = self.model.objects.filter(groups__name='Evaluator', agency=selected_agency)
                 appraiser_with_least_orders = min(appraisers, key=lambda appraiser: appraiser.orders.count())
 
 
@@ -590,9 +730,9 @@ class AgencySelectionView(LoginRequiredMixin, ListView):
                 order.save()
 
                 return redirect('modules.orders:order_list')
-            except User.DoesNotExist:
+            except self.model.DoesNotExist:
                 return redirect('modules.orders:select_agency')
-            except Order.DoesNotExist:
+            except self.model.DoesNotExist:
                 return redirect('modules.orders:order_first_step')
             
         return redirect('modules.orders:select_agency')
