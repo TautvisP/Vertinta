@@ -1,27 +1,16 @@
+{% extends 'shared/base.html' %}
 {% load static %}
 {% load i18n %}
-{% include 'shared/header.html' %}
-{% if user.is_authenticated %}
-{# {% include 'marea/menu_member.html' %} #}
-{% else %}
-{# {% include 'parea/menu.html' %} #}
-{% endif %}
+
+{% block title %}{% trans '2. Redaguoti Dekoracijos Informaciją' %}{% endblock %}
+
 {% block content %}
 {% if show_progress_bar %}
     {% include 'shared/progress_bar.html' %}
 {% endif %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans '2. Redaguoti Dekoracijos Informaciją' %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
 <div class="content-page">
     <div class="content">
-        <div class='container-fluid col-10'>
+        <div class="container-fluid col-10">
             <form action="{% if is_similar_object %}{% url 'modules.evaluator:edit_similar_object_decoration' order_id pk similar_object_id %}{% else %}{% url 'modules.evaluator:edit_evaluation_decoration' order_id pk %}{% endif %}" method="POST">{% csrf_token %}
                 <input type="hidden" name="is_similar_object" value="{{ is_similar_object }}">
                 <div class="form-section">
@@ -52,13 +41,11 @@
                 {% endif %}
                 <button type="submit" class="btn btn-primary">{% trans 'Išsaugoti' %}</button>
             </form>
-        <div class="navigation-buttons">
-            <a href="{% if is_similar_object %}{% url 'modules.evaluator:edit_similar_object_data' order_id pk %}{% else %}{% url 'modules.evaluator:edit_object_data' order_id pk %}{% endif %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
-            <a href="{% if is_similar_object %}{% url 'modules.evaluator:edit_similar_object_common_info' order_id pk similar_object_id %}{% else %}{% url 'modules.evaluator:edit_common_info' order_id pk %}{% endif %}" class="btn btn-primary">{% trans "Pirmyn" %}</a>
+            <div class="navigation-buttons">
+                <a href="{% if is_similar_object %}{% url 'modules.evaluator:edit_similar_object_data' order_id pk %}{% else %}{% url 'modules.evaluator:edit_object_data' order_id pk %}{% endif %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
+                <a href="{% if is_similar_object %}{% url 'modules.evaluator:edit_similar_object_common_info' order_id pk similar_object_id %}{% else %}{% url 'modules.evaluator:edit_common_info' order_id pk %}{% endif %}" class="btn btn-primary">{% trans "Pirmyn" %}</a>
+            </div>
         </div>
-
     </div>
 </div>
-</body>
-</html>
 {% endblock %}

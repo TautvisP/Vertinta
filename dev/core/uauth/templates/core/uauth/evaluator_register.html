@@ -1,14 +1,11 @@
+{% extends 'shared/base_no_header.html' %}
 {% load static %}
 {% load i18n %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans 'Vertintojo Registracija' %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+
+{% block title %}{% trans 'Vertintojo Registracija' %}{% endblock %}
+
+{% block content %}
+<div class="containers">
     <div class="registration-container">
         <h2>{% trans 'Vertintojo registracija' %}</h2>
         {% if messages %}
@@ -42,7 +39,7 @@
             </div>
             <button type="submit" class="btn-submit">{% trans 'Registruotis' %}</button>
         </form>
-        <p>Jau turite paskyrą? <a href="{% url 'core.uauth:login' %}">{% trans 'Prisijunkite' %}</a></p>
+            <p>Jau turite paskyrą? <a href="{% url 'core.uauth:login' %}">{% trans 'Prisijunkite' %}</a></p>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

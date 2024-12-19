@@ -1,108 +1,45 @@
+{% extends 'shared/base.html' %}
 {% load static %}
 {% load i18n %}
-{% include 'shared/header.html' %}
+
+{% block title %}{% trans 'Nuotraukos Anotavimas' %}{% endblock %}
+
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/annotation.scss' %}">
+{% if show_progress_bar %}
+    {% include 'shared/progress_bar.html' %}
+{% endif %}
 <div class="content-page">
-<div class="container">
-    <h2>{% trans "Nuotraukos Anotavimas" %}</h2>
-    <div class="image-container" id="image-container" style="position: relative;">
-        <img id="annotatable-image" src="{{ image.image.url }}" alt="Object Image" style="max-width: 100%;">
-        {% for annotation in annotations %}
-        <div class="marker existing-marker" data-id="{{ annotation.id }}" style="left: {{ annotation.x_coordinate }}%; top: {{ annotation.y_coordinate }}%;">
-            <span class="marker-number">{{ forloop.counter }}</span>
+    <div class="container">
+        <h2>{% trans "Nuotraukos Anotavimas" %}</h2>
+        <div class="annotation-container" id="annotation-container" style="position: relative;">
+            <img id="annotatable-image" src="{{ image.image.url }}" alt="Object Image" style="max-width: 100%;">
+            {% for annotation in annotations %}
+            <div class="marker existing-marker" data-id="{{ annotation.id }}" style="left: {{ annotation.x_coordinate }}%; top: {{ annotation.y_coordinate }}%;">
+                <span class="marker-number">{{ forloop.counter }}</span>
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
+        <form id="annotation-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ annotation_form.as_p }}
+            <button type="submit" class="btn btn-primary">{% trans "Išsaugoti anotaciją" %}</button>
+        </form>
     </div>
-    <form id="annotation-form" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ annotation_form.as_p }}
-        <button type="submit" class="btn btn-primary">{% trans "Išsaugoti anotaciją" %}</button>
-    </form>
-</div>
 
-<!-- Modal for displaying annotation details -->
-<div id="annotationModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h3>{% trans "Anotacijos informacija" %}</h3>
-        <p id="annotation-text"></p>
-        <img id="annotation-image" src="" style="max-width: 100%;">
+    <!-- Modal for displaying annotation details -->
+    <div id="annotationModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>{% trans "Anotacijos informacija" %}</h3>
+            <p id="annotation-text"></p>
+            <img id="annotation-image" src="" style="max-width: 100%;">
+        </div>
+    </div>
+
+    <div class="navigation-buttons">
+        <a href="{% url 'modules.evaluator:edit_gallery' order_id=order.id pk=image.id %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
     </div>
 </div>
 
-<div class="navigation-buttons">
-    <a href="{% url 'modules.evaluator:edit_gallery' order_id=order.id pk=image.id %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
-</div>
-</div>
-
-
-
-<script>
-    document.getElementById('annotatable-image').addEventListener('load', function() {
-        var image = document.getElementById('annotatable-image');
-        var container = document.getElementById('image-container');
-        container.style.width = image.naturalWidth + 'px';
-        container.style.height = image.naturalHeight + 'px';
-    });
-
-    document.getElementById('annotatable-image').addEventListener('click', function(event) {
-        // Remove any existing new marker, so that only one new marker is displayed at a time
-        var existingNewMarker = document.querySelector('.new-marker');
-        if (existingNewMarker) {
-            existingNewMarker.remove();
-        }
-
-        // Calculate coordinates
-        var rect = event.target.getBoundingClientRect();
-        var x = ((event.clientX - rect.left) / rect.width) * 100;
-        var y = ((event.clientY - rect.top) / rect.height) * 100;
-        document.getElementById('id_x_coordinate').value = x;
-        document.getElementById('id_y_coordinate').value = y;
-
-        // Create and place new marker
-        var marker = document.createElement('div');
-        marker.className = 'marker new-marker';
-        marker.style.left = x + '%';
-        marker.style.top = y + '%';
-        marker.innerHTML = '<span class="marker-number">+</span>';
-        document.querySelector('.image-container').appendChild(marker);
-    });
-
-    document.querySelectorAll('.existing-marker').forEach(function(marker) {
-        marker.addEventListener('click', function(event) {
-            var annotationId = marker.getAttribute('data-id');
-            fetchAnnotationDetails(annotationId);
-        });
-    });
-
-    function fetchAnnotationDetails(annotationId) {
-        fetch(`/evaluator/api/annotations/${annotationId}/`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('annotation-text').innerText = data.annotation_text;
-                if (data.annotation_image) {
-                    document.getElementById('annotation-image').src = data.annotation_image;
-                    document.getElementById('annotation-image').style.display = 'block';
-                } else {
-                    document.getElementById('annotation-image').style.display = 'none';
-                }
-                document.getElementById('annotationModal').style.display = 'block';
-            });
-    }
-
-    //Closing the modal
-    var modal = document.getElementById("annotationModal");
-    var span = document.getElementsByClassName("close")[0];
-
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-</script>
+<script type="module" src="{% static 'main.js' %}"></script>
 {% endblock %}

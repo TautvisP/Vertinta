@@ -1,5 +1,4 @@
 // probably not the right place for this File, but it works for now
-// shared/static/js/progress_bar.js
 
 document.addEventListener('DOMContentLoaded', function () {
     const steps = document.querySelectorAll('.progress-bar-step');

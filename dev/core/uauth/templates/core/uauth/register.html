@@ -1,14 +1,11 @@
+{% extends 'shared/base_no_header.html' %}
 {% load static %}
 {% load i18n %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans 'Registracija' %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+
+{% block title %}{% trans 'Registracija' %}{% endblock %}
+
+{% block content %}
+<div class="containers">
     <div class="registration-container">
         <h2>{% trans 'Prisiregistruokite' %}</h2>
         {% if messages %}
@@ -44,5 +41,5 @@
         </form>
         <p>Jau turite paskyrą? <a href="{% url 'core.uauth:login' %}">{% trans 'Prisijunkite' %}</a></p>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

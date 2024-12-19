@@ -1,71 +1,66 @@
+{% extends 'shared/base.html' %}
 {% load static %}
-{% include 'shared/header.html' %}
 {% load i18n %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans 'Vertinamo Objekto Papildomi Statiniai' %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/additional_buildings.css' %}">
-</head>
-<body>
-    <div class="content-page">
-        <div class="content">
-            <div class='container-fluid col-10'>
-                <h2>{% trans '2. Vertinamo Objekto Papildomi Statiniai' %}</h2>
 
-                <div class="form-section" id="garage-section">
-                    <h3>{% trans 'GARAŽAS' %}</h3>
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ garage_formset.management_form }}
-                        <div id="garages-forms">
-                            {% for form in garage_formset %}
-                                <div class="form-row">
-                                    {{ form.as_p }}
-                                </div>
-                            {% endfor %}
-                        </div>
-                        <button type="submit" name="add_garage">{% trans 'Pridėti garažą' %}</button>
-                    </form>
-                </div>
+{% block title %}{% trans 'Vertinamo Objekto Papildomi Statiniai' %}{% endblock %}
 
-                <div class="form-section" id="shed-section">
-                    <h3>{% trans 'SANDĖLIUKAS' %}</h3>
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ shed_formset.management_form }}
-                        <div id="sheds-forms">
-                            {% for form in shed_formset %}
-                                <div class="form-row">
-                                    {{ form.as_p }}
-                                </div>
-                            {% endfor %}
-                        </div>
-                        <button type="submit" name="add_shed">{% trans 'Pridėti sandėliuką' %}</button>
-                    </form>
-                </div>
+{% block content %}
+{% if show_progress_bar %}
+    {% include 'shared/progress_bar.html' %}
+{% endif %}
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid col-10">
+            <h2>{% trans '2. Vertinamo Objekto Papildomi Statiniai' %}</h2>
 
-                <div class="form-section" id="gazebo-section">
-                    <h3>{% trans 'PAVĖSINĖ' %}</h3>
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ gazebo_formset.management_form }}
-                        <div id="gazebos-forms">
-                            {% for form in gazebo_formset %}
-                                <div class="form-row">
-                                    {{ form.as_p }}
-                                </div>
-                            {% endfor %}
-                        </div>
-                        <button type="submit" name="add_gazebo">{% trans 'Pridėti pavėsinę' %}</button>
-                    </form>
-                </div>
-                
+            <div class="form-section" id="garage-section">
+                <h3>{% trans 'GARAŽAS' %}</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ garage_formset.management_form }}
+                    <div id="garages-forms">
+                        {% for form in garage_formset %}
+                            <div class="form-row">
+                                {{ form.as_p }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" name="add_garage">{% trans 'Pridėti garažą' %}</button>
+                </form>
+            </div>
+
+            <div class="form-section" id="shed-section">
+                <h3>{% trans 'SANDĖLIUKAS' %}</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ shed_formset.management_form }}
+                    <div id="sheds-forms">
+                        {% for form in shed_formset %}
+                            <div class="form-row">
+                                {{ form.as_p }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" name="add_shed">{% trans 'Pridėti sandėliuką' %}</button>
+                </form>
+            </div>
+
+            <div class="form-section" id="gazebo-section">
+                <h3>{% trans 'PAVĖSINĖ' %}</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ gazebo_formset.management_form }}
+                    <div id="gazebos-forms">
+                        {% for form in gazebo_formset %}
+                            <div class="form-row">
+                                {{ form.as_p }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" name="add_gazebo">{% trans 'Pridėti pavėsinę' %}</button>
+                </form>
             </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

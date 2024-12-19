@@ -84,13 +84,16 @@ TEMPLATES = [
     },
 ]
 
-
-STATICFILES_DIRS = [BASE_DIR / 'shared']
 STATIC_URL = '/shared/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'shared'),
+    os.path.join(BASE_DIR, 'modules/evaluator/js'),
+]
+
 
 #uncomment for rarea to have a design
-#STATIC_URL = '/pub/'
-#STATICFILES_DIRS = [os.path.join(BASE_DIR, 'pub'), ]
+# STATIC_URL = '/pub/'
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'pub'), ]
 
 
 TEMPLATE_LOADERS = 'apptemplates.Loader'

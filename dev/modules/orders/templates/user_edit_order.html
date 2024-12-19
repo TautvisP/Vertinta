@@ -1,25 +1,13 @@
+{% extends 'shared/base.html' %}
 {% load static %}
 {% load i18n %}
-{% include 'shared/header.html' %}
-{% if user.is_authenticated %}
-{# {% include 'marea/menu_member.html' %} #}
-{% else %}
-{# {% include 'parea/menu.html' %} #}
-{% endif %}
-{% block content %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans 'Redaguoti užsakymą' %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+{% block title %}{% trans 'Redaguoti užsakymą' %}{% endblock %}
+
+{% block content %}
 <div class="content-page">
     <div class="content">
-        <div class='container-fluid col-10'>
+        <div class="container-fluid col-10">
             <form action="{% url 'modules.orders:object_update' object.id %}" method="POST">{% csrf_token %}
                 <div class="form-section">
                     <div class="col-sm-12">
@@ -88,6 +76,4 @@
         </div>
     </div>
 </div>
-</body>
-</html>
 {% endblock %}

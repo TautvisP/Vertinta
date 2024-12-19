@@ -1,47 +1,37 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <title>{% block title %}Vertinta{% endblock %}</title>
-</head>
-<body>
-    <header>
-        <nav class="navbar">
-            <ul class="nav-list">
-                {% if user.is_authenticated %}
-                    <li>
-                        <form method="post" action="{% url 'core.uauth:logout' %}">
-                            {% csrf_token %}
-                            <button type="submit">Atsijungti</button>
-                        </form>
-                    </li>
-                    {% if is_agency %}
-                        <li><a href="{% url 'modules.orders:order_list' %}">Užsakymai</a></li>
-                        <li><a href="{% url 'modules.agency:evaluator_list' %}">Vertintojai</a></li>
-                    {% elif is_evaluator %}
-                        <li><a href="{% url 'modules.orders:evaluator_order_list' %}">Vertintojo Užsakymai</a></li>
-                    {% else %}
-                        <li><a href="{% url 'modules.orders:order_list' %}">Užsakymai</a></li>
-                    {% endif %}
-
-                    <li>
-                        {% if is_agency %}
-                            <a href="{% url 'modules.agency:edit_agency_account' %}">Redaguoti Agentūros Paskyrą</a>
-                        {% elif is_evaluator %}
-                            <a href="{% url 'modules.evaluator:edit_own_evaluator_account' %}">Redaguoti Vertintojo Paskyrą</a>
-                        {% else %}
-                            <a href="{% url 'core.uauth:edit_profile' %}">Redaguoti Profilį</a>
-                        {% endif %}
-                    </li>
+<header>
+    <nav class="navbar">
+        <ul class="nav-list">
+            {% if user.is_authenticated %}
+                <li>
+                    <form method="post" action="{% url 'core.uauth:logout' %}">
+                        {% csrf_token %}
+                        <button type="submit">Atsijungti</button>
+                    </form>
+                </li>
+                {% if is_agency %}
+                    <li><a href="{% url 'modules.orders:order_list' %}">Užsakymai</a></li>
+                    <li><a href="{% url 'modules.agency:evaluator_list' %}">Vertintojai</a></li>
+                {% elif is_evaluator %}
+                    <li><a href="{% url 'modules.orders:evaluator_order_list' %}">Vertintojo Užsakymai</a></li>
                 {% else %}
-                    <li><a href="{% url 'core.uauth:login' %}">Prisijungti</a></li>
-                    <li><a href="{% url 'core.uauth:register' %}">Registruotis</a></li>
+                    <li><a href="{% url 'modules.orders:order_list' %}">Užsakymai</a></li>
                 {% endif %}
-            </ul>
-        </nav>
-    </header>
-</body>
-</html>
+
+                <li>
+                    {% if is_agency %}
+                        <a href="{% url 'modules.agency:edit_agency_account' %}">Redaguoti Agentūros Paskyrą</a>
+                    {% elif is_evaluator %}
+                        <a href="{% url 'modules.evaluator:edit_own_evaluator_account' %}">Redaguoti Vertintojo Paskyrą</a>
+                    {% else %}
+                        <a href="{% url 'core.uauth:edit_profile' %}">Redaguoti Profilį</a>
+                    {% endif %}
+                </li>
+            {% else %}
+                <li><a href="{% url 'core.uauth:login' %}">Prisijungti</a></li>
+                <li><a href="{% url 'core.uauth:register' %}">Registruotis</a></li>
+
+            {% endif %}
+        </ul>
+    </nav>
+</header>

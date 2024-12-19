@@ -1,11 +1,14 @@
 from django.urls import path
 from . import views
-from .views import EditEvaluatorAccountView, EvaluationStepsView, EditObjectDataView, EditEvaluationAndDecoInfo, EditCommonInfo, EditUtilityInfo, EvaluatorEditAdditionalBuildings, RCDataEditView, EditObjectGalleryView, ImageAnnotationView, AnnotationDetailView, SimilarObjectSearchView, SimilarObjectListView, SimilarObjectResultsView, EditSimilarObjectDataView, EditSimilarObjectDecorationView, EditSimilarObjectCommonInfoView, EditSimilarObjectUtilityInfoView
+from .views.main_view import EditEvaluatorAccountView, EvaluationStepsView,  RCDataEditView, index
+from .views.object_data_view import EditObjectDataView, EditEvaluationAndDecoInfo, EditCommonInfo, EditUtilityInfo, EvaluatorEditAdditionalBuildings
+from .views.object_gallery_view import EditObjectGalleryView, ImageAnnotationView, AnnotationDetailView
+from .views.similar_objects_view import SimilarObjectSearchView, SimilarObjectListView, SimilarObjectResultsView, EditSimilarObjectDataView, EditSimilarObjectDecorationView, EditSimilarObjectCommonInfoView, EditSimilarObjectUtilityInfoView
 
 app_name = 'modules.evaluator'
 
 urlpatterns = [
-    path('', views.index, name='evaluator_index'),
+    path('', index, name='evaluator_index'),
     path('edit/', EditEvaluatorAccountView.as_view(), name='edit_own_evaluator_account'),
 
     #used for agency to edit evaluator profile

@@ -1,27 +1,16 @@
+{% extends 'shared/base.html' %}
 {% load static %}
 {% load i18n %}
-{% include 'shared/header.html' %}
-{% if user.is_authenticated %}
-{# {% include 'marea/menu_member.html' %} #}
-{% else %}
-{# {% include 'parea/menu.html' %} #}
-{% endif %}
+
+{% block title %}{% trans 'Redaguoti papildomus statinius' %}{% endblock %}
+
 {% block content %}
 {% if show_progress_bar %}
     {% include 'shared/progress_bar.html' %}
 {% endif %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans 'Redaguoti papildomus statinius' %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
 <div class="content-page">
     <div class="content">
-        <div class='container-fluid col-10'>
+        <div class="container-fluid col-10">
             {% if is_evaluator %}
                 <form action="{% url 'modules.evaluator:edit_additional_buildings' order_id pk %}" method="POST">{% csrf_token %}
             {% else %}
@@ -80,6 +69,4 @@
         {% endif %}
     </div>
 </div>
-</body>
-</html>
 {% endblock %}

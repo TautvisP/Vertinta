@@ -1,12 +1,11 @@
+{% extends 'shared/base_no_header.html' %}
 {% load static %}
 {% load i18n %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{% trans 'Prisijungti' %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+
+{% block title %}{% trans 'Prisijungti' %}{% endblock %}
+
+{% block content %}
+<div class="containers">
     <div class="registration-container">
         <h2>{% trans 'Prisijungti' %}</h2>
         {% if messages %}
@@ -26,9 +25,9 @@
                 <label for="password">{% trans 'Slaptažodis' %}</label>
                 <input type="password" name="password" required>
             </div>
-            <button type="submit">{% trans 'Prisijungti' %}</button>
+            <button type="submit" class="btn-submit">{% trans 'Prisijungti' %}</button>
         </form>
-        <p>Neturite paskyros? <a href="{% url 'core.uauth:register' %}">{% trans 'Prisiregistruokite' %} </a></p>
+        <p>Neturite paskyros? <a href="{% url 'core.uauth:register' %}">{% trans 'Prisiregistruokite' %}</a></p>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

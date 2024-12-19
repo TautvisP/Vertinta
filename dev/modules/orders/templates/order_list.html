@@ -1,59 +1,51 @@
+{% extends 'shared/base.html' %}
 {% load static %}
 {% load custom_filters %}
-{% include 'shared/header.html' %}
 {% load i18n %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans 'Užsakymų sąrašas' %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <div class="content-page">
-        {% block content %}
-        <h1>{% trans 'Užsakymų sąrašas' %}</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>{% trans 'Objekto tipas' %}</th>
-                    <th>{% trans 'Gatvė' %}</th>
-                    <th>{% trans 'Namo Nr.' %}</th>
-                    <th>{% trans 'Rajonas' %}</th>
-                    <th>{% trans 'Paskelbimo data' %}</th>
-                    <th>{% trans 'Kliento vardas' %}</th>
-                    <th>{% trans 'Užsakymo statusas' %}</th>
-                    <th>{% trans 'Veiksmai' %}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for order in orders %}
-                <tr>
-                    <td>{{ order.object.object_type }}</td>
-                    <td>{{ order.object.street }}</td>
-                    <td>{{ order.object.house_no }}</td>
-                    <td>{{ order.object.municipality|get_municipality_name }}</td>
-                    <td>{{ order.created }}</td>
-                    <td>{{ order.client.get_full_name }}</td>
-                    <td>{{ order.status }}</td>
-                    <td>
-                        <a href="{% url 'modules.orders:object_update' order.object.id %}" class="btn btn-primary">{% trans 'Redaguoti Objektą' %}</a>
-                        {% if order.object.has_additional_buildings %}
-                        <a href="{% url 'modules.orders:edit_additional_buildings' order.object.id %}" class="btn btn-primary">{% trans 'Redaguoti Statinius' %}</a>
-                        {% else %}
-                        <span class="btn btn-secondary disabled">{% trans 'Nėra Pastatų' %}</span>
-                        {% endif %}
-                        <form action="{% url 'modules.orders:delete_order' order.id %}" method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">{% trans 'Ištrinti' %}</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% endblock %}
-    </div>
-</body>
-</html>
+
+{% block title %}{% trans 'Užsakymų sąrašas' %}{% endblock %}
+
+{% block content %}
+<div class="content-page">
+    <h1>{% trans 'Užsakymų sąrašas' %}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>{% trans 'Objekto tipas' %}</th>
+                <th>{% trans 'Gatvė' %}</th>
+                <th>{% trans 'Namo Nr.' %}</th>
+                <th>{% trans 'Rajonas' %}</th>
+                <th>{% trans 'Paskelbimo data' %}</th>
+                <th>{% trans 'Kliento vardas' %}</th>
+                <th>{% trans 'Užsakymo statusas' %}</th>
+                <th>{% trans 'Veiksmai' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.object.object_type }}</td>
+                <td>{{ order.object.street }}</td>
+                <td>{{ order.object.house_no }}</td>
+                <td>{{ order.object.municipality|get_municipality_name }}</td>
+                <td>{{ order.created }}</td>
+                <td>{{ order.client.get_full_name }}</td>
+                <td>{{ order.status }}</td>
+                <td>
+                    <a href="{% url 'modules.orders:object_update' order.object.id %}" class="btn btn-primary">{% trans 'Redaguoti Objektą' %}</a>
+                    {% if order.object.has_additional_buildings %}
+                    <a href="{% url 'modules.orders:edit_additional_buildings' order.object.id %}" class="btn btn-primary">{% trans 'Redaguoti Statinius' %}</a>
+                    {% else %}
+                    <span class="btn btn-secondary disabled">{% trans 'Nėra Pastatų' %}</span>
+                    {% endif %}
+                    <form action="{% url 'modules.orders:delete_order' order.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">{% trans 'Ištrinti' %}</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -13,7 +13,7 @@
 
 [dev/core/uauth/templates/core/uauth/agency_register.html (ir kartojasi per daug html template failų)]
 
-:1 +		`<!-- dev/core/uauth/templates/uauth/agency_register.html -->`
++ :1 		`<!-- dev/core/uauth/templates/uauth/agency_register.html -->`
 		`<!-- -->` komentarai yra rodomi užkrovus puslapį šalia viso html kodo, 
 		šitoje eilutėje viešai išvedi vidinę django failų struktūrą, 
 		jautriai informacijai reikia naudoti django template komentarus: 
@@ -21,7 +21,7 @@
 		arba
 		`{# dev/core/uauth/templates/uauth/agency_register.html #}`
 		
-:2-11		reikia extendinti vieną pagrindinį failą, kuriame aprašyta ši struktūra:
++ :2-11		reikia extendinti vieną pagrindinį failą, kuriame aprašyta ši struktūra:
 		`<!DOCTYPE html>
 		<html lang="en">	
 		<head>...</head>
@@ -31,11 +31,11 @@
 		pagal dabartinę struktūra prireikus padaryti pakeitimus, 
 		juos reikės pakartotinai atlikti visuose failuose
 		
-:8 +		visus `{% load ... %}` iškeliam į viršų, kaip python import
++ :8 		visus `{% load ... %}` iškeliam į viršų, kaip python import
 		šiuo atveju virš komentaro `<!-- dev/core/uauth/templates/uauth/agency_register.html -->`
 		
-:7, 13, 39,	žiūrint į ateitį galima pasidaryti vertimus, užkrauti template tag'us su: `{% load i18n %}`
-41 +		ir paskui panaudoti `{% trans 'Agentūros registracija' %}` template tag'ą
++ :7, 13, 39,	žiūrint į ateitį galima pasidaryti vertimus, užkrauti template tag'us su: `{% load i18n %}`
+41 		ir paskui panaudoti `{% trans 'Agentūros registracija' %}` template tag'ą
 
 
 
@@ -46,18 +46,18 @@
 	
 [dev/core/uauth/views/uauth_views.py]
 
-:11-30 +		pagal mūsų formatavimo taisykles, reikėtų: 
++ :11-30		pagal mūsų formatavimo taisykles, reikėtų: 
 		- virš klasės palikti 4 eilučių tarpą
 		- virš metodo palikti 2 eilučių tarpą
 		- virš for, if, match ar panašių loginių blokų palikti 1 eilutės tarpą
 		
-:44, 48	+	žiūrint į ateitį naudinga naudoti vertimams skirtą funkciją, kuri importuojasi taip:
++ :44, 48	žiūrint į ateitį naudinga naudoti vertimams skirtą funkciją, kuri importuojasi taip:
 		`from django.utils.translation import gettext_lazy as _`
 		`_("Registracija sėkminga! Prisijunkite.")`
 		paskui vertimų faile bus galima susivesti tekstus kitai kalbai
 		taip pat skiriasi kabutės, čia naudoji ", kai kitur naudojamos ' (inconsistency)
 		
-:101 +		formos klasę `UserPasswordChangeForm` naudinga išsikelti į klasės parametrus, 
++ :101		formos klasę `UserPasswordChangeForm` naudinga išsikelti į klasės parametrus, 
 		šalia `form_class = UserEditForm`, pasivadinus pvz. form_class_password
 		tada laikomasi Django struktūros, matosi visos klasės panaudotos view klasėje 
 		ir prireikus lengviau padaryti pakeitimus vienoje vietoje
@@ -67,32 +67,32 @@
 		
 [dev/core/uauth/forms.py]
 
-:4 +		importuojant konkrečius modulius naudojama mažiau resursų,
++ :4 		importuojant konkrečius modulius naudojama mažiau resursų,
 		taip pat bus išvengti galimi pavadinimų konfliktai
 		taip pat įveda aiškumo kokie moduliai yra naudojami kode
 		
-:42, 46, 50, 	(kartojasi) galima prisidėti vertimo funkciją: 
++ :42, 46, 50, 	(kartojasi) galima prisidėti vertimo funkciją: 
 54, 58, 79, 	`from django.utils.translation import gettext_lazy as _`
 83, 87, 91, 	`_('Vardas')`
 95, 105, 109, 
 113, 117, 142, 
 146, 150, 154, 
-183, 187, 191 +
+183, 187, 191
 
-uauth/models.py
++ uauth/models.py
 :5-11, 		nenaudojami importai, bet spėju kolkas čia in-progress kodas
-13-17 +	
+13-17	
 
-:33, 51, 54,	ir čia galima panaudoti vertimo funkciją, kartojasi ir kituose forms.py failuose 
++ :33, 51, 54,	ir čia galima panaudoti vertimo funkciją, kartojasi ir kituose forms.py failuose 
 62, 100, 103, 
-104, 111, 113 +
+104, 111, 113
 
 
 
 [dev/core/uauth/urls.py]
-:1, 2, 4 +	nepanaudoti import, galima ištrint
++ :1, 2, 4 	nepanaudoti import, galima ištrint
 
-:5 +		galima į views/__init__.py failą įsirašyti tokį import: `.uauth_views import *`
++ :5		galima į views/__init__.py failą įsirašyti tokį import: `.uauth_views import *`
 		ir tada šitoje eilutėje pakeisti į `core.uauth.views import *`
 		ir jeigu nėra panaudojamos visos views klasės, reik optimizuoti ir importuoti tik reikalingas views klases
 		berods irgi kartojasi kituose urls.py failuose
@@ -101,7 +101,7 @@ uauth/models.py
 
 [dev/modules/agency/templates/evaluator_list.html]
 
-:2		pažiūrėjus `dev/shared/templates/shared/header.html` failą, atrodo negerai importuota
++ :2 		pažiūrėjus `dev/shared/templates/shared/header.html` failą, atrodo negerai importuota
 		ir pats header.html failas neturėtų turėti aprašytų html dokumento root blokų:
 		`<!DOCTYPE html>
 		<html lang="en">
@@ -110,25 +110,25 @@ uauth/models.py
 		</html>`
 		kažkas čia ne taip, reik gyvai pasižiūrėti
 		
-:15		html tag atributuose naudojam dvigubas kabutes, šitoj vienoj eilutėj kažkodėl panaudotos viengubos
++ :15		html tag atributuose naudojam dvigubas kabutes, šitoj vienoj eilutėj kažkodėl panaudotos viengubos
 
 
 
-[dev/modules/agency/views.py] +
++ [dev/modules/agency/views.py]
 		daugmaž visuose views failuose kartojasi:
 		- neoptimalus import
 		- vertimai
 		- klasių kvietimas tiesiogiai, ne per klasės parametrą (self.*)
 
 
-:83	+	`return User.objects.filter(agency=self.request.user)`
++ :83	`return User.objects.filter(agency=self.request.user)`
 		nenaudoji klasės parametro, kuriame nurodytas modelis,
 		reik `User` pakeisti į `self.model`
 		
 
 [dev/modules/evaluator/templates/edit_common_info.html]
 
-:11		`progress_bar` failas turi aprašytus html root elementus, 
++ :11		`progress_bar` failas turi aprašytus html root elementus, 
 		bet jie aprašyti ir šitame faile kuriame importuotas progress bar
 		gaunasi sulūžęs html kodas, kurį pataiso naršyklės. 
 		Reik šitą gyvai pažiūrėti, tikriausiai yra neaiškumų.
@@ -147,13 +147,13 @@ uauth/models.py
 
 [dev/modules/evaluator/views.py]
 
-:18 +		dėl consistency ir čia reikėtų naudoti class view, šiuo atveju tikriausiai tinka TemplateView
++ :18		dėl consistency ir čia reikėtų naudoti class view, šiuo atveju tikriausiai tinka TemplateView
 		nes dabar nėra tikrinimo ar naudotojas turi reikiamus leidimus
 		
-:127-136,	tokiu atveju vietoje if naudoti match case, kuris veikia nuo 3.10 python versijos 
-148-159	 +	
++ :127-136,	tokiu atveju vietoje if naudoti match case, kuris veikia nuo 3.10 python versijos 
+148-159	 	
 
-:445-446 +	komentarus galim aprašyti kitaip
++ :445-446 	komentarus galim aprašyti kitaip
 
 		# Third step of the evaluation process. This view should be responsible for getting and displaying data from "Registru Centras".
 		# For now it is just a placeholder
@@ -175,12 +175,12 @@ uauth/models.py
 		
 		
 [dev/shared/css/progress_bar.css]
-:1 +		komentaras paviešina failų struktūrą, reik tokių nepalikti
++ :1 		komentaras paviešina failų struktūrą, reik tokių nepalikti
 
 		
 [dev/shared/css/style.css]
 
-:2 +		labai daug fallback font'ų, tikriausiai ir visus juos užkrauna font-face?
++ :2		labai daug fallback font'ų, tikriausiai ir visus juos užkrauna font-face?
 		turėtų nemažai padidinti naršyklės parsiunčiamų duomenų kiekį, 
 		dažniausiai užtenka `font-family: 'Gill Sans', sans-serif`
 		pačius font'us nekraunam iš cdn serverių, laikom savo serveryje, 

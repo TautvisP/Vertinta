@@ -42,6 +42,13 @@ h2 {
     border-radius: 3px;
 }
 
+.containers {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
 .add-button {
     display: inline-block;
     margin-top: 10px;
@@ -56,13 +63,6 @@ h2 {
 
 .add-button:hover {
     background-color: #0056b3;
-}
-
-.registration-container h2 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    color: #000;
 }
 
 .btn-submit {
@@ -81,6 +81,24 @@ h2 {
     background-color: #2563eb;
 }
 
+.registration-container {
+    background-color: #fff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.registration-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+}
+
 .registration-container p {
     margin-top: 20px;
     font-size: 14px;
@@ -95,25 +113,6 @@ h2 {
 
 .registration-container p a:hover {
     text-decoration: underline;
-}
-
-.registration-container {
-    background-color: #fff;
-    padding: 20px 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 100%;
-    max-width: 400px;
-    margin-top: calc(var(--header-height) + 20px);
-
-}
-
-.registration-container h2 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    color: #000;
 }
 
 form {
@@ -154,22 +153,6 @@ form {
 
 .btn-submit:hover {
     background-color: #2563eb;
-}
-
-.registration-container p {
-    margin-top: 20px;   
-    font-size: 14px;
-    color: #666;
-}
-
-.registration-container p a {
-    color: #2563eb;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.registration-container p a:hover {
-    text-decoration: underline;
 }
 
 .content-page {

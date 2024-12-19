@@ -1,48 +1,41 @@
+{% extends 'shared/base.html' %}
 {% load static %}
-{% include 'shared/header.html' %}
 {% load i18n %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans 'Agentūros Vertintojai' %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <div class="content-page">
-        <div class="content">
-            <div class='container-fluid col-10'>
-                <h2>{% trans 'Agentūros Vertintojai' %}</h2>
-                <a href="{% url 'modules.agency:create_evaluator_account' %}" class="btn btn-primary">{% trans 'Sukurti Vertintojo Paskyrą' %}</a>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>{% trans 'Vardas' %}</th>
-                            <th>{% trans 'Pavardė' %}</th>
-                            <th>{% trans 'El. Paštas' %}</th>
-                            <th>{% trans 'Tel. Nr.' %} </th>
-                            <th>{% trans 'Prisijungimo Data' %}</th>
-                            <th>{% trans 'Veiksmais' %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for evaluator in evaluator_data %}
-                        <tr>
-                            <td>{{ evaluator.first_name }}</td>
-                            <td>{{ evaluator.last_name }}</td>
-                            <td>{{ evaluator.email }}</td>
-                            <td>{{ evaluator.phone_num }}</td>
-                            <td>{{ evaluator.date_joined }}</td>
-                            <td>
-                                <a href="{% url 'modules.evaluator:edit_evaluator_account' evaluator.id %}" class="btn btn-primary">{% trans 'Redaguoti Profilį' %}</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+
+{% block title %}{% trans 'Agentūros Vertintojai' %}{% endblock %}
+
+{% block content %}
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid col-10">
+            <h2>{% trans 'Agentūros Vertintojai' %}</h2>
+            <a href="{% url 'modules.agency:create_evaluator_account' %}" class="btn btn-primary">{% trans 'Sukurti Vertintojo Paskyrą' %}</a>
+            <table class="table">
+                <thead>
+                    <th>{% trans 'Vardas' %}</th>
+                    <th>{% trans 'Pavardė' %}</th>
+                    <th>{% trans 'El. Paštas' %}</th>
+                    <th>{% trans 'Tel. Nr.' %} </th>
+                    <th>{% trans 'Prisijungimo Data' %}</th>
+                    <th>{% trans 'Veiksmai' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for evaluator in evaluators %}
+                    <tr>
+                        <td>{{ evaluator.first_name }}</td>
+                        <td>{{ evaluator.last_name }}</td>
+                        <td>{{ evaluator.email }}</td>
+                        <td>{{ evaluator.phone_num }}</td>
+                        <td>{{ evaluator.date_joined }}</td>
+                        <td>
+                            <a href="{% url 'modules.evaluator:edit_evaluator_account' evaluator.id %}" class="btn btn-primary">{% trans 'Redaguoti Profilį' %}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

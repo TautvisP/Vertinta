@@ -1,45 +1,37 @@
+{% extends 'shared/base.html' %}
 {% load static %}
-{% include 'shared/header.html' %}
 {% load i18n %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans 'Objekto pasirinkimas' %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <div class="content-page">
-        {% block content %}
-        <div class="content">
-            <div class="row">
-                <div class="col-12">
-                    <div class="page-title-box">
-                        <h1><b class="landing-page-title">{% trans 'ĮSIVERTINKITE SAVO NT' %}</b></h1>
-                    </div>
-                </div>
-            </div>
 
-            <div class="row">
-                {% for key, value in object_list.items %}
-                <div class="object_type_item col-12 col-xl-4">
-                    <form method="POST">
-                        {% csrf_token %}
-                        <button type="submit" class="obj_type_img_btn">
-                            {% with 'images/'|add:value as image_static %}
-                            <img src="{% static image_static %}" alt="work-thumbnail" class="landing_page_img">
-                            {% endwith %}
-                            <h4 class="overlay"><b class="img_text">{{ key|upper }}</b></h4>
-                            <input type="hidden" name="object_type" value="{{ key }}">
-                        </button>
-                    </form>
+{% block title %}{% trans 'Objekto pasirinkimas' %}{% endblock %}
+
+{% block content %}
+<div class="content-page">
+    <div class="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box">
+                    <h1><b class="landing-page-title">{% trans 'ĮSIVERTINKITE SAVO NT' %}</b></h1>
                 </div>
-                {% endfor %}
             </div>
-            
         </div>
-        {% endblock %}
+
+        <div class="row">
+            {% for key, value in object_list.items %}
+            <div class="object_type_item col-12 col-xl-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="obj_type_img_btn">
+                        {% with 'images/'|add:value as image_static %}
+                        <img src="{% static image_static %}" alt="work-thumbnail" class="landing_page_img">
+                        {% endwith %}
+                        <h4 class="overlay"><b class="img_text">{{ key|upper }}</b></h4>
+                        <input type="hidden" name="object_type" value="{{ key }}">
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

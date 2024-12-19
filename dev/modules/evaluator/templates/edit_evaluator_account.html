@@ -1,15 +1,11 @@
-{% include 'shared/header.html' %}
+{% extends 'shared/base.html' %}
 {% load static %}
 {% load i18n %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans 'Redaguoti Vertintojo Paskyrą' %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+
+{% block title %}{% trans 'Redaguoti Vertintojo Paskyrą' %}{% endblock %}
+
+{% block content %}
+<div class="containers">
     <div class="registration-container">
         <h2>{% trans 'Vertintojo Paskyra' %}</h2>
         {% if messages %}
@@ -28,14 +24,6 @@
             <div class="form-group">
                 {{ form.last_name.label_tag }}
                 {{ form.last_name }}
-            </div>
-            <div class="form-group">
-                {{ form.qualification_certificate_number.label_tag }}
-                {{ form.qualification_certificate_number }}
-            </div>
-            <div class="form-group">
-                {{ form.date_of_issue_of_certificate.label_tag }}
-                {{ form.date_of_issue_of_certificate }}
             </div>
             <div class="form-group">
                 {{ form.email.label_tag }}
@@ -60,5 +48,5 @@
             <button type="submit" class="btn-submit">{% trans 'Išsaugoti' %}</button>
         </form>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

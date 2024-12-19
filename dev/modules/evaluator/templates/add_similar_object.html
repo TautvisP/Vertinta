@@ -1,6 +1,9 @@
+{% extends 'shared/base.html' %}
 {% load static %}
 {% load i18n %}
-{% include 'shared/header.html' %}
+
+{% block title %}{% trans "Pridėti Panašų Objektą" %}{% endblock %}
+
 {% block content %}
 {% if show_progress_bar %}
     {% include 'shared/progress_bar.html' %}

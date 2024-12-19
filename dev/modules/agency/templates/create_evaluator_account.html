@@ -1,15 +1,11 @@
+{% extends 'shared/base.html' %}
 {% load static %}
-{% include 'shared/header.html' %}
 {% load i18n %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% trans 'Sukurti Vertintojo Paskyrą' %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+
+{% block title %}{% trans 'Sukurti Vertintojo Paskyrą' %}{% endblock %}
+
+{% block content %}
+<div class="containers">
     <div class="registration-container">
         <h2>{% trans 'Sukurti Vertintojo Paskyrą' %}</h2>
         {% if messages %}
@@ -44,5 +40,5 @@
             <button type="submit" class="btn-submit">{% trans 'Sukurti Paskyrą' %}</button>
         </form>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}
