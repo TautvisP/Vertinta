@@ -27,7 +27,7 @@
         </div>
     </div>
 
-    <div class="gallery-container">
+    <div class="gallery-container" id="gallery-container">
         <div class="header">
             <h2>{% trans "Galerija" %}</h2>
             <button id="openModal" class="add-btn">{% trans "Pridėti +" %}</button>
@@ -71,23 +71,5 @@
         <a href="{% url 'modules.evaluator:similar_object_search' order_id pk %}" class="btn btn-primary">{% trans "Pirmyn" %}</a>
     </div>
 </div>
-<script>
-    var modal = document.getElementById("myModal");
-    var btn = document.getElementById("openModal");
-    var span = document.getElementsByClassName("close")[0];
-
-    btn.onclick = function() {
-        modal.style.display = "block";
-    }
-
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-</script>
+<script type="module" src="{% static 'main_object_gallery.js' %}"></script>
 {% endblock %}

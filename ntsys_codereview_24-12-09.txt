@@ -136,13 +136,13 @@
 
 [dev/modules/evaluator/templates/image_annotation.html]
 
-:43-107		reikia javascript kodą atskirai išsikelti, buildinti su webpack
++ :43-107		reikia javascript kodą atskirai išsikelti, buildinti su webpack
 		ir tikriausiai žadi naudoti osom.js? tai reikėtų pabandyti padaryti introduction
 		
 		
 [dev/modules/evaluator/templates/object_gallery.html]
 
-:83-99		tas pats komentaras kaip image_annotation.html
++ :83-99		tas pats komentaras kaip image_annotation.html
 
 
 [dev/modules/evaluator/views.py]

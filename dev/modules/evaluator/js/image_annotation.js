@@ -1,20 +1,21 @@
-// not working as of yet, needs further fixing
+import { Component } from './osom.build.js';
 
 /**
  * @description Image Annotation
  **/
-
-
-export default class ImageAnnotation {
+export default class ImageAnnotation extends Component {
     /**
      * Constructor
      * @returns {void}
      **/
-    constructor() {
+    constructor(elm, data, events, params = {}) {
+        super(elm, data, events, params);
         this.init();
     }
 
     init() {
+        this.attach(this.elm);
+
         document.getElementById('annotatable-image').addEventListener('load', () => {
             this.onImageLoad();
         });
@@ -36,11 +37,13 @@ export default class ImageAnnotation {
         window.addEventListener('click', (event) => {
             this.onWindowClick(event);
         });
+
+        this.activateEventsHandling();
     }
 
     onImageLoad() {
         const image = document.getElementById('annotatable-image');
-        const container = document.getElementById('image-container');
+        const container = document.getElementById('annotation-container');
         container.style.width = image.naturalWidth + 'px';
         container.style.height = image.naturalHeight + 'px';
     }
