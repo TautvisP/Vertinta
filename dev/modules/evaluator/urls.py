@@ -4,7 +4,7 @@ from .views.main_view import EditEvaluatorAccountView, EvaluationStepsView,  RCD
 from .views.object_data_view import EditObjectDataView, EditEvaluationAndDecoInfo, EditCommonInfo, EditUtilityInfo, EvaluatorEditAdditionalBuildings
 from .views.object_gallery_view import EditObjectGalleryView, ImageAnnotationView, AnnotationDetailView
 from .views.similar_objects_view import SimilarObjectSearchView, SimilarObjectListView, SimilarObjectResultsView, EditSimilarObjectDataView, EditSimilarObjectDecorationView, EditSimilarObjectCommonInfoView, EditSimilarObjectUtilityInfoView
-
+from .views.document_import_view import DocumentImportView, DocumentView
 app_name = 'modules.evaluator'
 
 urlpatterns = [
@@ -32,7 +32,7 @@ urlpatterns = [
 
     #4
     path('evaluation_steps/<int:order_id>/edit_gallery/<int:pk>/', EditObjectGalleryView.as_view(), name='edit_gallery'),
-    path('evaluation_steps/<int:order_id>/image_annotation/<int:image_id>/', ImageAnnotationView.as_view(), name='image_annotation'),
+    path('evaluation_steps/<int:order_id>/image_annotation/<int:image_id>/<int:pk>/', ImageAnnotationView.as_view(), name='image_annotation'),
     path('api/annotations/<int:annotation_id>/', AnnotationDetailView.as_view(), name='annotation_detail'),
 
     #5
@@ -45,6 +45,10 @@ urlpatterns = [
     path('evaluation_steps/<int:order_id>/edit_similar_object_decoration/<int:pk>/<int:similar_object_id>/', EditSimilarObjectDecorationView.as_view(), name='edit_similar_object_decoration'),
     path('evaluation_steps/<int:order_id>/edit_similar_object_common_info/<int:pk>/<int:similar_object_id>/', EditSimilarObjectCommonInfoView.as_view(), name='edit_similar_object_common_info'),
     path('evaluation_steps/<int:order_id>/edit_similar_object_utility_info/<int:pk>/<int:similar_object_id>/', EditSimilarObjectUtilityInfoView.as_view(), name='edit_similar_object_utility_info'),
+
+    #6
+    path('evaluation_steps/<int:order_id>/document_import/<int:pk>/', DocumentImportView.as_view(), name='document_import'),
+    path('documents/<int:document_id>/', DocumentView.as_view(), name='view_document'),
 
 
 ]

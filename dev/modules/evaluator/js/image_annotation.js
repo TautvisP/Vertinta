@@ -38,7 +38,6 @@ export default class ImageAnnotation extends Component {
             this.onWindowClick(event);
         });
 
-        this.activateEventsHandling();
     }
 
     onImageLoad() {
@@ -49,26 +48,33 @@ export default class ImageAnnotation extends Component {
     }
 
     onImageClick(event) {
+        console.log('Image clicked');
+    
         // Remove any existing new marker, so that only one new marker is displayed at a time
         const existingNewMarker = document.querySelector('.new-marker');
         if (existingNewMarker) {
+            console.log('Removing existing new marker');
             existingNewMarker.remove();
         }
 
-        // Calculate coordinates
-        const rect = event.target.getBoundingClientRect();
+        // Calculate coordinates based on the image size and position
+        const image = document.getElementById('annotatable-image');
+        const rect = image.getBoundingClientRect();
+        console.log('Image rect:', rect);
         const x = ((event.clientX - rect.left) / rect.width) * 100;
         const y = ((event.clientY - rect.top) / rect.height) * 100;
+        console.log('Calculated coordinates:', { x, y });
         document.getElementById('id_x_coordinate').value = x;
         document.getElementById('id_y_coordinate').value = y;
-
+    
         // Create and place new marker
         const marker = document.createElement('div');
         marker.className = 'marker new-marker';
         marker.style.left = x + '%';
         marker.style.top = y + '%';
         marker.innerHTML = '<span class="marker-number">+</span>';
-        document.querySelector('.annotation-container').appendChild(marker);
+        console.log('Appending new marker:', marker);
+        document.getElementById('annotation-container').appendChild(marker);
     }
 
     onMarkerClick(event, marker) {

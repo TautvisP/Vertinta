@@ -49,7 +49,8 @@
     </div>
 </div>
 <div class="navigation-buttons">
-    <a href="{% url 'modules.evaluator:edit_gallery' order_id pk %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
+    <a href="{% url 'modules.evaluator:edit_gallery' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
+    <a href="{% url 'modules.evaluator:document_import' order_id pk %}" class="btn-forward">{% trans "Pirmyn" %}</a>
 </div>
 </div>
 <script>

@@ -65,43 +65,50 @@ class EditEvaluatorAccountView(LoginRequiredMixin, UserPassesTestMixin, UserRole
         return self.request.user
 
 
-    def get_initial(self):
-        initial = super().get_initial()
-        user = self.get_object()
-        initial.update({
-            'name': user.first_name,
-            'last_name': user.last_name,
-            'qualification_certificate_number': UserMeta.get_meta(user, 'qualification_certificate_number'),
-            'date_of_issue_of_certificate': UserMeta.get_meta(user, 'date_of_issue_of_certificate'),
-            'phone_num': self.model_meta.get_meta(user, 'phone_num'),
-        })
-        return initial
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        password_form = self.form_class_password(self.request.user, self.request.POST)
 
+        if 'update_profile' in request.POST and form.is_valid():
+            return self.form_valid(form)
+        elif 'change_password' in request.POST and password_form.is_valid():
+            return self.password_form_valid(password_form)
+        else:
+            return self.form_invalid(form, password_form)
 
     def form_valid(self, form):
         user = form.save()
-        password_form = self.form_class_password(user, self.request.POST)
-
-        if password_form.is_valid():
-            user = password_form.save()
-            update_session_auth_hash(self.request, user)
-            messages.success(self.request, SUCCESS_MESSAGE)
-        else:
-            messages.error(self.request, MISTAKE_MESSAGE)
-            
+        messages.success(self.request, _("Profilis sėkmingai atnaujintas!"), extra_tags='profile')
         return super().form_valid(form)
 
+    def password_form_valid(self, password_form):
+        user = password_form.save()
+        update_session_auth_hash(self.request, user)
+        messages.success(self.request, _("Slaptažodis sėkmingai pakeistas!"), extra_tags='password')
+        return super().form_valid(password_form)
 
-    def form_invalid(self, form):
-        messages.error(self.request, MISTAKE_MESSAGE)
-        return super().form_invalid(form)
-
+    def form_invalid(self, form, password_form=None):
+        if password_form and not password_form.is_valid():
+            messages.error(self.request, _("Klaida keičiant slaptažodį."), extra_tags='password')
+            return self.render_to_response(self.get_context_data(form=form, password_form=password_form))
+        messages.error(self.request, _("Klaida atnaujinant profilį."), extra_tags='profile')
+        return self.render_to_response(self.get_context_data(form=form))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        initial_data = {
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'qualification_certificate_number': UserMeta.get_meta(user, 'qualification_certificate_number'),
+            'date_of_issue_of_certificate': UserMeta.get_meta(user, 'date_of_issue_of_certificate'),
+            'phone_num': UserMeta.get_meta(user, 'phone_num'),  # Retrieve phone_num from UserMeta
+        }
+        context['form'] = self.form_class(instance=user, initial=initial_data)
         context['password_form'] = self.form_class_password(self.request.user)
         return context
-
 
 
 

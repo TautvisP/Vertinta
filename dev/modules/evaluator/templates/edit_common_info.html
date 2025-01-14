@@ -30,12 +30,8 @@
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">{% trans 'Išsaugoti' %}</button>
+                <button type="submit" class="btn-forward">{% trans 'Patvirtinti duomenis' %}</button>
             </form>
-            <div class="navigation-buttons">
-                <a href="{% if is_similar_object %}{% url 'modules.evaluator:edit_similar_object_decoration' order_id pk similar_object_id %}{% else %}{% url 'modules.evaluator:edit_evaluation_decoration' order_id pk %}{% endif %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
-                <a href="{% if is_similar_object %}{% url 'modules.evaluator:edit_similar_object_utility_info' order_id pk similar_object_id %}{% else %}{% url 'modules.evaluator:edit_utility_info' order_id pk %}{% endif %}" class="btn btn-primary">{% trans "Pirmyn" %}</a>
-            </div>
         </div>
     </div>
 </div>

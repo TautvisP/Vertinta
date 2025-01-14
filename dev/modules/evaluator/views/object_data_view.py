@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from shared.mixins.mixins import UserRoleContextMixin
-from modules.orders.models import Object, ObjectMeta
+from modules.orders.models import Object, ObjectMeta, Order
 from modules.orders.forms import ObjectLocationForm, HouseForm, LandForm, ApartamentForm, CottageForm, DecorationForm, CommonInformationForm, UtilityForm, GarageForm, ShedForm, GazeboForm
 from modules.evaluator.forms import EvaluationForm
 from django.utils.translation import gettext as _
@@ -79,7 +79,10 @@ class EditObjectDataView(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
                 context['additional_form'] = self.form_class_house(initial=initial_data)
 
 
-        context['order_id'] = self.kwargs['order_id']
+        order_id = self.kwargs.get('order_id')
+        order = get_object_or_404(Order, id=order_id)
+        context['order'] = order
+        context['order_id'] = order_id
         context['pk'] = self.kwargs['pk']
         context['current_step'] = 1
         context['total_steps'] = TOTAL_STEPS
@@ -184,7 +187,10 @@ class EditEvaluationAndDecoInfo(LoginRequiredMixin, UserRoleContextMixin, Update
         initial_data = self.get_initial_data(obj)
         context['decoration_form'] = self.form_class_decoration(initial=initial_data)
         context['evaluation_form'] = self.form_class_evaluation(initial=initial_data)
-        context['order_id'] = self.kwargs['order_id']
+        order_id = self.kwargs.get('order_id')
+        order = get_object_or_404(Order, id=order_id)
+        context['order'] = order
+        context['order_id'] = order_id
         context['pk'] = self.kwargs['pk']
         context['current_step'] = 1
         context['total_steps'] = TOTAL_STEPS
@@ -261,7 +267,10 @@ class EditCommonInfo(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
         obj = self.get_object()
         initial_data = self.get_initial_data(obj)
         context['common_info_form'] = self.form_class_common_info(initial=initial_data)
-        context['order_id'] = self.kwargs['order_id']
+        order_id = self.kwargs.get('order_id')
+        order = get_object_or_404(Order, id=order_id)
+        context['order'] = order
+        context['order_id'] = order_id
         context['pk'] = self.kwargs['pk']
         context['current_step'] = 1
         context['total_steps'] = TOTAL_STEPS 
@@ -337,7 +346,10 @@ class EditUtilityInfo(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
         obj = self.get_object()
         initial_data = self.get_initial_data(obj)
         context['utility_form'] = self.form_class_utility(initial=initial_data)
-        context['order_id'] = self.kwargs['order_id']
+        order_id = self.kwargs.get('order_id')
+        order = get_object_or_404(Order, id=order_id)
+        context['order'] = order
+        context['order_id'] = order_id
         context['pk'] = self.kwargs['pk']
         context['current_step'] = 1
         context['total_steps'] = TOTAL_STEPS
@@ -369,8 +381,6 @@ class EditUtilityInfo(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
     def save_form_data(self, obj, cleaned_data):
         for key, value in cleaned_data.items():
             self.model.save_meta(obj, key, value)
-
-
 
 
 class EvaluatorEditAdditionalBuildings(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
@@ -406,57 +416,93 @@ class EvaluatorEditAdditionalBuildings(LoginRequiredMixin, UserRoleContextMixin,
         gazebo_data = self.model_meta.objects.filter(ev_object=obj, meta_key__startswith='gazebo_')
         
         forms = {}
+        context_flags = {}
 
         if garage_data.exists():
             garage_initial = {meta.meta_key: meta.meta_value for meta in garage_data}
             forms['garage_form'] = self.form_class_garage(initial=garage_initial, prefix='garage')
+            context_flags['show_garage_form'] = True
+
+        else:
+            forms['garage_form'] = self.form_class_garage(prefix='garage')
+            context_flags['show_garage_form'] = False
 
         if shed_data.exists():
             shed_initial = {meta.meta_key: meta.meta_value for meta in shed_data}
             forms['shed_form'] = self.form_class_shed(initial=shed_initial, prefix='shed')
+            context_flags['show_shed_form'] = True
+
+        else:
+            forms['shed_form'] = self.form_class_shed(prefix='shed')
+            context_flags['show_shed_form'] = False
 
         if gazebo_data.exists():
             gazebo_initial = {meta.meta_key: meta.meta_value for meta in gazebo_data}
             forms['gazebo_form'] = self.form_class_gazebo(initial=gazebo_initial, prefix='gazebo')
+            context_flags['show_gazebo_form'] = True
 
-        return forms
+        else:
+            forms['gazebo_form'] = self.form_class_gazebo(prefix='gazebo')
+            context_flags['show_gazebo_form'] = False
+
+        return forms, context_flags
 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(self.get_forms())
-        context['order_id'] = self.kwargs['order_id']
+        forms, context_flags = self.get_forms()
+        context.update(forms)
+        context.update(context_flags)
         context['pk'] = self.kwargs['pk']
-        context['show_progress_bar'] = SHOW_PROGRESS_BAR
+        context['show_progress_bar'] = True
+        order_id = self.kwargs.get('order_id')
+        order = get_object_or_404(Order, id=order_id)
+        context['order'] = order
+        context['order_id'] = order_id
         context['is_evaluator'] = True
         context['current_step'] = 2
-        context['total_steps'] = TOTAL_STEPS 
+        context['total_steps'] = 8
+
+        # Check for additional buildings
+        garage_buildings = ObjectMeta.objects.filter(ev_object=self.get_object(), meta_key__startswith='garage_')
+        shed_buildings = ObjectMeta.objects.filter(ev_object=self.get_object(), meta_key__startswith='shed_')
+        gazebo_buildings = ObjectMeta.objects.filter(ev_object=self.get_object(), meta_key__startswith='gazebo_')
+
+        if not (garage_buildings.exists() or shed_buildings.exists() or gazebo_buildings.exists()):
+            self.template_name = "additional_buildings.html"
+
         return context
 
 
     def post(self, request, *args, **kwargs):
         obj = self.get_object()
         self.object = obj
-        forms = self.get_forms()
-        all_valid = True
+        print("POST request received")
 
-        for form_name, form in forms.items():
-            form_instance = form.__class__(request.POST, prefix=form.prefix)
+        garage_form = self.form_class_garage(request.POST, prefix='garage')
+        shed_form = self.form_class_shed(request.POST, prefix='shed')
+        gazebo_form = self.form_class_gazebo(request.POST, prefix='gazebo')
 
-            if not form_instance.is_valid():
-                all_valid = False
-                forms[form_name] = form_instance
-                break
-
-        if all_valid:
-            for form_name, form in forms.items():
-                form_instance = form.__class__(request.POST, prefix=form.prefix)
-
-                if form_instance.is_valid():
-                    self.save_form_data(obj, form_instance.cleaned_data)
-
+        if garage_form.is_valid():
+            self.save_form_data(obj, garage_form.cleaned_data)
+            print("Garage form data saved:", garage_form.cleaned_data)
             return redirect(self.get_success_url())
         
+        elif shed_form.is_valid():
+            self.save_form_data(obj, shed_form.cleaned_data)
+            print("Shed form data saved:", shed_form.cleaned_data)
+            return redirect(self.get_success_url())
+        
+        elif gazebo_form.is_valid():
+            self.save_form_data(obj, gazebo_form.cleaned_data)
+            print("Gazebo form data saved:", gazebo_form.cleaned_data)
+            return redirect(self.get_success_url())
+
+        forms = {
+            'garage_form': garage_form,
+            'shed_form': shed_form,
+            'gazebo_form': gazebo_form,
+        }
         return self.form_invalid(forms)
 
 
@@ -467,5 +513,7 @@ class EvaluatorEditAdditionalBuildings(LoginRequiredMixin, UserRoleContextMixin,
 
 
     def save_form_data(self, obj, cleaned_data):
+        
         for key, value in cleaned_data.items():
-            self.model.save_meta(obj, key, value)
+            print(f"Saving {key}: {value}")
+            self.model_meta.objects.update_or_create(ev_object=obj, meta_key=key, defaults={'meta_value': value})

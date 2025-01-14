@@ -4,34 +4,44 @@
 
 {% block title %}{% trans 'Objekto pasirinkimas' %}{% endblock %}
 
+{% block bootstrap_css %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% endblock %}
+
 {% block content %}
 <div class="content-page">
     <div class="content">
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
-                    <h1><b class="landing-page-title">{% trans 'ĮSIVERTINKITE SAVO NT' %}</b></h1>
+                    <h2><b class="landing-page-title">{% trans 'Nekilnojamo Turto Vertinimo Užklausa' %}</b></h2>
                 </div>
             </div>
         </div>
 
-        <div class="row">
-            {% for key, value in object_list.items %}
-            <div class="object_type_item col-12 col-xl-4">
-                <form method="POST">
-                    {% csrf_token %}
-                    <button type="submit" class="obj_type_img_btn">
-                        {% with 'images/'|add:value as image_static %}
-                        <img src="{% static image_static %}" alt="work-thumbnail" class="landing_page_img">
-                        {% endwith %}
-                        <h4 class="overlay"><b class="img_text">{{ key|upper }}</b></h4>
-                        <input type="hidden" name="object_type" value="{{ key }}">
-                    </button>
-                </form>
+        <div class="container">
+            <div class="row">
+                {% for key, value in object_list.items %}
+                <div class="col-12 col-md-4">
+                    <div class="object_type_item">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="obj_type_img_btn">
+                                {% with 'images/'|add:value as image_static %}
+                                <img src="{% static image_static %}" alt="work-thumbnail" class="landing_page_img">
+                                {% endwith %}
+                                <h5 class="overlay"><b class="img_text">{{ key|upper }}</b></h5>
+                                <input type="hidden" name="object_type" value="{{ key }}">
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% if forloop.counter|divisibleby:3 %}
+                <div class="w-100"></div>
+                {% endif %}
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-        
     </div>
 </div>
 {% endblock %}

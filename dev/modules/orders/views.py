@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from modules.orders.enums import ObjectImages
 from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView, ListView, View, UpdateView
@@ -223,20 +223,23 @@ class FirsStepView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
                 if not default_agency:
                     raise Exception("No active agency found")
                 
-                self.model.objects.create(
+                order = self.model.objects.create(
                     client=request.user,
                     agency=default_agency,
                     object=obj,
-                    status='Naujas'
+                    status='Nebaigtas'
                 )
-                print("Order created successfully")
+                request.session['order_id'] = order.id
+                print("Order created successfully with ID:", order.id)
+
 
             except Exception as e:
                 print("Error creating order:", e)
                 return self.form_invalid(location_form, decoration_form, utility_form, common_info_form, additional_form)
 
             if selected_obj_type in ['Namas', 'Kotedžas']:
-                return redirect('modules.orders:additional_buildings')
+                return redirect('modules.orders:additional_buildings', order_id=order.id)
+
 
             return redirect('modules.orders:select_agency')
 
@@ -273,89 +276,133 @@ class FirsStepView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
 
 
 
-class AdditionalBuildingsView(TemplateView):
+class AdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
     """
     Handles the additional buildings step in the order creation process.
-    Includes formsets for garage, shed, and gazebo data.
+    Includes forms for garage, shed, and gazebo data.
     """
         
     model = Object
     template_name = 'additional_buildings.html'
     success_url = 'modules.orders:select_agency'
 
-    def get_formsets(self):
-        GarageFormSet = formset_factory(GarageForm, extra=1)
-        ShedFormSet = formset_factory(ShedForm, extra=1)
-        GazeboFormSet = formset_factory(GazeboForm, extra=1)
+    form_garage = GarageForm
+    form_shed = ShedForm
+    form_gazebo = GazeboForm
 
-        return {
-            'garage_formset': GarageFormSet,
-            'shed_formset': ShedFormSet,
-            'gazebo_formset': GazeboFormSet,
+
+    def get_forms(self):
+        object_id = self.request.session.get('main_object_id')
+        obj = get_object_or_404(Object, id=object_id)
+        garage_data = ObjectMeta.objects.filter(ev_object=obj, meta_key__startswith='garage_')
+        shed_data = ObjectMeta.objects.filter(ev_object=obj, meta_key__startswith='shed_')
+        gazebo_data = ObjectMeta.objects.filter(ev_object=obj, meta_key__startswith='gazebo_')
+        
+        forms = {
+            'garage_form': self.form_garage(prefix='garage'),
+            'shed_form': self.form_shed(prefix='shed'),
+            'gazebo_form': self.form_gazebo(prefix='gazebo'),
         }
+
+        if garage_data.exists():
+            garage_initial = {meta.meta_key: meta.meta_value for meta in garage_data}
+            forms['garage_form'] = self.form_garage(initial=garage_initial, prefix='garage')
+
+        if shed_data.exists():
+            shed_initial = {meta.meta_key: meta.meta_value for meta in shed_data}
+            forms['shed_form'] = self.form_shed(initial=shed_initial, prefix='shed')
+
+        if gazebo_data.exists():
+            gazebo_initial = {meta.meta_key: meta.meta_value for meta in gazebo_data}
+            forms['gazebo_form'] = self.form_gazebo(initial=gazebo_initial, prefix='gazebo')
+
+        return forms
+        
+
+    def dispatch(self, request, *args, **kwargs):
+        order_id = self.request.session.get('order_id')
+        order = get_object_or_404(Order, id=order_id)
+
+        # Check if additional buildings data has already been entered
+        garage_data = ObjectMeta.objects.filter(ev_object=order.object, meta_key__startswith='garage_')
+        shed_data = ObjectMeta.objects.filter(ev_object=order.object, meta_key__startswith='shed_')
+        gazebo_data = ObjectMeta.objects.filter(ev_object=order.object, meta_key__startswith='gazebo_')
+
+        if garage_data.exists() or shed_data.exists() or gazebo_data.exists():
+            return redirect('modules.orders:select_agency')
+
+        return super().dispatch(request, *args, **kwargs)
 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        formsets = self.get_formsets()
-
-        if self.request.method == 'POST':
-            context.update({
-                'garage_formset': formsets['garage_formset'](self.request.POST, prefix='garages'),
-                'shed_formset': formsets['shed_formset'](self.request.POST, prefix='sheds'),
-                'gazebo_formset': formsets['gazebo_formset'](self.request.POST, prefix='gazebos'),
-            })
-
-        else:
-            context.update({
-                'garage_formset': formsets['garage_formset'](prefix='garages'),
-                'shed_formset': formsets['shed_formset'](prefix='sheds'),
-                'gazebo_formset': formsets['gazebo_formset'](prefix='gazebos'),
-            })
+        context.update(self.get_forms())
+        context['show_progress_bar'] = False
+        order_id = self.kwargs.get('order_id')
+        order = get_object_or_404(Order, id=order_id)
+        context['order'] = order
+        context['order_id'] = order_id
+        object_id = self.request.session.get('main_object_id')
+        obj = get_object_or_404(Object, id=object_id)
+        context['object'] = obj
+        context['object_id'] = object_id
+        context['is_evaluator'] = self.request.user.groups.filter(name='Evaluator').exists()
 
         return context
-
+    
 
     def post(self, request, *args, **kwargs):
-        formsets = self.get_formsets()
-        garage_formset = formsets['garage_formset'](request.POST, prefix='garages')
-        shed_formset = formsets['shed_formset'](request.POST, prefix='sheds')
-        gazebo_formset = formsets['gazebo_formset'](request.POST, prefix='gazebos')
+        forms = self.get_forms()
+        all_valid = True
 
-        if garage_formset.is_valid() or shed_formset.is_valid() or gazebo_formset.is_valid():
-            obj_id = request.session.get('main_object_id')
-            obj = self.model.objects.get(id=obj_id)
+        if 'garage_submit' in request.POST:
+            form_instance = self.form_garage(request.POST, prefix='garage')
 
-            for garage_form in garage_formset:
-                self.save_form_data(obj, garage_form.cleaned_data)
+            if form_instance.is_valid():
+                self.save_form_data(form_instance.cleaned_data)
 
-            for shed_form in shed_formset:
-                self.save_form_data(obj, shed_form.cleaned_data)
+            else:
+                forms['garage_form'] = form_instance
+                all_valid = False
 
-            for gazebo_form in gazebo_formset:
-                self.save_form_data(obj, gazebo_form.cleaned_data)
+        elif 'shed_submit' in request.POST:
+            form_instance = self.form_shed(request.POST, prefix='shed')
 
+            if form_instance.is_valid():
+                self.save_form_data(form_instance.cleaned_data)
+
+            else:
+                forms['shed_form'] = form_instance
+                all_valid = False
+
+        elif 'gazebo_submit' in request.POST:
+            form_instance = self.form_gazebo(request.POST, prefix='gazebo')
+
+            if form_instance.is_valid():
+                self.save_form_data(form_instance.cleaned_data)
+
+            else:
+                forms['gazebo_form'] = form_instance
+                all_valid = False
+
+        if all_valid:
             return redirect(self.success_url)
         
-        return self.form_invalid(garage_formset, shed_formset, gazebo_formset)
-    
-
-    def save_form_data(self, obj, cleaned_data):
-
-        for key, value in cleaned_data.items():
-            self.model.save_meta(obj, key, value)
+        return self.form_invalid(forms)
 
 
-    def form_invalid(self, garage_formset, shed_formset, gazebo_formset):
+    def form_invalid(self, forms):
         context = self.get_context_data()
-        context.update({
-            'garage_formset': garage_formset,
-            'shed_formset': shed_formset,
-            'gazebo_formset': gazebo_formset,
-        })
-
+        context.update(forms)
         return self.render_to_response(context)
-    
+
+
+    def save_form_data(self, cleaned_data):
+        object_id = self.request.session.get('main_object_id')
+        obj = get_object_or_404(Object, id=object_id)
+        for key, value in cleaned_data.items():
+            ObjectMeta.objects.create(ev_object=obj, meta_key=key, meta_value=value)
+
 
     
 
@@ -379,6 +426,12 @@ class OrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView):
         
         return self.model.objects.filter(client=user)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _('Užsakymų sąrašas')
+        context['user_is_agency'] = self.request.user.groups.filter(name='Agency').exists()
+        return context
+
 
 class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView):
     """
@@ -394,7 +447,13 @@ class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView)
 
     def get_queryset(self):
         user = self.request.user
-        queryset = self.model.objects.filter(evaluator=user)
+        evaluator_id = self.kwargs.get('id')
+        
+        if evaluator_id:
+            queryset = self.model.objects.filter(evaluator_id=evaluator_id)
+        else:
+            queryset = self.model.objects.filter(evaluator=user)
+
 
         municipality = self.request.GET.get('municipality')
         if municipality:
@@ -556,6 +615,7 @@ class ObjectUpdateView(UpdateView):
 
         return self.render_to_response(context)
 
+
     def save_form_data(self, obj, cleaned_data):
         for key, value in cleaned_data.items():
             self.model.save_meta(obj, key, value)
@@ -563,14 +623,14 @@ class ObjectUpdateView(UpdateView):
 
 
 
-class EditAdditionalBuildingsView(UpdateView):
+class EditAdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
     """
     Handles the editing of additional buildings associated with an object.
     Includes forms for garage, shed, and gazebo data.
     """
         
     model = Object
-    model_object = ObjectMeta
+    model_meta = ObjectMeta
     template_name = "edit_additional_buildings.html"
     success_url = reverse_lazy('modules.orders:order_list')
     fields = []
@@ -580,92 +640,102 @@ class EditAdditionalBuildingsView(UpdateView):
     form_gazebo = GazeboForm
 
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(self.model, pk=self.kwargs['pk'])
+
+
     def get_forms(self):
-        garage_data = self.model_object.objects.filter(ev_object=self.object, meta_key__startswith='garage_')
-        shed_data = self.model_object.objects.filter(ev_object=self.object, meta_key__startswith='shed_')
-        gazebo_data = self.model_object.objects.filter(ev_object=self.object, meta_key__startswith='gazebo_')
+        obj = self.get_object()
+        garage_data = self.model_meta.objects.filter(ev_object=obj, meta_key__startswith='garage_')
+        shed_data = self.model_meta.objects.filter(ev_object=obj, meta_key__startswith='shed_')
+        gazebo_data = self.model_meta.objects.filter(ev_object=obj, meta_key__startswith='gazebo_')
         
         forms = {}
+        context_flags = {}
 
         if garage_data.exists():
             garage_initial = {meta.meta_key: meta.meta_value for meta in garage_data}
             forms['garage_form'] = self.form_garage(initial=garage_initial, prefix='garage')
+            context_flags['show_garage_form'] = True
+
+        else:
+            forms['garage_form'] = self.form_garage(prefix='garage')
+            context_flags['show_garage_form'] = False
 
         if shed_data.exists():
             shed_initial = {meta.meta_key: meta.meta_value for meta in shed_data}
             forms['shed_form'] = self.form_shed(initial=shed_initial, prefix='shed')
+            context_flags['show_shed_form'] = True
+
+        else:
+            forms['shed_form'] = self.form_shed(prefix='shed')
+            context_flags['show_shed_form'] = False
 
         if gazebo_data.exists():
             gazebo_initial = {meta.meta_key: meta.meta_value for meta in gazebo_data}
             forms['gazebo_form'] = self.form_gazebo(initial=gazebo_initial, prefix='gazebo')
-        
-        return forms
+            context_flags['show_gazebo_form'] = True
+
+        else:
+            forms['gazebo_form'] = self.form_gazebo(prefix='gazebo')
+            context_flags['show_gazebo_form'] = False
+
+        return forms, context_flags
 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        forms = self.get_forms()
+        forms, context_flags = self.get_forms()
         context.update(forms)
+        context.update(context_flags)
         context['show_progress_bar'] = False
         context['is_evaluator'] = False 
         return context
 
 
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        forms = self.get_forms()
-        garage_form = forms.get('garage_form')
-        shed_form = forms.get('shed_form')
-        gazebo_form = forms.get('gazebo_form')
+        obj = self.get_object()
+        self.object = obj
 
-        if garage_form:
-            garage_form = self.form_garage(request.POST, prefix='garage')
+        garage_form = self.form_garage(request.POST, prefix='garage')
+        shed_form = self.form_shed(request.POST, prefix='shed')
+        gazebo_form = self.form_gazebo(request.POST, prefix='gazebo')
 
-        if shed_form:
-            shed_form = self.form_shed(request.POST, prefix='shed')
-
-        if gazebo_form:
-            gazebo_form = self.form_gazebo(request.POST, prefix='gazebo')
-
-        if (not garage_form or garage_form.is_valid()) and (not shed_form or shed_form.is_valid()) and (not gazebo_form or gazebo_form.is_valid()):
-            self.save_additional_buildings(self.object, garage_form, shed_form, gazebo_form)
+        if garage_form.is_valid():
+            self.save_form_data(obj, garage_form.cleaned_data)
+            print("Garage form data saved:", garage_form.cleaned_data)
             return redirect(self.success_url)
-        
-        return self.form_invalid(garage_form, shed_form, gazebo_form)
+
+        elif shed_form.is_valid():
+            self.save_form_data(obj, shed_form.cleaned_data)
+            print("Shed form data saved:", shed_form.cleaned_data)
+            return redirect(self.success_url)
+
+        elif gazebo_form.is_valid():
+            self.save_form_data(obj, gazebo_form.cleaned_data)
+            print("Gazebo form data saved:", gazebo_form.cleaned_data)
+            return redirect(self.success_url)
+
+        forms = {
+            'garage_form': garage_form,
+            'shed_form': shed_form,
+            'gazebo_form': gazebo_form,
+        }
+
+        return self.form_invalid(forms)
 
 
-    def form_invalid(self, garage_form, shed_form, gazebo_form):
+    def form_invalid(self, forms):
         context = self.get_context_data()
-
-        if garage_form:
-            context['garage_form'] = garage_form
-
-        if shed_form:
-            context['shed_form'] = shed_form
-
-        if gazebo_form:
-            context['gazebo_form'] = gazebo_form
-
+        context.update(forms)
         return self.render_to_response(context)
 
 
-    def save_additional_buildings(self, obj, garage_form, shed_form, gazebo_form):
-
-        if garage_form:
-            self.save_form_data(obj, garage_form.cleaned_data)
-
-        if shed_form:
-            self.save_form_data(obj, shed_form.cleaned_data)
-
-        if gazebo_form:
-            self.save_form_data(obj, gazebo_form.cleaned_data)
-
     def save_form_data(self, obj, cleaned_data):
+
         for key, value in cleaned_data.items():
-            self.model.save_meta(obj, key, value)
-
-
-
+            print(f"Saving {key}: {value}")
+            self.model_meta.objects.update_or_create(ev_object=obj, meta_key=key, defaults={'meta_value': value})
 
 class AgencySelectionView(LoginRequiredMixin, ListView):
     """
@@ -727,6 +797,7 @@ class AgencySelectionView(LoginRequiredMixin, ListView):
                 #appraiser_with_least_orders = User.objects.get(id=13)
                 # Associate the order with the selected appraiser
                 order.evaluator = appraiser_with_least_orders
+                order.status = 'Naujas'
                 order.save()
 
                 return redirect('modules.orders:order_list')

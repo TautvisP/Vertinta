@@ -283,6 +283,9 @@ class SimilarObject(models.Model):
     def __str__(self):
         return self.link
 
+
+
+
 class SimilarObjectMetadata(models.Model):
     similar_object = models.ForeignKey(SimilarObject, on_delete=models.CASCADE, related_name='metadata')
     key = models.CharField(max_length=255)
@@ -290,3 +293,17 @@ class SimilarObjectMetadata(models.Model):
 
     def __str__(self):
         return f"{self.key}: {self.value}"
+    
+
+    
+
+class UploadedDocument(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    file_name = models.CharField(max_length=255)
+    file_path = models.FileField(upload_to='uploaded_documents/')
+    content = models.TextField()
+    comment = models.TextField(blank=True, null=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.file_name

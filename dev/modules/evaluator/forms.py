@@ -6,7 +6,7 @@ from ..orders.models import ObjectImage, ImageAnnotation
 from django.utils.translation import gettext as _
 
 class EvaluatorEditForm(UserChangeForm):
-    name = forms.CharField(
+    first_name = forms.CharField(
         label=_('Vardas'), 
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
@@ -33,11 +33,17 @@ class EvaluatorEditForm(UserChangeForm):
 
     class Meta:
         model = User
-        fields = ('name', 'last_name', 'email')
+        fields = ('first_name', 'last_name', 'email')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['qualification_certificate_number'].initial = UserMeta.get_meta(self.instance, 'qualification_certificate_number')
+        self.fields['date_of_issue_of_certificate'].initial = UserMeta.get_meta(self.instance, 'date_of_issue_of_certificate')
+        self.fields['phone_num'].initial = UserMeta.get_meta(self.instance, 'phone_num')
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.first_name = self.cleaned_data['name']
+        user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
 
         if commit:
@@ -271,3 +277,12 @@ class SimilarObjectForm(forms.Form):
         label=_('Panašaus objekto aprašymas'), 
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
+
+
+
+class TextFileUploadForm(forms.Form):
+    file = forms.FileField(
+        label=_('Tekstinis failas'), widget=forms.ClearableFileInput(attrs={'class': 'form-control'}))
+    
+    comment = forms.CharField(
+        label=_('Komentaras'), widget=forms.TextInput(attrs={'class': 'form-control'}))

@@ -5,7 +5,39 @@
     <div class="progress-bar">
         {% with steps=1|range_filter:total_steps %}
             {% for step in steps %}
-                <div class="progress-bar-step {% if step < current_step %}progress-bar-completed{% elif step == current_step %}progress-bar-current{% endif %}">{{ step }}</div>
+                {% if step == 1 %}
+                    <a href="{% url 'modules.evaluator:edit_object_data' order.id order.object.id %}" class="progress-bar-step {% if step < current_step %}progress-bar-completed{% elif step == current_step %}progress-bar-current{% endif %}">
+                        {{ step }}
+                    </a>
+                {% elif step == 2 %}
+                    <a href="{% url 'modules.evaluator:edit_additional_buildings' order.id order.object.id %}" class="progress-bar-step {% if step < current_step %}progress-bar-completed{% elif step == current_step %}progress-bar-current{% endif %}">
+                        {{ step }}
+                    </a>
+                {% elif step == 3 %}
+                    <a href="{% url 'modules.evaluator:edit_RC_data' order.id order.object.id %}" class="progress-bar-step {% if step < current_step %}progress-bar-completed{% elif step == current_step %}progress-bar-current{% endif %}">
+                        {{ step }}
+                    </a>
+                {% elif step == 4 %}
+                    <a href="{% url 'modules.evaluator:edit_gallery' order.id order.object.id %}" class="progress-bar-step {% if step < current_step %}progress-bar-completed{% elif step == current_step %}progress-bar-current{% endif %}">
+                        {{ step }}
+                    </a>
+                {% elif step == 5 %}
+                    <a href="{% url 'modules.evaluator:similar_object_search' order.id order.object.id %}" class="progress-bar-step {% if step < current_step %}progress-bar-completed{% elif step == current_step %}progress-bar-current{% endif %}">
+                        {{ step }}
+                    </a>
+                {% elif step == 6 %}
+                    <a href="{% url 'modules.evaluator:document_import' order.id order.object.id %}" class="progress-bar-step {% if step < current_step %}progress-bar-completed{% elif step == current_step %}progress-bar-current{% endif %}">
+                        {{ step }}
+                    </a>
+                {% elif step == 7 %}
+                    <a href="#" class="progress-bar-step {% if step < current_step %}progress-bar-completed{% elif step == current_step %}progress-bar-current{% endif %}">
+                        {{ step }}
+                    </a>
+                {% elif step == 8 %}
+                    <a href="#" class="progress-bar-step {% if step < current_step %}progress-bar-completed{% elif step == current_step %}progress-bar-current{% endif %}">
+                        {{ step }}
+                    </a>
+                {% endif %}
                 {% if step < total_steps %}
                     <div class="progress-bar-line {% if step < current_step %}progress-bar-completed{% endif %}"></div>
                 {% endif %}

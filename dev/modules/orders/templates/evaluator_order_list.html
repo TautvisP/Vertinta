@@ -5,6 +5,10 @@
 
 {% block title %}{% trans 'Vertintojo užsakymai' %}{% endblock %}
 
+{% block bootstrap_css %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% endblock %}
+
 {% block content %}
 <div class="content-page">
     <div class="container">
@@ -19,7 +23,7 @@
                     <option value="{{ key }}" {% if key|stringformat:"d" == request.GET.municipality %}selected{% endif %}>{{ value }}</option>
                     {% endfor %}
                 </select>
-                <button type="submit" class="filter-button">{% trans 'Filtruoti' %}</button>
+                <button type="submit" class="clear-button">{% trans 'Filtruoti' %}</button>
                 <a href="{% url 'modules.orders:evaluator_order_list' %}" class="clear-button">{% trans 'Išvalyti' %}</a>
             </div>
         </form>
@@ -33,15 +37,23 @@
                     <p class="request-info">
                         <span class="priority {{ request.priority_class }}"></span>
                         {{ order.status }}
-                        · {{ order.client.get_full_name }} · {{ order.created }}
+                        · {{ order.client.get_full_name }} · {{ order.created|date:"Y-m-d" }}
                     </p>
                 </div>
+                {% if is_evaluator %}
                 <div class="request-actions">
-                    <button class="icon-button"><i class="icon icon-document"></i></button>
+                    <button class="icon-button">
+                        <img src="{% static 'icons/report.svg' %}" alt="Document Icon">
+                    </button>
                     <a href="{% url 'modules.evaluator:evaluation_steps' order.id %}" class="evaluate-button">{% trans 'Vertinti' %}</a>
-                    <button class="icon-button"><i class="icon icon-image"></i></button>
-                    <button class="icon-button"><i class="icon icon-trash"></i></button>
+                    <button class="icon-button">
+                        <img src="{% static 'icons/media-images.svg' %}" alt="Image Icon">
+                    </button>
+                    <button class="icon-button">
+                        <img src="{% static 'icons/trash.svg' %}" alt="Trash Icon">
+                    </button>
                 </div>
+                {% endif %}
             </div>
             {% endfor %}
         </div>

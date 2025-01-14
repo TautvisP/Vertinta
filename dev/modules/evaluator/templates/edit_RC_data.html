@@ -31,7 +31,7 @@
     <p>{% trans 'Šiuo metu duomenų neturime' %}</p>
 </form>
 <div class="navigation-buttons">
-    <a href="{% url 'modules.evaluator:edit_additional_buildings' order_id pk %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
-    <a href="{% url 'modules.evaluator:edit_gallery' order_id pk %}" class="btn btn-primary">{% trans "Pirmyn" %}</a>
+    <a href="{% url 'modules.evaluator:edit_additional_buildings' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
+    <a href="{% url 'modules.evaluator:edit_gallery' order_id pk %}" class="btn-forward">{% trans "Pirmyn" %}</a>
 </div>
 {% endblock %}

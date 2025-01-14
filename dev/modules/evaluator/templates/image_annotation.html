@@ -4,6 +4,10 @@
 
 {% block title %}{% trans 'Nuotraukos Anotavimas' %}{% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/annotation.css' %}">
+{% endblock %}
+
 {% block content %}
 {% if show_progress_bar %}
     {% include 'shared/progress_bar.html' %}
@@ -36,10 +40,10 @@
         </div>
     </div>
 
-    <div class="navigation-buttons">
-        <a href="{% url 'modules.evaluator:edit_gallery' order_id=order.id pk=image.id %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
-    </div>
 </div>
 
+<div class="navigation-buttons">
+    <a href="{% url 'modules.evaluator:edit_gallery' order_id=order.id pk=pk %}" class="btn-back">{% trans "Atgal" %}</a>
+</div>
 <script type="module" src="{% static 'main_image_annotation.js' %}"></script>
 {% endblock %}

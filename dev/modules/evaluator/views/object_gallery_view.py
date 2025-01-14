@@ -105,12 +105,14 @@ class ImageAnnotationView(LoginRequiredMixin, UserRoleContextMixin, TemplateView
         context = super().get_context_data(**kwargs)
         order_id = self.kwargs.get('order_id')
         image_id = self.kwargs.get('image_id')
+        pk = self.kwargs.get('pk')
         order = get_object_or_404(self.model, id=order_id)
         image = get_object_or_404(self.model_image, id=image_id, object=order.object)
         context['order'] = order
         context['image'] = image
         context['annotation_form'] = self.form_class_annotation()
         context['annotations'] = image.annotations.all()
+        context['pk'] = pk
         return context
 
 

@@ -30,6 +30,7 @@
                         <td>{{ evaluator.date_joined }}</td>
                         <td>
                             <a href="{% url 'modules.evaluator:edit_evaluator_account' evaluator.id %}" class="btn btn-primary">{% trans 'Redaguoti Profilį' %}</a>
+                            <a href="{% url 'modules.orders:specific_evaluator_order_list' evaluator.id %}" class="btn btn-primary">{% trans 'Užsakymai' %}</a>
                         </td>
                     </tr>
                     {% endfor %}

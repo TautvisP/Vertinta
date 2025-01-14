@@ -1,0 +1,75 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load custom_filters %}
+
+{% block title %}{% trans 'Dokumentų Pridėjimas' %}{% endblock %}
+
+{% block content %}
+{% if show_progress_bar %}
+    {% include 'shared/progress_bar.html' %}
+{% endif %}
+<link rel="stylesheet" href="{% static 'css/tabletStyle.css' %}">
+<div class="form-container">
+    <div class="rc-data">
+        <div class="container-fluid col-10">
+            <h3 class="header-title">{% trans "6. Dokumentų Pridėjimas" %}</h3>
+        </div>
+    </div>
+    <div class="container-fluid col-10">
+        <h3>{% trans "Vertinamas turtas" %}</h3>
+        <div class="order-data">
+            <p> {{ object.object_type }} {{ object.street }} {{ object.house_no }}, {{ object.municipality|get_municipality_name }}</p>
+            <p><strong>{% trans "Klientas:" %}</strong> {{ client.first_name }} {{ client.last_name }}</p>
+            <p>{{ phone_number }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="gallery-container">
+    <button id="openModal" class="add-btn">{% trans "Įkelti dokumentą" %}</button>
+    {% if uploaded_documents %}
+    <div class="uploaded-content">
+        <h3>{% trans "Įkelti Dokumentai" %}</h3>
+        <ul>
+            {% for doc in uploaded_documents %}
+            <li><a href="{% url 'modules.evaluator:view_document' document_id=doc.id %}" target="_blank">{{ doc.file_name }}</a> - {{ doc.comment }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Modal for file upload -->
+<div id="uploadModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">{% trans "Įkelti" %}</button>
+        </form>
+    </div>
+</div>
+
+<div class="navigation-buttons">
+    <a href="{% url 'modules.evaluator:similar_object_search' order_id pk %}" class="btn btn-primary">{% trans "Atgal" %}</a>
+</div>
+
+<script>
+document.getElementById('openModal').addEventListener('click', function(event) {
+    event.preventDefault();
+    document.getElementById('uploadModal').style.display = 'block';
+});
+
+document.querySelector('.close').addEventListener('click', function() {
+    document.getElementById('uploadModal').style.display = 'none';
+});
+
+window.addEventListener('click', function(event) {
+    if (event.target == document.getElementById('uploadModal')) {
+        document.getElementById('uploadModal').style.display = 'none';
+    }
+});
+</script>
+{% endblock %}

@@ -4,6 +4,10 @@
 
 {% block title %}{% trans 'Agentūros pasirinkimas' %}{% endblock %}
 
+{% block bootstrap_css %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% endblock %}
+
 {% block content %}
 <div class="content-page">
     <div class="content">
@@ -15,7 +19,7 @@
                     <thead>
                         <tr>
                             <th>{% trans 'Pavadinimas' %}</th>
-                            <th>{% trans 'Įkurimo data' %}</th>
+                            <th>{% trans 'Agentūris įkurimo data' %}</th>
                             <th>{% trans 'Vertintojų skaičius' %}</th>
                             <th>{% trans 'Užbaigti užsakymai' %}</th>
                             <th>{% trans 'Vertinimo pradinė kaina' %}</th>
@@ -26,7 +30,7 @@
                         {% for agency in agency_data %}
                         <tr>
                             <td>{{ agency.name }}</td>
-                            <td>{{ agency.date_joined }}</td>
+                            <td>{{ agency.date_joined|date:"Y-m-d" }}</td>
                             <td>{{ agency.evaluator_count }}</td>
                             <td>{{ agency.completed_orders }}</td>
                             <td>{{ agency.evaluation_starting_price }}</td>

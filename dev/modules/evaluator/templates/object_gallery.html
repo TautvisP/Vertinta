@@ -43,7 +43,7 @@
                     <p class="image-name">{{ image.comment }}</p>
                 </div> 
                 <div class="image-buttons">
-                    <a href="{% url 'modules.evaluator:image_annotation' order_id=order.id image_id=image.id %}" class="btn btn-secondary">{% trans "Anotuoti" %}</a>
+                    <a href="{% url 'modules.evaluator:image_annotation' order_id=order.id image_id=image.id pk=pk %}" class="btn btn-secondary">{% trans "Anotuoti" %}</a>
                     <form method="post" style="display:inline;">
                         {% csrf_token %}
                         <input type="hidden" name="image_id" value="{{ image.id }}">
@@ -67,8 +67,8 @@
     </div>
 
     <div class="navigation-buttons">
-        <a href="{% url 'modules.evaluator:edit_RC_data' order_id pk %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
-        <a href="{% url 'modules.evaluator:similar_object_search' order_id pk %}" class="btn btn-primary">{% trans "Pirmyn" %}</a>
+        <a href="{% url 'modules.evaluator:edit_RC_data' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
+        <a href="{% url 'modules.evaluator:similar_object_search' order_id pk %}" class="btn-forward">{% trans "Pirmyn" %}</a>
     </div>
 </div>
 <script type="module" src="{% static 'main_object_gallery.js' %}"></script>

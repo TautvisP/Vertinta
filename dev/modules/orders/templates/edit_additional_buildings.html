@@ -11,12 +11,14 @@
 <div class="content-page">
     <div class="content">
         <div class="container-fluid col-10">
-            {% if is_evaluator %}
-                <form action="{% url 'modules.evaluator:edit_additional_buildings' order_id pk %}" method="POST">{% csrf_token %}
-            {% else %}
-                <form action="{% url 'modules.orders:edit_additional_buildings' object.id %}" method="POST">{% csrf_token %}
-            {% endif %}
-                {% if garage_form %}
+        {% if is_evaluator %}
+            <form action="{% url 'modules.evaluator:edit_additional_buildings' order_id pk %}" method="POST">{% csrf_token %}
+            <h2>{% trans '2. Vertinamo Objekto Papildomi Statiniai' %}</h2>
+        {% else %}
+            <form action="{% url 'modules.orders:edit_additional_buildings' object.id %}" method="POST">{% csrf_token %}
+        {% endif %}
+                {% csrf_token %}
+                {% if show_garage_form %}
                 <div class="form-section">
                     <div class="col-sm-12">
                         <div class="card-box">
@@ -30,7 +32,7 @@
                     </div>
                 </div>
                 {% endif %}
-                {% if shed_form %}
+                {% if show_shed_form %}
                 <div class="form-section">
                     <div class="col-sm-12">
                         <div class="card-box">
@@ -44,7 +46,7 @@
                     </div>
                 </div>
                 {% endif %}
-                {% if gazebo_form %}
+                {% if show_gazebo_form %}
                 <div class="form-section">
                     <div class="col-sm-12">
                         <div class="card-box">
@@ -61,12 +63,13 @@
                 <button type="submit" class="btn btn-primary">{% trans 'Išsaugoti' %}</button>
             </form>
         </div>
-        {% if is_evaluator %}
-        <div class="navigation-buttons">
-            <a href="{% url 'modules.evaluator:edit_utility_info' order_id pk %}" class="btn btn-secondary">{% trans "Atgal" %}</a>
-            <a href="{% url 'modules.evaluator:edit_RC_data' order_id pk %}" class="btn btn-primary">{% trans "Pirmyn" %}</a>
-        </div>
-        {% endif %}
     </div>
+    
 </div>
+{% if is_evaluator %}
+<div class="navigation-buttons">
+    <a href="{% url 'modules.evaluator:edit_utility_info' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
+    <a href="{% url 'modules.evaluator:edit_RC_data' order_id pk %}" class="btn-forward">{% trans "Pirmyn" %}</a>
+</div>
+{% endif %}
 {% endblock %}

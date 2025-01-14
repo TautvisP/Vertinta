@@ -6,47 +6,84 @@
 
 {% block content %}
 <div class="containers">
-    <div class="registration-container">
-        <h2>{% trans 'Vertintojo Paskyra' %}</h2>
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                {{ form.name.label_tag }}
-                {{ form.name }}
-            </div>
-            <div class="form-group">
-                {{ form.last_name.label_tag }}
-                {{ form.last_name }}
-            </div>
-            <div class="form-group">
-                {{ form.email.label_tag }}
-                {{ form.email }}
-            </div>
-            <div class="form-group">
-                {{ form.phone_num.label_tag }}
-                {{ form.phone_num }}
-            </div>
-            <div class="form-group">
-                {{ password_form.old_password.label_tag }}
-                {{ password_form.old_password }}
-            </div>
-            <div class="form-group">
-                {{ password_form.new_password1.label_tag }}
-                {{ password_form.new_password1 }}
-            </div>
-            <div class="form-group">
-                {{ password_form.new_password2.label_tag }}
-                {{ password_form.new_password2 }}
-            </div>
-            <button type="submit" class="btn-submit">{% trans 'Išsaugoti' %}</button>
-        </form>
+    <div class="form-container">
+        <div class="registration-container">
+            <h2>{% trans 'Vertintojo Paskyra' %}</h2>
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        {% if 'profile' in message.tags %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.first_name.label_tag }}
+                    {{ form.first_name }}
+                </div>
+                <div class="form-group">
+                    {{ form.last_name.label_tag }}
+                    {{ form.last_name }}
+                </div>
+                <div class="form-group">
+                    {{ form.qualification_certificate_number.label_tag }}
+                    {{ form.qualification_certificate_number }}
+                </div>
+                <div class="form-group">
+                    {{ form.date_of_issue_of_certificate.label_tag }}
+                    {{ form.date_of_issue_of_certificate }}
+                </div>
+                <div class="form-group">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                </div>
+                <div class="form-group">
+                    {{ form.phone_num.label_tag }}
+                    {{ form.phone_num }}
+                </div>
+                <button type="submit" name="update_profile" class="btn-submit">{% trans 'Išsaugoti' %}</button>
+            </form>
+        </div>
+        <div class="registration-container">
+            <h2>{% trans 'Keisti Slaptažodį' %}</h2>
+            {% if password_form.errors %}
+                <ul class="messages">
+                    {% for field, errors in password_form.errors.items %}
+                        {% for error in errors %}
+                            <li class="error">{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        {% if 'password' in message.tags %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ password_form.old_password.label_tag }}
+                    {{ password_form.old_password }}
+                </div>
+                <div class="form-group">
+                    {{ password_form.new_password1.label_tag }}
+                    {{ password_form.new_password1 }}
+                </div>
+                <div class="form-group">
+                    {{ password_form.new_password2.label_tag }}
+                    {{ password_form.new_password2 }}
+                </div>
+                <button type="submit" name="change_password" class="btn-submit">{% trans 'Keisti Slaptažodį' %}</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

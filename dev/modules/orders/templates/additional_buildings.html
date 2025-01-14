@@ -13,54 +13,60 @@
         <div class="container-fluid col-10">
             <h2>{% trans '2. Vertinamo Objekto Papildomi Statiniai' %}</h2>
 
-            <div class="form-section" id="garage-section">
-                <h3>{% trans 'GARAŽAS' %}</h3>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ garage_formset.management_form }}
-                    <div id="garages-forms">
-                        {% for form in garage_formset %}
-                            <div class="form-row">
-                                {{ form.as_p }}
-                            </div>
-                        {% endfor %}
+            {% if not has_additional_buildings %}
+                <div class="alert alert-warning">
+                    {% trans "Šis objektas neturi papildomų statinių. Prašome pridėti papildomą statinį." %}
+                </div>
+            {% endif %}
+
+            <div class="form-section">
+                <h3 class="header-title">{% trans "Garažas" %}</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ garage_form.management_form }}
+                <div id="garages-forms">
+                    <div class="form-row">
+                        {{ garage_form.as_p }}
                     </div>
-                    <button type="submit" name="add_garage">{% trans 'Pridėti garažą' %}</button>
-                </form>
+                </div>
+                <button type="submit" name="garage_submit" class="btn-submit">{% trans 'Pridėti Garažą' %}</button>
+            </form>
             </div>
 
-            <div class="form-section" id="shed-section">
-                <h3>{% trans 'SANDĖLIUKAS' %}</h3>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ shed_formset.management_form }}
-                    <div id="sheds-forms">
-                        {% for form in shed_formset %}
-                            <div class="form-row">
-                                {{ form.as_p }}
-                            </div>
-                        {% endfor %}
+            <div class="form-section">
+                <h3 class="header-title">{% trans "Sandėliukas" %}</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ shed_form.management_form }}
+                <div id="sheds-forms">
+                    <div class="form-row">
+                        {{ shed_form.as_p }}
                     </div>
-                    <button type="submit" name="add_shed">{% trans 'Pridėti sandėliuką' %}</button>
-                </form>
+                </div>
+                <button type="submit" name="shed_submit" class="btn-submit">{% trans 'Pridėti Sandėliuką' %}</button>
+            </form>
             </div>
 
-            <div class="form-section" id="gazebo-section">
-                <h3>{% trans 'PAVĖSINĖ' %}</h3>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ gazebo_formset.management_form }}
-                    <div id="gazebos-forms">
-                        {% for form in gazebo_formset %}
-                            <div class="form-row">
-                                {{ form.as_p }}
-                            </div>
-                        {% endfor %}
+            <div class="form-section">
+                <h3 class="header-title">{% trans "Pavėsinė" %}</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ gazebo_form.management_form }}
+                <div id="gazebos-forms">
+                    <div class="form-row">
+                        {{ gazebo_form.as_p }}
                     </div>
-                    <button type="submit" name="add_gazebo">{% trans 'Pridėti pavėsinę' %}</button>
-                </form>
+                </div>
+                <button type="submit" name="gazebo_submit" class="btn-submit">{% trans 'Pridėti Pavėsinę' %}</button>
+            </form>
             </div>
         </div>
     </div>
 </div>
+{% if is_evaluator %}
+<div class="navigation-buttons">
+    <a href="{% url 'modules.evaluator:edit_utility_info' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
+    <a href="{% url 'modules.evaluator:edit_RC_data' order_id pk %}" class="btn-forward">{% trans "Pirmyn" %}</a>
+</div>
+{% endif %}
 {% endblock %}
