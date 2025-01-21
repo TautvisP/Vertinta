@@ -31,11 +31,31 @@
     {% if uploaded_documents %}
     <div class="uploaded-content">
         <h3>{% trans "Įkelti Dokumentai" %}</h3>
-        <ul>
-            {% for doc in uploaded_documents %}
-            <li><a href="{% url 'modules.evaluator:view_document' document_id=doc.id %}" target="_blank">{{ doc.file_name }}</a> - {{ doc.comment }}</li>
-            {% endfor %}
-        </ul>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>{% trans "Dokumento Pavadinimas" %}</th>
+                    <th>{% trans "Komentaras" %}</th>
+                    <th>{% trans "Veiksmai" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in uploaded_documents %}
+                <tr>
+                    <td><a href="{% url 'modules.evaluator:view_document' document_id=doc.id %}" target="_blank">{{ doc.file_name }}</a></td>
+                    <td>{{ doc.comment }}</td>
+                    <td>
+                        <form action="{% url 'modules.evaluator:delete_document' document_id=doc.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="icon-button">
+                                <img src="{% static 'icons/trash.svg' %}" alt="Trash Icon">
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     {% endif %}
 </div>
@@ -53,7 +73,8 @@
 </div>
 
 <div class="navigation-buttons">
-    <a href="{% url 'modules.evaluator:similar_object_search' order_id pk %}" class="btn btn-primary">{% trans "Atgal" %}</a>
+    <a href="{% url 'modules.evaluator:similar_object_search' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
+    <a href="{% url 'modules.evaluator:found_organizations' order_id pk %}" class="btn-forward">{% trans "Pirmyn" %}</a>
 </div>
 
 <script>

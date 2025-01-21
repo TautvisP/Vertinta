@@ -30,11 +30,11 @@
                         {{ step }}
                     </a>
                 {% elif step == 7 %}
-                    <a href="#" class="progress-bar-step {% if step < current_step %}progress-bar-completed{% elif step == current_step %}progress-bar-current{% endif %}">
+                    <a href="{% url 'modules.evaluator:found_organizations' order.id order.object.id %}" class="progress-bar-step {% if step < current_step %}progress-bar-completed{% elif step == current_step %}progress-bar-current{% endif %}">
                         {{ step }}
                     </a>
                 {% elif step == 8 %}
-                    <a href="#" class="progress-bar-step {% if step < current_step %}progress-bar-completed{% elif step == current_step %}progress-bar-current{% endif %}">
+                    <a href="{% url 'modules.evaluator:generate_report' order.id order.object.id %}" class="progress-bar-step {% if step < current_step %}progress-bar-completed{% elif step == current_step %}progress-bar-current{% endif %}">
                         {{ step }}
                     </a>
                 {% endif %}

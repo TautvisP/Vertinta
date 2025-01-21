@@ -1,4 +1,5 @@
 .progress-container {
+    font-weight: bold;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -27,6 +28,8 @@
     font-size: 16px;
     color: white;
     z-index: 1;
+    text-decoration: none;
+
 }
 
 .progress-bar-line {
@@ -41,5 +44,10 @@
 }
 
 .progress-bar-current {
-    background-color: green;
+    background-color: #ffffff;
+    text-decoration: none;
+    color: #4E78D2;
+    outline-color: #4E78D2;
+    outline-width: 3px;
+    outline-style: solid;
 }

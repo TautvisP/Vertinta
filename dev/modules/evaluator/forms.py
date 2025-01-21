@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 from core.uauth.models import User, UserMeta
-from ..orders.enums import (HOUSE_TYPE_CHOICES, FLOOR_COUNT_CHOICES, HEATING_CHOICES,COMERCIAL_CHOICES, BUILDING_CHOICES, EQUIPMENT_CHOICES, SIMILAR_OBJECT_CHOICES, SIMILAR_ACTION_CHOICES, MUNICIPALITY_CHOICES, LAND_PURPOSE_CHOICES, EVALUATION_PURPOSE_CHOICES, EVALUATION_CASE_CHOICES, IMAGE_CHOICES )
+from ..orders.enums import (HOUSE_TYPE_CHOICES, FLOOR_COUNT_CHOICES, HEATING_CHOICES,COMERCIAL_CHOICES, BUILDING_CHOICES, EQUIPMENT_CHOICES, SIMILAR_OBJECT_CHOICES, SIMILAR_ACTION_CHOICES, MUNICIPALITY_CHOICES, LAND_PURPOSE_CHOICES, EVALUATION_PURPOSE_CHOICES, EVALUATION_CASE_CHOICES, IMAGE_CHOICES, CATEGORY_CHOICES, OBJECT_TYPE_CHOICES )
 from ..orders.models import ObjectImage, ImageAnnotation
 from django.utils.translation import gettext as _
 
@@ -286,3 +286,178 @@ class TextFileUploadForm(forms.Form):
     
     comment = forms.CharField(
         label=_('Komentaras'), widget=forms.TextInput(attrs={'class': 'form-control'}))
+    
+
+
+
+class NearbyOrganizationForm(forms.Form):
+    name = forms.CharField(
+        label=_('Pavadinimas'),
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('Pavadinimas')
+        })
+    )
+    
+    category = forms.ChoiceField(
+        label=_('Kategorija'),
+        choices=CATEGORY_CHOICES,
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'placeholder': _('Kategorija')
+        })
+    )
+    
+    address = forms.CharField(
+        label=_('Adresas'),
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('Adresas')
+        })
+    )
+    
+    distance = forms.DecimalField(
+        label=_('Atstumas iki vertinamo objekto (m)'),
+        min_value=0,
+        decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('Atstumas, m')
+        })
+    )
+    
+    latitude = forms.DecimalField(
+        label=_('Platuma'),
+        max_digits=9,
+        decimal_places=6,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('54.906638')
+        })
+    )
+    
+    longitude = forms.DecimalField(
+        label=_('Ilguma'),
+        max_digits=9,
+        decimal_places=6,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('25.319142')
+        })
+    )
+
+
+
+
+
+class FinalReportForm(forms.Form):
+    customer_name = forms.CharField(
+        label=_('Užsakovo vardas'),
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('Užsakovo vardas')
+        })
+    )
+    
+    customer_surname = forms.CharField(
+        label=_('Užsakovo pavardė'),
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('Užsakovo pavardė')
+        })
+    )
+    
+    customer_phone = forms.CharField(
+        label=_('Telefono numeris'),
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('Telefono numeris')
+        })
+    )
+    
+    evaluation_object = forms.ChoiceField(
+        label=_('Vertinamas objektas'),
+        choices=OBJECT_TYPE_CHOICES,
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'placeholder': _('Pasirinkite objektą')
+        })
+    )
+    
+    visit_date = forms.DateField(
+        label=_('Turto apžiūros data'),
+        widget=forms.DateInput(attrs={
+            'class': 'form-control',
+            'type': 'date'
+        })
+    )
+    
+    report_date = forms.DateField(
+        label=_('Ataskaitos data'),
+        widget=forms.DateInput(attrs={
+            'class': 'form-control',
+            'type': 'date'
+        })
+    )
+    
+    description = forms.CharField(
+        label=_('Aprašymas'),
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': _('Įveskite aprašymą')
+        })
+    )
+
+
+
+
+
+
+class FinalReportTextForm(forms.Form):
+    engineering = forms.CharField(
+        label=_('Inžinerinė įranga'),
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': _('Įveskite aprašymą apie inžinerinę įrangą')
+        })
+    )
+
+    addictions = forms.CharField(
+        label=_('Priklausiniai'),
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': _('Priklausiniai')
+        })
+    )
+
+    floor_plan = forms.CharField(
+        label=_('Erdvinis išplanavimas'),
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': _('Erdvinis išplanavimas')
+        })
+    )
+
+    district = forms.CharField(
+        label=_('Rajono aprašymas'),
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': _('Rajono aprašymas')
+        })
+    )
+
+    conclusion = forms.CharField(
+        label=_('Išvada'),
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': _('Išvada')
+        })
+    )
+
+    valuation_methodology = forms.CharField(
+        label=_('Vertinimo metodika'),
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': _('Pritaikyta vertinimo metodika')
+        })
+    )

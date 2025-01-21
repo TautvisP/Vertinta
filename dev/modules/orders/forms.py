@@ -75,6 +75,13 @@ class ObjectLocationForm(forms.Form):
     
     house_no = forms.IntegerField(
         label=_('Namo nr.'),  min_value=1, error_messages=default_errors)
+    
+    latitude = forms.DecimalField(
+        label=_('Platuma'), max_digits=9, decimal_places=6, required=False, widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    
+    longitude = forms.DecimalField(
+        label=_('Ilguma'), max_digits=9, decimal_places=6, required=False, widget=forms.NumberInput(attrs={'class': 'form-control'}))
+
 
     def get_fields(self, *args, **kwargs):
         super(ObjectLocationForm, self).__init__(*args, **kwargs)

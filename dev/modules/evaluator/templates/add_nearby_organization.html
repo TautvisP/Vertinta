@@ -1,0 +1,48 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load custom_filters %}
+{% block title %}{% trans 'Artimo objekto pridėjimas' %}{% endblock %}
+
+{% block content %}
+{% if show_progress_bar %}
+    {% include 'shared/progress_bar.html' %}
+{% endif %}
+<link rel="stylesheet" href="{% static 'css/tabletStyle.css' %}">
+<div class="tablet-container">
+    <div class="form-container">
+        <div class="rc-data">
+            <div class="container-fluid col-10">
+                <h3 class="header-title">{% trans "7. Netoliese esančios įstaigos" %}</h3>
+            </div>
+        </div>
+        <div class="container-fluid col-10">
+            <h3>{% trans "Vertinamas turtas" %}</h3>
+            <div class="order-data">
+                <p> {{ object.object_type }} {{ object.street }} {{ object.house_no }}, {{ object.municipality|get_municipality_name }}</p>
+                <p><strong>{% trans "Klientas:" %}</strong> {{ client.first_name }} {{ client.last_name }}</p>
+                <p>{{ phone_number }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <a href="{% url 'modules.evaluator:found_organizations' order_id pk %}" class="tab">{% trans "Sistemos surasti objektai" %}</a>
+        <a href="{% url 'modules.evaluator:nearby_organization_list' order_id pk %}" class="tab">{% trans "Objektų sąrašas" %}</a>
+        <a href="{% url 'modules.evaluator:add_nearby_organization' order_id pk %}" class="tab active">{% trans "Artimo objekto pridėjimas" %}</a>
+    </div>
+
+    <div class="gallery-container">
+        <form method="post" class="grid-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">{% trans 'Pridėti' %}</button>
+        </form>
+    </div>
+</div>
+
+<div class="navigation-buttons">
+    <a href="{% url 'modules.evaluator:document_import' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
+    <a href="{% url 'modules.evaluator:generate_report' order_id pk %}" class="btn-forward">{% trans "Pirmyn" %}</a>
+</div>
+{% endblock %}

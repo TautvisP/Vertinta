@@ -141,8 +141,11 @@ class EditObjectDataView(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
 
     def save_form_data(self, obj, cleaned_data):
         for key, value in cleaned_data.items():
-            self.model.save_meta(obj, key, value)
-
+            if key in ['latitude', 'longitude']:
+                setattr(obj, key, value)
+            else:
+                self.model.save_meta(obj, key, value)
+        obj.save()
 
 
 

@@ -1,0 +1,38 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load custom_filters %}
+{% block title %}{% trans 'Ataskaitos generavimas' %}{% endblock %}
+
+{% block content %}
+{% if show_progress_bar %}
+    {% include 'shared/progress_bar.html' %}
+{% endif %}
+<link rel="stylesheet" href="{% static 'css/tabletStyle.css' %}">
+<div class="tablet-container">
+    <div class="form-container">
+        <div class="rc-data">
+            <div class="container-fluid col-10">
+                <h3 class="header-title">{% trans "8. Ataskaitos generavimas" %}</h3>
+            </div>
+        </div>
+        <div class="container-fluid col-10">
+            <h3>{% trans "Vertinamas turtas" %}</h3>
+            <div class="order-data">
+                <p> {{ object.object_type }} {{ object.street }} {{ object.house_no }}, {{ object.municipality|get_municipality_name }}</p>
+                <p><strong>{% trans "Klientas:" %}</strong> {{ client.first_name }} {{ client.last_name }}</p>
+                <p>{{ phone_number }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="gallery-container">
+        <h3>Under Construction</h3>
+
+    </div>
+</div>
+
+<div class="navigation-buttons">
+    <a href="{% url 'modules.evaluator:nearby_organization_list' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
+</div>
+{% endblock %}

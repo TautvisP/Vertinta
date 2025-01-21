@@ -1,0 +1,74 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load custom_filters %}
+{% block title %}{% trans 'Pridėtos Netoliese esančios įstaigos' %}{% endblock %}
+
+{% block content %}
+{% if show_progress_bar %}
+    {% include 'shared/progress_bar.html' %}
+{% endif %}
+<link rel="stylesheet" href="{% static 'css/tabletStyle.css' %}">
+<div class="tablet-container">
+    <div class="form-container">
+        <div class="rc-data">
+            <div class="container-fluid col-10">
+                <h3 class="header-title">{% trans "7. Netoliese esančios įstaigos" %}</h3>
+            </div>
+        </div>
+        <div class="container-fluid col-10">
+            <h3>{% trans "Vertinamas turtas" %}</h3>
+            <div class="order-data">
+                <p> {{ object.object_type }} {{ object.street }} {{ object.house_no }}, {{ object.municipality|get_municipality_name }}</p>
+                <p><strong>{% trans "Klientas:" %}</strong> {{ client.first_name }} {{ client.last_name }}</p>
+                <p>{{ phone_number }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <a href="{% url 'modules.evaluator:found_organizations' order_id pk %}" class="tab">{% trans "Sistemos surasti objektai" %}</a>
+        <a href="{% url 'modules.evaluator:nearby_organization_list' order_id pk %}" class="tab active">{% trans "Objektų sąrašas" %}</a>
+        <a href="{% url 'modules.evaluator:add_nearby_organization' order_id pk %}" class="tab">{% trans "Artimo objekto pridėjimas" %}</a>
+    </div>
+
+    <div class="gallery-container">
+        {% if added_nearby_organizations %}
+        <table class="table">
+            <tbody>
+                {% for org in added_nearby_organizations %}
+                <tr><td>                
+                <div class="request-details">
+                    <p class="request-title">{{ org.category|translate_category }} · {{ org.name }} · {{ org.address }}</p>
+                    <p class="request-info">
+                        <span class="priority {{ request.priority_class }}"></span>
+                        {{ org.distance }} m</p>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" onclick="copyToClipboard('{{ org.latitude }}, {{ org.longitude }}')">{% trans "Kopijuoti vietą" %}</button>
+                        <form method="post" action="{% url 'modules.evaluator:delete_nearby_organization' organization_id=org.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="icon-button">
+                                <img src="{% static 'icons/trash.svg' %}" alt="Trash Icon">
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>{% trans "Pridėtų netoliese esančių įstaigų nerasta." %}</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="navigation-buttons">
+    <a href="{% url 'modules.evaluator:document_import' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
+    <a href="{% url 'modules.evaluator:generate_report' order_id pk %}" class="btn-forward">{% trans "Pirmyn" %}</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="{% static 'clipboard.js' %}"></script>
+{% endblock %}

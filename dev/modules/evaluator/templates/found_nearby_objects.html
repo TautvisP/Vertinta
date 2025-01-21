@@ -1,0 +1,105 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load i18n %}
+{% load custom_filters %}
+{% block title %}{% trans 'Netoliese esančios įstaigos' %}{% endblock %}
+
+{% block content %}
+{% if show_progress_bar %}
+    {% include 'shared/progress_bar.html' %}
+{% endif %}
+<link rel="stylesheet" href="{% static 'css/tabletStyle.css' %}">
+<div class="tablet-container">
+    <div class="form-container">
+        <div class="rc-data">
+            <div class="container-fluid col-10">
+                <h3 class="header-title">{% trans "7. Netoliese esančios įstaigos" %}</h3>
+            </div>
+        </div>
+        <div class="container-fluid col-10">
+            <h3>{% trans "Vertinamas turtas" %}</h3>
+            <div class="order-data">
+                <p> {{ object.object_type }} {{ object.street }} {{ object.house_no }}, {{ object.municipality|get_municipality_name }}</p>
+                <p><strong>{% trans "Klientas:" %}</strong> {{ client.first_name }} {{ client.last_name }}</p>
+                <p>{{ phone_number }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tabs">
+        <a href="{% url 'modules.evaluator:found_organizations' order_id pk %}" class="tab active">{% trans "Sistemos surasti objektai" %}</a>
+        <a href="{% url 'modules.evaluator:nearby_organization_list' order_id pk %}" class="tab">{% trans "Objektų sąrašas" %}</a>
+        <a href="{% url 'modules.evaluator:add_nearby_organization' order_id pk %}" class="tab">{% trans "Artimo objekto pridėjimas" %}</a>
+    </div>
+
+    <div class="gallery-container">
+        {% if messages %}
+            <div class="alert alert-warning">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form method="get" class="filter-form">
+            <label for="object_type">{% trans "Objekto tipas" %}</label>
+            <select name="object_type" id="object_type">
+                <option value="all" {% if object_type == 'all' %}selected{% endif %}>{% trans "Visi" %}</option>
+                <option value="school" {% if object_type == 'school' %}selected{% endif %}>{% trans "Mokykla" %}</option>
+                <option value="hospital" {% if object_type == 'hospital' %}selected{% endif %}>{% trans "Ligoninė" %}</option>
+                <option value="supermarket" {% if object_type == 'supermarket' %}selected{% endif %}>{% trans "Prekybos centras" %}</option>
+                <option value="pharmacy" {% if object_type == 'pharmacy' %}selected{% endif %}>{% trans "Vaistinė" %}</option>
+                <option value="bakery" {% if object_type == 'bakery' %}selected{% endif %}>{% trans "Kepykla" %}</option>
+                <option value="police" {% if object_type == 'police' %}selected{% endif %}>{% trans "Policija" %}</option>
+                <option value="fire_station" {% if object_type == 'fire_station' %}selected{% endif %}>{% trans "Gaisrinė" %}</option>
+                <option value="post_office" {% if object_type == 'post_office' %}selected{% endif %}>{% trans "Paštas" %}</option>
+            </select>
+
+            <label for="search_radius">{% trans "Paieškos spindulys (m)" %}</label>
+            <input type="number" name="search_radius" id="search_radius" value="{{ search_radius }}" min="100" max="10000" step="100">
+
+            <button type="submit" class="btn btn-primary">{% trans "Filtruoti" %}</button>
+        </form>
+
+        {% if nearby_organizations %}
+        <table class="table">
+            <tbody>
+                {% for org in nearby_organizations %}
+                <tr><td>                
+                <div class="request-details">
+                    <p class="request-title">{{ org.category|translate_category }} · {{ org.name }} · {{ org.address }}</p>
+                    <p class="request-info">
+                        <span class="priority {{ request.priority_class }}"></span>
+                        {{ org.distance }} m</p>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" onclick="copyToClipboard('{{ org.latitude }}, {{ org.longitude }}')">{% trans "Kopijuoti vietą" %}</button>
+                        <form method="post" action="{% url 'modules.evaluator:found_organizations' order_id=order.id pk=pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="name" value="{{ org.name }}">
+                            <input type="hidden" name="latitude" value="{{ org.latitude }}">
+                            <input type="hidden" name="longitude" value="{{ org.longitude }}">
+                            <input type="hidden" name="address" value="{{ org.address }}">
+                            <input type="hidden" name="distance" value="{{ org.distance }}">
+                            <input type="hidden" name="category" value="{{ org.category }}">
+                            <button type="submit" class="btn btn-secondary">{% trans "Pridėti" %}</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>{% trans "Netoliese esančių įstaigų nerasta." %}</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="navigation-buttons">
+    <a href="{% url 'modules.evaluator:similar_object_search' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
+    <a href="{% url 'modules.evaluator:generate_report' order_id pk %}" class="btn-forward">{% trans "Pirmyn" %}</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="{% static 'clipboard.js' %}"></script>
+{% endblock %}

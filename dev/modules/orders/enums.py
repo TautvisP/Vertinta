@@ -571,3 +571,15 @@ SIMILAR_ACTION_CHOICES = [
     (SIMILAR_ACTION_TYPE_1, SIMILAR_ACTION_TYPE_1),
     (SIMILAR_ACTION_TYPE_2, SIMILAR_ACTION_TYPE_2),
 ]
+
+CATEGORY_CHOICES = {
+    'school': _('Mokykla'),
+    'hospital': _('Ligoninė'),
+    'supermarket': _('Prekybos centras'),
+    'pharmacy': _('Vaistinė'),
+    'bakery': _('Kepykla'),
+    'police': _('Policija'),
+    'fire_station': _('Gaisrinė'),
+    'post_office': _('Paštas'),
+    'other': _('Kita')
+}

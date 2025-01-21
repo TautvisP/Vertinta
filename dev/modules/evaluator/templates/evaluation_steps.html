@@ -16,8 +16,8 @@
             <a href="{% url 'modules.evaluator:edit_gallery' order.id order.object.id %}" class="step-button">{% trans '4. Vertinamo objekto nuotraukos' %}</a>
             <a href="{% url 'modules.evaluator:similar_object_search' order.id order.object.id %}" class="step-button">{% trans '5. Panašių objektų paieška' %}</a>
             <a href="{% url 'modules.evaluator:document_import' order.id order.object.id %}" class="step-button">{% trans '6. Dokumentų pridėjimas' %}</a>
-            <button class="step-button">{% trans '7. Netoliese esančios įstaigos' %}</button>
-            <button class="step-button">{% trans '8. Ataskaitos generavimas' %}</button>
+            <a href="{% url 'modules.evaluator:found_organizations' order.id order.object.id %}" class="step-button">{% trans '7. Netoliese esančios įstaigos' %}</a>
+            <a href="{% url 'modules.evaluator:generate_report' order.id order.object.id %}" class="step-button">{% trans '8. Ataskaitos generavimas' %}</a>
         </div>
         <button class="start-button">{% trans 'Pradėti' %}</button>
     </div>

@@ -58,33 +58,29 @@ Fix responsive design
 
 Would be a good idea to have some sort of list for added additional files for the object, so the evaluator would be able to remove or edit added files and their content.
 
-Need to test document addition with a .docx file.
-
-When uploading a .odt file, its formatting doesnt seem to be getting extracted, needs further tweaking.
-
 + When a user is editing his account, seperate the account data and password change forms. Its annoying to enter your password 3 times to change the name.
 
 + Agency cant see evaluators orders.
 
 + When evaluator goes into annotation, then presses "Atgal", then presses "Pirmyn", an error occurs, but if he presses "Pirmyn" without going to annotate, everything workds fine.
 
-Need to further implement document addition, since the conversion from odt to pdf doesnt keep the formatting, and most other approaches I've tested do not work. Currently .txt to .pdf seems to work fine, .odt to .pdf doesnt keep the formatting (new lines and tabulations), .docx to .pdf isnt tested yet. Also need to test with pictures, tables and other more difficult scenarios in the files. IDEA: maybe upload original documents content as pictures to pdf?
-
 Need to check every views permission, because now if im logged in as agency and go into evaluator specific url (http://127.0.0.1:8000/evaluator/evaluation_steps/19/), I can fully edit the order and do other tasks without being prompted to log in. Permissions are messed up.
 in https://docs.djangoproject.com/en/5.1/topics/auth/default/#topic-authorization  search for The PermissionRequiredMixin mixin
 
+Additional documents should be converted to pdf, the final report to latex and then to pdf, as the last step of the final report generation, combine additional documents with the final one using linux built in commands (pdftk, imagemagic) https://stackoverflow.com/questions/2507766/merge-convert-multiple-pdf-files-into-one-pdf
 
-papildomus dokus i pdf, pagrindine ataskaita i latex ir paskui i pdf
+Need to further implement document addition, since the conversion from odt to pdf doesnt keep the formatting, and most other approaches I've tested do not work. Currently .txt to .pdf seems to work fine, .odt to .pdf doesnt keep the formatting (new lines and tabulations), .docx to .pdf isnt tested yet. Also need to test with pictures, tables and other more difficult scenarios in the files. IDEA: maybe upload original documents content as pictures to pdf?
 
-https://stackoverflow.com/questions/2507766/merge-convert-multiple-pdf-files-into-one-pdf
-
-
-pdftk
-
-imagemagic
-
-
-https://fontawesome.com/icons/categories/coding
-
+should use css instead of .csv: https://fontawesome.com/icons/categories/coding
 
 for nicer forms: https://nielsvoogt.github.io/nice-forms.css/
+
+Need to test nearby organization coordinate copy button on different OS and browsers.
+
++ Need to fix nearby organization addition, add a check for duplicates in list, translate category with CATEGORY_CHOICES enum, also need to add the ability for the user to manually add nearby organizations. 
+
+Need to add viewing of data functionality, because now it is combined with editing. If the user is only viewing, more information could be displayed on the screen.
+
+Need to make warning and success messages to the standards of codex/osom. Also make a warning message if an object exists in add_nearby_organization. Sometimes in found_organizations, multiple errors stack: """Organization added successfully. Organization already exists in the database. Organization already exists in the database. Organization already exists in the database."""
+
+Would be a good idea to have a help page (or a quesntion mark which after pressed would bring up a pop up with info) for the more intricate input fields. Or an info page that would provide with general information(link to https://e-seimas.lrs.lt/portal/legalAct/lt/TAD/TAIS.82185)

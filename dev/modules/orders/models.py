@@ -8,6 +8,9 @@ class Object(models.Model):
     #evaluation = models.ForeignKey(Evaluation, on_delete=models.CASCADE)
     #title = models.CharField(max_length=45)
     object_type = models.CharField(choices=OBJECT_TYPE_CHOICES, max_length=45)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    
 
     #def __str__(self):
     #    return '{0} - {1}'.format(self.object_type,
@@ -307,3 +310,18 @@ class UploadedDocument(models.Model):
 
     def __str__(self):
         return self.file_name
+    
+
+
+
+class NearbyOrganization(models.Model):
+    object = models.ForeignKey(Object, on_delete=models.CASCADE, related_name='nearby_organizations')
+    name = models.CharField(max_length=255)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    address = models.CharField(max_length=255)
+    distance = models.DecimalField(max_digits=8, decimal_places=2)
+    category = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name

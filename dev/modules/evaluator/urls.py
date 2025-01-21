@@ -4,7 +4,10 @@ from .views.main_view import EditEvaluatorAccountView, EvaluationStepsView,  RCD
 from .views.object_data_view import EditObjectDataView, EditEvaluationAndDecoInfo, EditCommonInfo, EditUtilityInfo, EvaluatorEditAdditionalBuildings
 from .views.object_gallery_view import EditObjectGalleryView, ImageAnnotationView, AnnotationDetailView
 from .views.similar_objects_view import SimilarObjectSearchView, SimilarObjectListView, SimilarObjectResultsView, EditSimilarObjectDataView, EditSimilarObjectDecorationView, EditSimilarObjectCommonInfoView, EditSimilarObjectUtilityInfoView
-from .views.document_import_view import DocumentImportView, DocumentView
+from .views.document_import_view import DocumentImportView, DocumentView, DeleteDocumentView
+from .views.nearby_organization_view import FoundNearbyOrganizationView, NearbyOrganizationListView, DeleteNearbyOrganizationView, AddNearbyOrganizationView
+from .views.generate_report_view import GenerateReportView
+
 app_name = 'modules.evaluator'
 
 urlpatterns = [
@@ -49,6 +52,14 @@ urlpatterns = [
     #6
     path('evaluation_steps/<int:order_id>/document_import/<int:pk>/', DocumentImportView.as_view(), name='document_import'),
     path('documents/<int:document_id>/', DocumentView.as_view(), name='view_document'),
+    path('documents/delete/<int:document_id>/', DeleteDocumentView.as_view(), name='delete_document'),
 
+    #7
+    path('evaluation_steps/<int:order_id>/found_organizations/<int:pk>/', FoundNearbyOrganizationView.as_view(), name='found_organizations'),
+    path('evaluation_steps/<int:order_id>/nearby_organization_list/<int:pk>/', NearbyOrganizationListView.as_view(), name='nearby_organization_list'),
+    path('delete_nearby_organization/<int:organization_id>/', DeleteNearbyOrganizationView.as_view(), name='delete_nearby_organization'),
+    path('add_nearby_organization/<int:order_id>/<int:pk>/', AddNearbyOrganizationView.as_view(), name='add_nearby_organization'),
 
+    #8
+    path('evaluation_steps/<int:order_id>/generate_report/<int:pk>/', GenerateReportView.as_view(), name='generate_report'),
 ]

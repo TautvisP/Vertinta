@@ -11,6 +11,7 @@ from odf.opendocument import load as load_odt
 from odf.text import P
 from PyPDF2 import PdfFileMerger
 import os
+import subprocess
 import pypandoc
 from django.http import FileResponse
 from django.conf import settings
@@ -26,6 +27,7 @@ TOTAL_STEPS = 8
 SHOW_PROGRESS_BAR = True
 
 class DocumentView(LoginRequiredMixin, View):
+    
     def get(self, request, document_id):
         document = get_object_or_404(UploadedDocument, id=document_id)
         response = FileResponse(document.file_path.open('rb'), content_type='application/pdf')
@@ -33,13 +35,14 @@ class DocumentView(LoginRequiredMixin, View):
         return response
     
 
+
+
 class DocumentImportView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
     model = Object
     user_meta = UserMeta
     template_name = "document_addition.html"
     login_url = 'core.uauth:login'
     redirect_field_name = 'next'
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -88,7 +91,6 @@ class DocumentImportView(LoginRequiredMixin, UserRoleContextMixin, TemplateView)
                 comment=comment
             )
             print("UploadedDocument instance created")
-
             return redirect('modules.evaluator:document_import', order_id=order_id, pk=self.kwargs['pk'])
         
         else:
@@ -101,7 +103,7 @@ class DocumentImportView(LoginRequiredMixin, UserRoleContextMixin, TemplateView)
         file_name, file_extension = os.path.splitext(file.name)
         pdf_buffer = BytesIO()
 
-        # Need to register a font that supports Lithuanian characters
+        # Register a font that supports Lithuanian characters
         font_path = os.path.join(settings.BASE_DIR, 'shared/static/fonts/DejaVuSans.ttf')
 
         if not os.path.exists(font_path):
@@ -109,8 +111,9 @@ class DocumentImportView(LoginRequiredMixin, UserRoleContextMixin, TemplateView)
         
         pdfmetrics.registerFont(TTFont('DejaVuSans', font_path))
 
-        if file_extension in ['.docx', '.odt']:
+        if file_extension == '.docx':
             temp_file_path = os.path.join(settings.MEDIA_ROOT, 'uploaded_documents', f"{file_name}{file_extension}")
+            
             with open(temp_file_path, 'wb') as temp_file:
 
                 for chunk in file.chunks():
@@ -120,22 +123,62 @@ class DocumentImportView(LoginRequiredMixin, UserRoleContextMixin, TemplateView)
 
             # Convert the file to PDF using pypandoc with pdflatex as the PDF engine
             pdf_path = os.path.join(settings.MEDIA_ROOT, 'uploaded_documents', f"{file_name}.pdf")
-            
+
             try:
                 pypandoc.convert_file(temp_file_path, 'pdf', outputfile=pdf_path, extra_args=['--pdf-engine=pdflatex'])
                 print(f"Converted {temp_file_path} to {pdf_path}")
-            
+
             except Exception as e:
                 print(f"Conversion failed: {e}")
                 raise
 
             with open(pdf_path, 'rb') as pdf_file:
                 pdf_content = pdf_file.read()
+
             pdf_file = ContentFile(pdf_content, name=f"{file_name}.pdf")
 
             os.remove(temp_file_path)
 
             return pdf_file
+        
+        elif file_extension == '.odt':
+            temp_file_path = os.path.join(settings.MEDIA_ROOT, 'uploaded_documents', f"{file_name}{file_extension}")
+            
+            with open(temp_file_path, 'wb') as temp_file:
+
+                for chunk in file.chunks():
+                    temp_file.write(chunk.replace(b'\t', b'    '))
+
+            pdf_path = os.path.join(settings.MEDIA_ROOT, 'uploaded_documents', f"{file_name}.pdf")
+
+            #Using unoconv to convert the file to PDF
+            try:
+                result = subprocess.run(
+                    [
+                        "unoconv",
+                        "-f",
+                        "pdf",
+                        "-o",
+                        pdf_path,
+                        temp_file_path
+                    ],
+                    check=True,
+                    capture_output=True,
+                    text=True
+                )
+                print(f"unoconv output: {result.stdout}")
+                print(f"unoconv errors: {result.stderr}")
+
+            except subprocess.CalledProcessError as e:
+                print(f"unoconv conversion failed: {e.stderr}")
+                raise
+
+            with open(pdf_path, 'rb') as pdf_file:
+                pdf_content = pdf_file.read()
+
+            os.remove(temp_file_path)
+
+            return ContentFile(pdf_content, name=f"{file_name}.pdf")
         
         elif file_extension == '.txt':
             content = file.read().decode('utf-8')
@@ -166,3 +209,13 @@ class DocumentImportView(LoginRequiredMixin, UserRoleContextMixin, TemplateView)
 
         merger.write(output_path)
         merger.close()
+
+
+
+
+class DeleteDocumentView(LoginRequiredMixin, View):
+
+    def post(self, request, document_id):
+        document = get_object_or_404(UploadedDocument, id=document_id)
+        document.delete()
+        return redirect(request.META.get('HTTP_REFERER', 'modules.evaluator:document_import'))
