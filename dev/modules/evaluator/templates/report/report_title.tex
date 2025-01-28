@@ -1,0 +1,30 @@
+{% load custom_filters %}
+
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+
+    {\Huge \textbf{Turto Vertinimo Ataskaita}} \\[1.5cm]
+
+    \includegraphics[width=0.4\textwidth]{./media/logo.png} \\[1.5cm]
+
+    \begin{tabbing}
+        \hspace{8cm} \= \kill
+        \textbf{Užsakovo vardas:} \> {{ client_first_name }} \\
+        \textbf{Užsakovo pavardė:} \> {{ client_last_name }} \\
+        \textbf{Telefono numeris:} \> {{ customer_phone }} \\
+        \textbf{Ataskaitos data:} \> {{ report_date }} \\
+        \textbf{Vertinamas turtas:} \> {{ property_street }} {{ property_house_no }}, {{ property_municipality|get_municipality_name }} \\
+    \end{tabbing}
+
+    \vfill
+
+    \textbf{Vertinimo įmonė:} \\
+    {{ company_name }} \\
+    \textbf{Vadovas:} \\
+    {{ manager_first_name }} {{ manager_last_name }} \\
+    \textbf{Vertintojas:} \\
+    {{ evaluator_first_name }} {{ evaluator_last_name }}
+
+    \vspace*{2cm}
+\end{titlepage}

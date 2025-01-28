@@ -48,9 +48,14 @@ class EditObjectDataView(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
 
 
     def get_initial_data(self, obj):
-        initial_data = {}
+        initial_data = {
+            'municipality': obj.municipality,
+            'street': obj.street,
+            'house_no': obj.house_no,
+            'latitude': obj.latitude,
+            'longitude': obj.longitude,
+        }
         meta_data = self.model_meta.objects.filter(ev_object=obj)
-
         for meta in meta_data:
             initial_data[meta.meta_key] = meta.meta_value
         return initial_data

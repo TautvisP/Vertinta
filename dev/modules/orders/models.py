@@ -325,3 +325,25 @@ class NearbyOrganization(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+
+
+
+class Report(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE)
+    customer_name = models.CharField(max_length=255, blank=True, null=True)
+    customer_surname = models.CharField(max_length=255, blank=True, null=True)
+    customer_phone = models.CharField(max_length=20, blank=True, null=True)
+    visit_date = models.DateField(blank=True, null=True)
+    report_date = models.DateField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    engineering = models.TextField(blank=True, null=True)
+    addictions = models.TextField(blank=True, null=True)
+    floor_plan = models.TextField(blank=True, null=True)
+    district = models.TextField(blank=True, null=True)
+    conclusion = models.TextField(blank=True, null=True)
+    valuation_methodology = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Report for Order {self.order.id}"

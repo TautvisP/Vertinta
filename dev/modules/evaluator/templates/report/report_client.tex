@@ -1,0 +1,20 @@
+\section{Užsakovas}
+
+\textbf{Užsakovo informacija:}
+
+Užsakovas {{ client_first_name }} {{ client_last_name }}. Kontaktinis telefono numeris {{ customer_phone }}. Užsakovas pateikė šią informaciją vertinimo ataskaitai. Užsakovas yra atsakingas už pateiktų duomenų tikslumą ir išsamumą. 
+
+{% if client.email %}
+El. paštas: {{ client.email }}. 
+{% endif %}
+{% if client.address %}
+Adresas: {{ client.address }}. 
+{% endif %}
+
+{% if order.order_date %}
+Užsakymo data: {{ order.order_date }}. 
+{% endif %}
+
+{% if client.comments %}
+Komentarai: {{ client.comments }}.
+{% endif %}

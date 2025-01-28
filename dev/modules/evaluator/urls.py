@@ -6,7 +6,7 @@ from .views.object_gallery_view import EditObjectGalleryView, ImageAnnotationVie
 from .views.similar_objects_view import SimilarObjectSearchView, SimilarObjectListView, SimilarObjectResultsView, EditSimilarObjectDataView, EditSimilarObjectDecorationView, EditSimilarObjectCommonInfoView, EditSimilarObjectUtilityInfoView
 from .views.document_import_view import DocumentImportView, DocumentView, DeleteDocumentView
 from .views.nearby_organization_view import FoundNearbyOrganizationView, NearbyOrganizationListView, DeleteNearbyOrganizationView, AddNearbyOrganizationView
-from .views.generate_report_view import GenerateReportView
+from .views.generate_report_view import GenerateReportView, FinalReportEngineeringView, GenerateLatexReportView
 
 app_name = 'modules.evaluator'
 
@@ -62,4 +62,7 @@ urlpatterns = [
 
     #8
     path('evaluation_steps/<int:order_id>/generate_report/<int:pk>/', GenerateReportView.as_view(), name='generate_report'),
+    path('evaluation_steps/<int:order_id>/final_report_engineering/<int:pk>/', FinalReportEngineeringView.as_view(), name='final_report_engineering'),
+    path('evaluation_steps/<int:order_id>/generate_latex_report/<int:pk>/', GenerateLatexReportView.as_view(), name='generate_latex_report'),
+
 ]

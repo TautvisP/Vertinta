@@ -127,7 +127,7 @@ class ImageAnnotationView(LoginRequiredMixin, UserRoleContextMixin, TemplateView
             annotation = annotation_form.save(commit=False)
             annotation.image = image
             annotation.save()
-            return redirect('modules.evaluator:image_annotation', order_id=order_id, image_id=image_id)
+            return redirect('modules.evaluator:image_annotation', order_id=order_id, image_id=image_id, pk=order.object.id)
         
         context = self.get_context_data(**kwargs)
         context['annotation_form'] = annotation_form
