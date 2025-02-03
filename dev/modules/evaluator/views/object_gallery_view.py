@@ -98,7 +98,6 @@ class ImageAnnotationView(LoginRequiredMixin, UserRoleContextMixin, TemplateView
     template_name = "image_annotation.html"
     login_url = 'core.uauth:login'
     redirect_field_name = 'next'
-
     form_class_annotation = ImageAnnotationForm
 
     def get_context_data(self, **kwargs):
@@ -115,13 +114,13 @@ class ImageAnnotationView(LoginRequiredMixin, UserRoleContextMixin, TemplateView
         context['pk'] = pk
         return context
 
-
     def post(self, request, *args, **kwargs):
         order_id = self.kwargs.get('order_id')
         image_id = self.kwargs.get('image_id')
         order = get_object_or_404(self.model, id=order_id)
         image = get_object_or_404(self.model_image, id=image_id, object=order.object)
         annotation_form = self.form_class_annotation(request.POST, request.FILES)
+        print(annotation_form.data)
 
         if annotation_form.is_valid():
             annotation = annotation_form.save(commit=False)
@@ -132,7 +131,37 @@ class ImageAnnotationView(LoginRequiredMixin, UserRoleContextMixin, TemplateView
         context = self.get_context_data(**kwargs)
         context['annotation_form'] = annotation_form
         return self.render_to_response(context)
-    
+
+
+
+
+class DeleteAnnotationView(LoginRequiredMixin, UserRoleContextMixin, View):
+    def delete(self, request, annotation_id):
+        annotation = get_object_or_404(ImageAnnotation, id=annotation_id)
+        annotation.delete()
+        return JsonResponse({'status': 'success'})
+
+
+
+
+class EditAnnotationView(LoginRequiredMixin, UserRoleContextMixin, View):
+    def post(self, request, annotation_id):
+        annotation = get_object_or_404(ImageAnnotation, id=annotation_id)
+        data = request.POST.copy()
+        
+        # Retain original coordinates if not provided
+        if 'x_coordinate' not in data or not data['x_coordinate']:
+            data['x_coordinate'] = annotation.x_coordinate
+        if 'y_coordinate' not in data or not data['y_coordinate']:
+            data['y_coordinate'] = annotation.y_coordinate
+
+        annotation_form = ImageAnnotationForm(data, request.FILES, instance=annotation)
+
+        if annotation_form.is_valid():
+            annotation_form.save()
+            return JsonResponse({'status': 'success'})
+        return JsonResponse({'status': 'error', 'errors': annotation_form.errors})
+
 
 
 

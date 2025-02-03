@@ -5,6 +5,7 @@ And contains a view for editing additional building data.
 """
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
+from django.views.generic import DetailView
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from shared.mixins.mixins import UserRoleContextMixin

@@ -46,6 +46,8 @@
                         <img src="{% static 'icons/report.svg' %}" alt="Document Icon">
                     </button>
                     <a href="{% url 'modules.evaluator:evaluation_steps' order.id %}" class="evaluate-button">{% trans 'Vertinti' %}</a>
+                    <a href="{% url 'modules.orders:view_object_data' order.id order.object.id %}" class="evaluate-button">{% trans 'Peržiūrėti objektą' %}</a>
+                    
                     <button class="icon-button">
                         <img src="{% static 'icons/media-images.svg' %}" alt="Image Icon">
                     </button>

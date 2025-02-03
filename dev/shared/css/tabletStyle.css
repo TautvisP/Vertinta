@@ -198,3 +198,42 @@ body {
 .tab:hover {
     background: #eaeaea;
 }
+
+.object-data p {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.object-data p strong {
+    color: #007BFF;
+}
+
+.object-data-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* Media Queries for Tablet Devices */
+@media (max-width: 1024px) {
+    .tablet-container {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .header-title {
+        font-size: 20px;
+    }
+
+    .object-data p {
+        font-size: 14px;
+    }
+
+    .btn-back {
+        padding: 8px 16px;
+    }
+
+    .object-data-grid {
+        grid-template-columns: 1fr;
+    }
+}

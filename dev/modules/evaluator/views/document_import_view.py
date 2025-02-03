@@ -101,58 +101,59 @@ class DocumentImportView(LoginRequiredMixin, UserRoleContextMixin, TemplateView)
 
     def convert_to_pdf(self, file):
         file_name, file_extension = os.path.splitext(file.name)
-        pdf_buffer = BytesIO()
+        pdf_buffer = BytesIO()  
 
         # Register a font that supports Lithuanian characters
-        font_path = os.path.join(settings.BASE_DIR, 'shared/static/fonts/DejaVuSans.ttf')
+        font_path = os.path.join(settings.BASE_DIR, 'shared/static/fonts/DejaVuSans.ttf')   
 
         if not os.path.exists(font_path):
             raise FileNotFoundError(f"Font file not found: {font_path}")
-        
-        pdfmetrics.registerFont(TTFont('DejaVuSans', font_path))
+
+        pdfmetrics.registerFont(TTFont('DejaVuSans', font_path))    
 
         if file_extension == '.docx':
             temp_file_path = os.path.join(settings.MEDIA_ROOT, 'uploaded_documents', f"{file_name}{file_extension}")
-            
+
             with open(temp_file_path, 'wb') as temp_file:
-
                 for chunk in file.chunks():
-                    temp_file.write(chunk)
+                    temp_file.write(chunk)  
 
-            pypandoc.download_pandoc()
+            pypandoc.download_pandoc()  
 
             # Convert the file to PDF using pypandoc with pdflatex as the PDF engine
-            pdf_path = os.path.join(settings.MEDIA_ROOT, 'uploaded_documents', f"{file_name}.pdf")
+            pdf_path = os.path.join(settings.MEDIA_ROOT, 'uploaded_documents', f"{file_name}.pdf")  
 
             try:
                 pypandoc.convert_file(temp_file_path, 'pdf', outputfile=pdf_path, extra_args=['--pdf-engine=pdflatex'])
-                print(f"Converted {temp_file_path} to {pdf_path}")
+                print(f"Converted {temp_file_path} to {pdf_path}")  
 
             except Exception as e:
                 print(f"Conversion failed: {e}")
-                raise
+                raise   
 
             with open(pdf_path, 'rb') as pdf_file:
-                pdf_content = pdf_file.read()
+                pdf_content = pdf_file.read()   
 
             pdf_file = ContentFile(pdf_content, name=f"{file_name}.pdf")
 
-            os.remove(temp_file_path)
+            os.remove(temp_file_path)   
 
             return pdf_file
-        
+
         elif file_extension == '.odt':
             temp_file_path = os.path.join(settings.MEDIA_ROOT, 'uploaded_documents', f"{file_name}{file_extension}")
-            
+
             with open(temp_file_path, 'wb') as temp_file:
-
                 for chunk in file.chunks():
-                    temp_file.write(chunk.replace(b'\t', b'    '))
+                    temp_file.write(chunk.replace(b'\t', b'    '))  
 
-            pdf_path = os.path.join(settings.MEDIA_ROOT, 'uploaded_documents', f"{file_name}.pdf")
+            pdf_path = os.path.join(settings.MEDIA_ROOT, 'uploaded_documents', f"{file_name}.pdf")  
 
-            #Using unoconv to convert the file to PDF
+            # Using unoconv to convert the file to PDF
             try:
+                env = os.environ.copy()
+                env['PYTHONPATH'] = subprocess.check_output(['python3', '-c', 'import distutils; print(distutils.__path__[0])']).decode().strip()
+                env['UNO_PATH'] = '/usr/lib/libreoffice/program'
                 result = subprocess.run(
                     [
                         "unoconv",
@@ -164,39 +165,40 @@ class DocumentImportView(LoginRequiredMixin, UserRoleContextMixin, TemplateView)
                     ],
                     check=True,
                     capture_output=True,
-                    text=True
+                    text=True,
+                    env=env
                 )
                 print(f"unoconv output: {result.stdout}")
-                print(f"unoconv errors: {result.stderr}")
+                print(f"unoconv errors: {result.stderr}")   
 
             except subprocess.CalledProcessError as e:
                 print(f"unoconv conversion failed: {e.stderr}")
-                raise
+                raise   
 
             with open(pdf_path, 'rb') as pdf_file:
-                pdf_content = pdf_file.read()
+                pdf_content = pdf_file.read()   
 
-            os.remove(temp_file_path)
+            os.remove(temp_file_path)   
 
             return ContentFile(pdf_content, name=f"{file_name}.pdf")
-        
+
         elif file_extension == '.txt':
             content = file.read().decode('utf-8')
             pdf = canvas.Canvas(pdf_buffer, pagesize=letter)
             pdf.setFont("DejaVuSans", 12)
             text_object = pdf.beginText(40, 750)
             text_object.setTextOrigin(40, 750)
-            text_object.setFont("DejaVuSans", 12)
+            text_object.setFont("DejaVuSans", 12)   
 
             for line in content.splitlines():
-                text_object.textLine(line.replace('\t', '    '))
+                text_object.textLine(line.replace('\t', '    '))    
 
             pdf.drawText(text_object)
             pdf.save()
             pdf_buffer.seek(0)
             pdf_file = ContentFile(pdf_buffer.read(), name=f"{file_name}.pdf")
             return pdf_file
-        
+
         else:
             raise ValueError("Unsupported file type")
 

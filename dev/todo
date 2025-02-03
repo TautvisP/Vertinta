@@ -79,7 +79,7 @@ Need to test nearby organization coordinate copy button on different OS and brow
 
 + Need to fix nearby organization addition, add a check for duplicates in list, translate category with CATEGORY_CHOICES enum, also need to add the ability for the user to manually add nearby organizations.
 
-Need to add viewing of data functionality, because now it is combined with editing. If the user is only viewing, more information could be displayed on the screen.
++ Need to add viewing of data functionality, because now it is combined with editing. If the user is only viewing, more information could be displayed on the screen.
 
 Need to make warning and success messages to the standards of codex/osom. Also make a warning message if an object exists in add_nearby_organization. Sometimes in found_organizations, multiple errors stack: """Organization added successfully. Organization already exists in the database. Organization already exists in the database. Organization already exists in the database."""
 
@@ -87,9 +87,9 @@ Would be a good idea to have a help page (or a quesntion mark which after presse
 
 Wouble be nice to have a check at the report generation, which would warn the evaluator if theres specific data missing that the report needs.
 
-An apartament can have a basement.
+An apartament can have a basement. Pamatai for apartament is irrelivant
 
-Should have the ability to delete or edit an annotation.
++ Should have the ability to delete or edit an annotation. Fix annotation modal size, because different size images change the size of the modal.
 
 Need to fix image annotation display in latex. Useful links below:
 https://www.reddit.com/r/LaTeX/comments/krmegm/annotate_an_image_in_latex_with_two_methods_1st/?rdt=51616
@@ -99,11 +99,9 @@ Need to fix header, in some windows it starts at the top left corner, while in s
 
 Add counter for how many current projects, and completed evaluations each evaluator and agency has.
 
-Missing values in report: house_number or flat_number; building_floor_count, floor; interior_deco, interior_floors, ceiling_deco; garage_size, garage_cars_count; shed_size, shed_type; gazebo_size, gazebo_type, gazebo_electricity; object_type.
++ Missing values in report: house_number or flat_number; building_floor_count, floor; interior_deco, interior_floors, ceiling_deco; garage_size, garage_cars_count; shed_size, shed_type; gazebo_size, gazebo_type, gazebo_electricity; object_type; evaluation_info.
 
 Would benefit from adding additional information that would specify some data. For example: gazebo/shed/garage accurate sizes (length, width, height). Order creation date.
 
 Add comment section in order for user.
 
-
-vertinimo informacija

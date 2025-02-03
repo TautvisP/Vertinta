@@ -49,6 +49,7 @@
                             {% else %}
                             <span class="btn-primary-disabled">{% trans 'Nėra Pastatų' %}</span>
                             {% endif %}
+                            <a href="{% url 'modules.orders:view_object_data' order.id order.object.id %}" class="btn-primary">{% trans 'Peržiūrėti objektą' %}</a>
                             <form action="{% url 'modules.orders:delete_order' order.id %}" method="post" style="display:inline;">
                                 {% csrf_token %}
                                 <button type="submit" class="btn-delete">{% trans 'Ištrinti' %}</button>

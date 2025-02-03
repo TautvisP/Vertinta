@@ -36,10 +36,19 @@
             <span class="close">&times;</span>
             <h3>{% trans "Anotacijos informacija" %}</h3>
             <p id="annotation-text"></p>
+            <form id="annotation-edit-form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <textarea id="annotation-edit-text" name="annotation_text" style="display: none;"></textarea>
+                <input type="file" id="annotation-edit-image" name="annotation_image" style="display: none;">
+                <input type="hidden" id="id_x_coordinate" name="x_coordinate" value="">
+                <input type="hidden" id="id_y_coordinate" name="y_coordinate" value="">
+                <button id="save-annotation" class="btn btn-primary" data-id="" style="display: none;">{% trans "Išsaugoti" %}</button>
+            </form>
             <img id="annotation-image" src="" style="max-width: 100%;">
+            <button id="edit-annotation" class="btn btn-primary" data-id="">{% trans "Redaguoti" %}</button>
+            <button id="delete-annotation" class="btn btn-danger" data-id="">{% trans "Ištrinti" %}</button>
         </div>
     </div>
-
 </div>
 
 <div class="navigation-buttons">

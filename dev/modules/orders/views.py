@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from modules.orders.enums import ObjectImages
 from django.http import HttpResponseRedirect
-from django.views.generic import TemplateView, ListView, View, UpdateView
+from django.views.generic import TemplateView, ListView, View, UpdateView, DetailView
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.forms import formset_factory
@@ -807,3 +807,37 @@ class AgencySelectionView(LoginRequiredMixin, ListView):
                 return redirect('modules.orders:order_first_step')
             
         return redirect('modules.orders:select_agency')
+    
+
+
+
+
+class ViewObjectDataView(LoginRequiredMixin, UserRoleContextMixin, DetailView):
+    """
+    This view displays the object data without editing capabilities.
+    """
+    model = Object
+    template_name = 'view_object_data.html'
+    context_object_name = 'object'
+    user_meta = ObjectMeta
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        order_id = self.kwargs.get('order_id')
+        order = get_object_or_404(Order, id=order_id)
+        obj = order.object
+        meta_data = ObjectMeta.objects.filter(ev_object=obj)
+        meta_dict = {meta.meta_key: meta.meta_value for meta in meta_data}
+        context['meta_data'] = meta_dict
+        context['order'] = order
+        context['order_id'] = order_id
+        context['pk'] = self.kwargs['pk']
+        context['show_progress_bar'] = False
+        context['is_evaluator'] = self.request.user.groups.filter(name='Evaluator').exists()
+        return context
+
+    def get_success_url(self):
+        if self.request.user.groups.filter(name='Evaluator').exists():
+            return reverse_lazy('modules.evaluator:evaluator_order_list')
+        else:
+            return reverse_lazy('modules.orders:order_list')

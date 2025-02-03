@@ -105,7 +105,7 @@ class DecorationForm(forms.Form):
         label=_('Grindys'), choices=FLOOR_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
     
     interior_deco = forms.ChoiceField(
-        label=_('Sienos'), choices=DECO_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+        label=_('Interjero apdaila'), choices=DECO_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
 
     def get_fields(self, *args, **kwargs):
         super(DecorationForm, self).__init__(*args, **kwargs)
@@ -167,7 +167,7 @@ class CommonInformationForm(forms.Form):
         label=_('Pertvaros'), choices=PARTITION_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
     
     subfloor = forms.ChoiceField(
-        label=_('Perdanga'), choices=OVERLAY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+        label=_('Pogrindis'), choices=OVERLAY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
     
     basement = forms.ChoiceField(
         label=_('Rusys'), choices=EXIST_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
