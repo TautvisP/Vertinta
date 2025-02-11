@@ -39,15 +39,17 @@
                         {% endif %}
                         <td>{{ order.status }}</td>
                         <td>
-                            {% if order.status == 'Draft' %}
-                            <a href="{% url 'modules.orders:additional_buildings' order.id %}" class="btn-primary">{% trans 'Tęsti' %}</a>
+                            {% if order.status == 'Nebaigtas' %}
+                            <a href="{% url 'modules.orders:select_agency' order.id %}" class="btn btn-primary">{% trans 'Tęsti' %}</a>
                             {% else %}
                             <a href="{% url 'modules.orders:object_update' order.object.id %}" class="btn-primary">{% trans 'Redaguoti Objektą' %}</a>
                             {% endif %}
-                            {% if order.object.has_additional_buildings %}
-                            <a href="{% url 'modules.orders:edit_additional_buildings' order.object.id %}" class="btn-primary">{% trans 'Redaguoti Statinius' %}</a>
-                            {% else %}
-                            <span class="btn-primary-disabled">{% trans 'Nėra Pastatų' %}</span>
+                            {% if order.object.object_type|in_list:"Namas,Kotedžas" %}
+                                {% if order.object.has_additional_buildings %}
+                                <a href="{% url 'modules.orders:edit_additional_buildings' order.object.id %}" class="btn-primary">{% trans 'Redaguoti Statinius' %}</a>
+                                {% else %}
+                                <a href="{% url 'modules.orders:additional_buildings' object_id=order.object.id %}" class="btn btn-warning">{% trans 'Pridėti papildomą statinį' %}</a>
+                                {% endif %}
                             {% endif %}
                             <a href="{% url 'modules.orders:view_object_data' order.id order.object.id %}" class="btn-primary">{% trans 'Peržiūrėti objektą' %}</a>
                             <form action="{% url 'modules.orders:delete_order' order.id %}" method="post" style="display:inline;">

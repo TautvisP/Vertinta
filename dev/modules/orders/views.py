@@ -5,13 +5,14 @@ from django.views.generic import TemplateView, ListView, View, UpdateView, Detai
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 from django.forms import formset_factory
-from modules.orders.enums import MUNICIPALITY_CHOICES
+from modules.orders.enums import MUNICIPALITY_CHOICES, STATUS_CHOICES, PRIORITY_CHOICES
 from modules.orders.models import Order, Object, ObjectMeta
-from modules.orders.forms import HouseForm, LandForm, ApartamentForm, CottageForm, ObjectLocationForm, DecorationForm, UtilityForm, CommonInformationForm, GarageForm, ShedForm, GazeboForm
+from modules.orders.forms import HouseForm, LandForm, ApartamentForm, CottageForm, ObjectLocationForm, DecorationForm, UtilityForm, CommonInformationForm, OrderStatusForm, GarageForm, ShedForm, GazeboForm
 from core.uauth.models import User, UserMeta
-from django.db.models import Count, Q
+from django.db.models import Count, Q, F
 from django.contrib.auth.mixins import LoginRequiredMixin
 from shared.mixins.mixins import UserRoleContextMixin
+from django.http import JsonResponse
 
 def index(request):
     return render(request, 'orders/index.html')
@@ -227,27 +228,28 @@ class FirsStepView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
                     client=request.user,
                     agency=default_agency,
                     object=obj,
-                    status='Nebaigtas'
+                    status=STATUS_CHOICES[0][0],
+                    priority=PRIORITY_CHOICES[0][0]
                 )
                 request.session['order_id'] = order.id
                 print("Order created successfully with ID:", order.id)
-
 
             except Exception as e:
                 print("Error creating order:", e)
                 return self.form_invalid(location_form, decoration_form, utility_form, common_info_form, additional_form)
 
+
             if selected_obj_type in ['Namas', 'Kotedžas']:
-                return redirect('modules.orders:additional_buildings', order_id=order.id)
+                return redirect('modules.orders:additional_buildings', object_id=obj.id)
 
-
-            return redirect('modules.orders:select_agency')
+            return redirect('modules.orders:select_agency', order_id=order.id)
 
         print("Form is invalid")
         print(location_form.errors)
         print(decoration_form.errors)
         print(utility_form.errors)
         print(common_info_form.errors)
+
         if additional_form:
             print(additional_form.errors)
 
@@ -281,9 +283,9 @@ class AdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, Template
     Handles the additional buildings step in the order creation process.
     Includes forms for garage, shed, and gazebo data.
     """
-        
-    model = Object
     template_name = 'additional_buildings.html'
+    login_url = 'core.uauth:login'
+    redirect_field_name = 'next'
     success_url = 'modules.orders:select_agency'
 
     form_garage = GarageForm
@@ -292,7 +294,7 @@ class AdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, Template
 
 
     def get_forms(self):
-        object_id = self.request.session.get('main_object_id')
+        object_id = self.kwargs.get('object_id')
         obj = get_object_or_404(Object, id=object_id)
         garage_data = ObjectMeta.objects.filter(ev_object=obj, meta_key__startswith='garage_')
         shed_data = ObjectMeta.objects.filter(ev_object=obj, meta_key__startswith='shed_')
@@ -317,19 +319,20 @@ class AdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, Template
             forms['gazebo_form'] = self.form_gazebo(initial=gazebo_initial, prefix='gazebo')
 
         return forms
-        
+
 
     def dispatch(self, request, *args, **kwargs):
-        order_id = self.request.session.get('order_id')
-        order = get_object_or_404(Order, id=order_id)
+        object_id = self.kwargs.get('object_id')
+        obj = get_object_or_404(Object, id=object_id)
 
         # Check if additional buildings data has already been entered
-        garage_data = ObjectMeta.objects.filter(ev_object=order.object, meta_key__startswith='garage_')
-        shed_data = ObjectMeta.objects.filter(ev_object=order.object, meta_key__startswith='shed_')
-        gazebo_data = ObjectMeta.objects.filter(ev_object=order.object, meta_key__startswith='gazebo_')
+        garage_data = ObjectMeta.objects.filter(ev_object=obj, meta_key__startswith='garage_')
+        shed_data = ObjectMeta.objects.filter(ev_object=obj, meta_key__startswith='shed_')
+        gazebo_data = ObjectMeta.objects.filter(ev_object=obj, meta_key__startswith='gazebo_')
 
         if garage_data.exists() or shed_data.exists() or gazebo_data.exists():
-            return redirect('modules.orders:select_agency')
+            order = Order.objects.filter(object=obj).first()
+            return redirect('modules.orders:select_agency', order_id=order.id)
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -338,18 +341,16 @@ class AdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, Template
         context = super().get_context_data(**kwargs)
         context.update(self.get_forms())
         context['show_progress_bar'] = False
-        order_id = self.kwargs.get('order_id')
-        order = get_object_or_404(Order, id=order_id)
-        context['order'] = order
-        context['order_id'] = order_id
-        object_id = self.request.session.get('main_object_id')
+        object_id = self.kwargs.get('object_id')
         obj = get_object_or_404(Object, id=object_id)
+        order = Order.objects.filter(object=obj).first()
+        context['order'] = order
+        context['order_id'] = order.id
         context['object'] = obj
         context['object_id'] = object_id
         context['is_evaluator'] = self.request.user.groups.filter(name='Evaluator').exists()
-
         return context
-    
+
 
     def post(self, request, *args, **kwargs):
         forms = self.get_forms()
@@ -386,7 +387,10 @@ class AdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, Template
                 all_valid = False
 
         if all_valid:
-            return redirect(self.success_url)
+            object_id = self.kwargs.get('object_id')
+            obj = get_object_or_404(Object, id=object_id)
+            order = Order.objects.filter(object=obj).first()
+            return redirect('modules.orders:select_agency', order_id=order.id)
         
         return self.form_invalid(forms)
 
@@ -398,7 +402,7 @@ class AdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, Template
 
 
     def save_form_data(self, cleaned_data):
-        object_id = self.request.session.get('main_object_id')
+        object_id = self.kwargs.get('object_id')
         obj = get_object_or_404(Object, id=object_id)
         for key, value in cleaned_data.items():
             ObjectMeta.objects.create(ev_object=obj, meta_key=key, meta_value=value)
@@ -433,6 +437,8 @@ class OrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView):
         return context
 
 
+
+
 class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView):
     """
     Displays a list of orders for the evaluator.
@@ -448,16 +454,23 @@ class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView)
     def get_queryset(self):
         user = self.request.user
         evaluator_id = self.kwargs.get('id')
-        
+
         if evaluator_id:
             queryset = self.model.objects.filter(evaluator_id=evaluator_id)
         else:
             queryset = self.model.objects.filter(evaluator=user)
 
-
         municipality = self.request.GET.get('municipality')
         if municipality:
             queryset = queryset.filter(object__objectmeta__meta_key='municipality', object__objectmeta__meta_value=municipality)
+
+        status = self.request.GET.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
+
+        priority = self.request.GET.get('priority')
+        if priority:
+            queryset = queryset.filter(priority=priority)
 
         return queryset
 
@@ -465,8 +478,12 @@ class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['municipality_choices'] = MUNICIPALITY_CHOICES
+        context['status_choices'] = STATUS_CHOICES
+        context['priority_choices'] = PRIORITY_CHOICES
+        context['is_agency'] = self.request.user.groups.filter(name='Agency').exists()
+        context['is_evaluator'] = self.request.user.groups.filter(name='Evaluator').exists()
         return context
-    
+
 
 
 
@@ -489,12 +506,13 @@ class OrderDeleteView(View):
 
 
 
+
 class ObjectUpdateView(UpdateView):
     """
     Handles the updating of object data.
     Includes forms for location, decoration, utility, and common information.
     """
-        
+
     model = Object
     template_name = "user_edit_order.html"
     success_url = reverse_lazy('modules.orders:order_list')
@@ -737,6 +755,9 @@ class EditAdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, Upda
             print(f"Saving {key}: {value}")
             self.model_meta.objects.update_or_create(ev_object=obj, meta_key=key, defaults={'meta_value': value})
 
+
+
+
 class AgencySelectionView(LoginRequiredMixin, ListView):
     """
     Displays a list of agencies for the user to select from.
@@ -753,30 +774,36 @@ class AgencySelectionView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return self.model.objects.filter(groups__name='Agency').annotate(
-            evaluator_count=Count('evaluators'),
-            completed_orders=Count('orders', filter=Q(orders__status='completed'))
+            evaluator_count=Count('evaluators', filter=Q(evaluators__agency_id=F('id')))
         )
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['order_id'] = self.kwargs.get('order_id')
         agencies = self.get_queryset()
         agency_data = []
 
+        ongoing_status = STATUS_CHOICES[2][0]  # 'Vykdomas'
+        completed_status = STATUS_CHOICES[3][0]  # 'Įvykdytas'
+
         for agency in agencies:
+            evaluators = agency.evaluators.all()
+            ongoing_orders_count = sum(evaluator.evaluator_orders.filter(status=ongoing_status).count() for evaluator in evaluators)
+            completed_orders_count = sum(evaluator.evaluator_orders.filter(status=completed_status).count() for evaluator in evaluators)
+
             agency_data.append({
                 'id': agency.id,
                 'name': self.model_user_meta.get_meta(agency, 'agency_name'),
                 'date_joined': agency.date_joined,
                 'evaluator_count': agency.evaluator_count,
-                'completed_orders': agency.completed_orders,
+                'ongoing_orders': ongoing_orders_count,
+                'completed_orders': completed_orders_count,
                 'evaluation_starting_price': self.model_user_meta.get_meta(agency, 'evaluation_starting_price'),
             })
 
         context['agency_data'] = agency_data
         context['title'] = 'Select an Agency'
         return context
-
 
     def post(self, request, *args, **kwargs):
         selected_agency_id = request.POST.get('selected_agency_id')
@@ -789,15 +816,12 @@ class AgencySelectionView(LoginRequiredMixin, ListView):
                 order.agency = selected_agency
 
                 # Select the appraiser with the least amount of orders
-                # Possibly this function isnt working, because the same evaluator is assigned to all orders
                 appraisers = self.model.objects.filter(groups__name='Evaluator', agency=selected_agency)
-                appraiser_with_least_orders = min(appraisers, key=lambda appraiser: appraiser.orders.count())
+                appraiser_with_least_orders = min(appraisers, key=lambda appraiser: appraiser.evaluator_orders.count())
 
-
-                #appraiser_with_least_orders = User.objects.get(id=13)
                 # Associate the order with the selected appraiser
                 order.evaluator = appraiser_with_least_orders
-                order.status = 'Naujas'
+                order.status = STATUS_CHOICES[1][0]  # 'Naujas'
                 order.save()
 
                 return redirect('modules.orders:order_list')
@@ -841,3 +865,24 @@ class ViewObjectDataView(LoginRequiredMixin, UserRoleContextMixin, DetailView):
             return reverse_lazy('modules.evaluator:evaluator_order_list')
         else:
             return reverse_lazy('modules.orders:order_list')
+        
+
+
+
+class EditOrderStatusPriorityView(LoginRequiredMixin, UpdateView):
+    """
+    View to edit the status and priority of an order.
+    Requires the user to be logged in.
+    """
+    model = Order
+    form_class = OrderStatusForm
+    template_name = 'edit_order_status_priority.html'
+    context_object_name = 'order'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['priority_choices'] = PRIORITY_CHOICES
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('modules.orders:evaluator_order_list')

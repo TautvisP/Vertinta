@@ -27,11 +27,22 @@
     </div>
 
     <div class="gallery-container">
+        {% if missing_data %}
+        <div class="alert alert-danger">
+            <strong>{% trans "Trūksta duomenų:" %}</strong>
+            <ul>
+                {% for item in missing_data %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
         <form method="post">
             {% csrf_token %}
             {{ final_report_form.as_p }}
             <button type="submit" class="btn btn-primary">{% trans 'Kitas' %}</button>
         </form>
+        
     </div>
 </div>
 

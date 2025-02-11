@@ -1,6 +1,7 @@
 from django import forms
+from modules.orders.models import Order
 from django.utils.translation import gettext as _
-from .enums import FOUNDATION_CHOICES, WALLS_CHOICES, PARTITION_CHOICES, OVERLAY_CHOICES, ROOF_CHOICES, WINDOW_CHOICES, INNER_DOOR_CHOICES, OUTER_DOOR_CHOICES, DECO_CHOICES, FLOOR_CHOICES, ELECTRICITY_GAS_CHOICES, HEATING_CHOICES, WATER_SUPPLY_CHOICES, WASTEWATER_CHOICES, SECURITY_CHOICES, BOOL_CHOICES, OUTDOOR_DECO_CHOICES, ENERGY__EFFICIENCY_CHOICES, COOLING_CHOICES, LAND_PURPOSE_CHOICES, SHED_CHOICES, GAZEBO_CHOICES, EXIST_CHOICES, MUNICIPALITY_CHOICES
+from .enums import FOUNDATION_CHOICES, WALLS_CHOICES, PARTITION_CHOICES, OVERLAY_CHOICES, PRIORITY_CHOICES, ROOF_CHOICES, WINDOW_CHOICES, INNER_DOOR_CHOICES, OUTER_DOOR_CHOICES, STATUS_CHOICES, DECO_CHOICES, FLOOR_CHOICES, ELECTRICITY_GAS_CHOICES, HEATING_CHOICES, WATER_SUPPLY_CHOICES, WASTEWATER_CHOICES, SECURITY_CHOICES, BOOL_CHOICES, OUTDOOR_DECO_CHOICES, ENERGY__EFFICIENCY_CHOICES, COOLING_CHOICES, LAND_PURPOSE_CHOICES, SHED_CHOICES, GAZEBO_CHOICES, EXIST_CHOICES, MUNICIPALITY_CHOICES
 
 default_errors = {
     'invalid': _("Įveskite skaičių."),
@@ -94,6 +95,8 @@ class ObjectLocationForm(forms.Form):
         return field_list
 
 
+
+
 class DecorationForm(forms.Form):
     outside_deco = forms.ChoiceField(
         label=_('Išorės apdaila'), choices=OUTDOOR_DECO_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
@@ -116,7 +119,10 @@ class DecorationForm(forms.Form):
             field_list.append(key)
 
         return field_list
-    
+
+
+
+
 class UtilityForm(forms.Form):
     electricity = forms.ChoiceField(
         label=_('Elektra'), choices=ELECTRICITY_GAS_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
@@ -154,6 +160,8 @@ class UtilityForm(forms.Form):
             field_list.append(key)
             
         return field_list
+
+
 
 
 class CommonInformationForm(forms.Form):
@@ -223,6 +231,8 @@ class CommonInformationForm(forms.Form):
         return field_list
 
 
+
+
 class GarageForm(forms.Form):
     garage_attached = forms.ChoiceField(
         label=_('Sujungtas su namu'), choices=BOOL_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
@@ -242,7 +252,10 @@ class GarageForm(forms.Form):
             field_list.append(key)
 
         return field_list
-    
+
+
+
+
 class ShedForm(forms.Form):
     shed_electricity = forms.ChoiceField(
         label=_('Elektros instaliacija'), choices=EXIST_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
@@ -262,7 +275,10 @@ class ShedForm(forms.Form):
             field_list.append(key)
 
         return field_list
-    
+
+
+
+
 class GazeboForm(forms.Form):
     gazebo_electricity = forms.ChoiceField(
         label=_('Elektros instaliacija'), choices=EXIST_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
@@ -284,6 +300,8 @@ class GazeboForm(forms.Form):
         return field_list
     
 
+
+
 class LandForm(forms.Form):
     land_purpose = forms.ChoiceField(
         label=_('Sklypo paskirtis'), choices=LAND_PURPOSE_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
@@ -300,7 +318,9 @@ class LandForm(forms.Form):
             field_list.append(key)
 
         return field_list
-    
+
+
+
 
 class HouseForm(forms.Form):
     land_purpose = forms.ChoiceField(
@@ -321,7 +341,9 @@ class HouseForm(forms.Form):
             field_list.append(key)
 
         return field_list
-    
+
+
+
 
 class CottageForm(forms.Form):
     floor_count = forms.IntegerField(
@@ -336,7 +358,9 @@ class CottageForm(forms.Form):
             field_list.append(key)
 
         return field_list
-    
+
+
+
 
 class ApartamentForm(forms.Form):
     building_floor_count = forms.IntegerField(
@@ -354,3 +378,14 @@ class ApartamentForm(forms.Form):
             field_list.append(key)
             
         return field_list
+
+
+
+
+class OrderStatusForm(forms.ModelForm):
+    status = forms.ChoiceField(choices=STATUS_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    priority = forms.ChoiceField(choices=PRIORITY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = Order
+        fields = ['status', 'priority']

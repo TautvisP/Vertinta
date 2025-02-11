@@ -15,3 +15,7 @@ def translate_category(value):
 @register.filter
 def range_filter(value, arg):
     return range(value, arg + 1)
+
+@register.filter(name='in_list')
+def in_list(value, arg):
+    return value in arg.split(',')

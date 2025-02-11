@@ -17,17 +17,22 @@
                     <th>{% trans 'El. Paštas' %}</th>
                     <th>{% trans 'Tel. Nr.' %} </th>
                     <th>{% trans 'Prisijungimo Data' %}</th>
+                    <th>{% trans 'Nauji Užsakymai' %}</th>
+                    <th>{% trans 'Vykdomi Užsakymai' %}</th>
+                    <th>{% trans 'Užbaigti Užsakymai' %}</th>
                     <th>{% trans 'Veiksmai' %}</th>
-                    </tr>
                 </thead>
                 <tbody>
-                    {% for evaluator in evaluators %}
+                    {% for evaluator in evaluator_data %}
                     <tr>
                         <td>{{ evaluator.first_name }}</td>
                         <td>{{ evaluator.last_name }}</td>
                         <td>{{ evaluator.email }}</td>
                         <td>{{ evaluator.phone_num }}</td>
                         <td>{{ evaluator.date_joined }}</td>
+                        <td>{{ evaluator.new_orders_count }}</td>
+                        <td>{{ evaluator.ongoing_orders_count }}</td>
+                        <td>{{ evaluator.completed_orders_count }}</td>
                         <td>
                             <a href="{% url 'modules.evaluator:edit_evaluator_account' evaluator.id %}" class="btn btn-primary">{% trans 'Redaguoti Profilį' %}</a>
                             <a href="{% url 'modules.orders:specific_evaluator_order_list' evaluator.id %}" class="btn btn-primary">{% trans 'Užsakymai' %}</a>

@@ -4,17 +4,17 @@ from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from shared.mixins.mixins import UserRoleContextMixin
 from core.uauth.models import UserMeta
-from modules.orders.models import ObjectMeta
-from modules.orders.models import Object, Order, Report
+from django.db.models import Q
+from modules.orders.models import ObjectMeta, Order, Report, UploadedDocument, NearbyOrganization, ObjectImage, SimilarObject
 from django.utils.translation import gettext as _
 from modules.evaluator.forms import FinalReportForm, FinalReportEngineeringForm
+from modules.orders.forms import ObjectLocationForm, DecorationForm, UtilityForm, CommonInformationForm
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.http import FileResponse
 import subprocess
 from datetime import datetime
-
-
+from django.contrib import messages
 
 # Global context variables
 TOTAL_STEPS = 8
@@ -22,12 +22,24 @@ SHOW_PROGRESS_BAR = True
 
 
 class GenerateReportView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+    """
+    View to generate a final report for an order.
+    Requires the user to be logged in and have the appropriate role.
+    """
     template_name = "generate_report.html"
     login_url = 'core.uauth:login'
     redirect_field_name = 'next'
     user_meta = UserMeta
 
+
     def get_context_data(self, **kwargs):
+        """
+        Get the context data for the template.
+        
+        This method retrieves the order, object, and client data, and adds it to the context.
+        It also includes additional context variables such as the phone number, order ID, 
+        primary key, progress bar visibility, current step, and total steps.
+        """
         context = super().get_context_data(**kwargs)
         order_id = self.kwargs.get('order_id')
         order = get_object_or_404(Order, id=order_id)
@@ -47,9 +59,18 @@ class GenerateReportView(LoginRequiredMixin, UserRoleContextMixin, TemplateView)
         # Get or create the report instance
         report, created = Report.objects.get_or_create(order=order)
         context['final_report_form'] = FinalReportForm(instance=report)
+        context['missing_data'] = self.check_missing_data(order)
         return context
 
+
     def post(self, request, *args, **kwargs):
+        """
+        Handle the POST request to generate the final report.
+        
+        This method processes the final report form, generates the report, and saves it.
+        If the form is valid, it generates the report and redirects to the success URL.
+        If the form is invalid, it renders the form with errors.
+        """
         order_id = self.kwargs.get('order_id')
         order = get_object_or_404(Order, id=order_id)
         obj = order.object
@@ -57,17 +78,90 @@ class GenerateReportView(LoginRequiredMixin, UserRoleContextMixin, TemplateView)
 
         report, created = Report.objects.get_or_create(order=order)
         final_report_form = FinalReportForm(request.POST, instance=report)
+
         if final_report_form.is_valid():
             final_report_form.save()
+            missing_data = self.check_missing_data(order)
 
-            # Redirect to the next step
+            if missing_data:
+                messages.warning(request, f"Trūksta duomenų: {', '.join(missing_data)}")
+                return redirect('modules.evaluator:generate_report', order_id=order_id, pk=obj.pk)
+
             return redirect('modules.evaluator:final_report_engineering', order_id=order_id, pk=obj.pk)
 
         context = self.get_context_data(**kwargs)
         context['final_report_form'] = final_report_form
         return self.render_to_response(context)
+    
+
+    def check_missing_data(self, order):
+        """
+        Check for missing data required to generate the final report.
+
+        This method validates the data for the order and its associated object to ensure that all
+        necessary information is present before generating the final report. It checks the validity
+        of forms related to location, decoration, utility, and common information. If any of these
+        forms are invalid, it adds a description of the missing data to the `missing_data` list.
+        """
+        missing_data = []
+
+        if not order.object:
+            missing_data.append("1-ame žingsnyje nepilnai užpildyti vertinamo objekto duomenys")
+
+        if not ObjectMeta.objects.filter(
+            Q(ev_object=order.object, meta_key__startswith='garage_') |
+            Q(ev_object=order.object, meta_key__startswith='shed_') |
+            Q(ev_object=order.object, meta_key__startswith='gazebo_')
+        ).exists():
+            missing_data.append("2-ame žingsnyje nepridėti papildomi statiniai")
+
+        if ObjectImage.objects.filter(object=order.object).count() == 0:
+            missing_data.append("4-ame žingsnyje nėra vertinamo objekto nuotraukų")
+
+        if not SimilarObject.objects.filter(original_object=order.object).exists():
+            missing_data.append("5-ame žingsnyje nėra panašių objektų paieška")
+
+        if not UploadedDocument.objects.filter(order=order).exists():
+            missing_data.append("6-ame žingsnyje nėra pridėtų dokumentų")
+
+        if not NearbyOrganization.objects.filter(object=order.object).exists():
+            missing_data.append("7-ame žingsnyje nėra netoliese esančių įstaigų")
+
+        # Check if forms are fully populated
+        location_form = ObjectLocationForm(data=self.get_form_data(order.object, ObjectLocationForm))
+        decoration_form = DecorationForm(data=self.get_form_data(order.object, DecorationForm))
+        utility_form = UtilityForm(data=self.get_form_data(order.object, UtilityForm))
+        common_info_form = CommonInformationForm(data=self.get_form_data(order.object, CommonInformationForm))
+
+        if not location_form.is_valid():
+            missing_data.append("Lokacijos duomenys")
+
+        if not decoration_form.is_valid():
+            missing_data.append("Apdailos duomenys")
+
+        if not utility_form.is_valid():
+            missing_data.append("Komunalinių paslaugų duomenys")
+
+        if not common_info_form.is_valid():
+            missing_data.append("Bendros informacijos duomenys")
+
+        return missing_data
+
+    def get_form_data(self, obj, form_class):
+        form = form_class()
+        form_data = {}
+        for field in form:
+            form_data[field.name] = getattr(obj, field.name, None)
+        return form_data
+
+
+
 
 class FinalReportEngineeringView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+    """
+    View to handle the final report engineering step in the report generation process.
+    Requires the user to be logged in and have the appropriate role.
+    """
     template_name = "final_report_engineering.html"
     login_url = 'core.uauth:login'
     redirect_field_name = 'next'
@@ -96,6 +190,12 @@ class FinalReportEngineeringView(LoginRequiredMixin, UserRoleContextMixin, Templ
         return context
 
     def post(self, request, *args, **kwargs):
+        """
+        Handle the POST request to save the final report engineering data.
+        
+        This method processes the final report engineering form, saves the data, and redirects
+        to the appropriate view based on the user's action (save or generate report).
+        """
         order_id = self.kwargs.get('order_id')
         order = get_object_or_404(Order, id=order_id)
         obj = order.object
@@ -103,6 +203,7 @@ class FinalReportEngineeringView(LoginRequiredMixin, UserRoleContextMixin, Templ
 
         report, created = Report.objects.get_or_create(order=order)
         final_report_text_form = FinalReportEngineeringForm(request.POST, instance=report)
+
         if final_report_text_form.is_valid():
             final_report_text_form.save()
 
@@ -119,11 +220,21 @@ class FinalReportEngineeringView(LoginRequiredMixin, UserRoleContextMixin, Templ
 
 
 class GenerateLatexReportView(LoginRequiredMixin, UserRoleContextMixin, View):
+    """
+    View to generate a LaTeX report for an order.
+    Requires the user to be logged in and have the appropriate role.
+    """
     login_url = 'core.uauth:login'
     redirect_field_name = 'next'
     user_meta = UserMeta
 
     def post(self, request, *args, **kwargs):
+        """
+        Handle the POST request to generate the LaTeX report.
+        
+        This method gathers the necessary data, renders LaTeX templates, combines them,
+        and generates a PDF report. The generated PDF is then returned as a file response.
+        """
         order_id = self.kwargs.get('order_id')
         order = get_object_or_404(Order, id=order_id)
         obj = order.object
@@ -152,9 +263,9 @@ class GenerateLatexReportView(LoginRequiredMixin, UserRoleContextMixin, View):
             'evaluator_first_name': request.user.first_name,
             'evaluator_last_name': request.user.last_name,
             'report_date': datetime.now().strftime('%Y-%m-%d'),
-            'customer_name': report.customer_name,
-            'customer_surname': report.customer_surname,
-            'customer_phone': report.customer_phone,
+            'customer_name': client.first_name,
+            'customer_surname': client.last_name,
+            'customer_phone': client.phone,
             'visit_date': report.visit_date,
             'description': report.description,
             'engineering': report.engineering,
@@ -211,6 +322,7 @@ class GenerateLatexReportView(LoginRequiredMixin, UserRoleContextMixin, View):
         """
 
         latex_file_path = os.path.join(settings.MEDIA_ROOT, 'report.tex')
+
         with open(latex_file_path, 'w') as latex_file:
             latex_file.write(latex_content)
 

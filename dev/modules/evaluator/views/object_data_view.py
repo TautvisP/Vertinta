@@ -315,8 +315,6 @@ class EditCommonInfo(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
 
 
 
-
-
 class EditUtilityInfo(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
     """
     This is the last of four views of the object data edit process. This view gets the order and object data and displays populated forms. 

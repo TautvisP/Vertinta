@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth.models import Group, Permission
 from django.core.exceptions import MultipleObjectsReturned
 from django.utils.translation import gettext as _
+from modules.orders.enums import STATUS_CHOICES
 
 USER_GROUPS = [
     'Client',
@@ -156,6 +157,13 @@ class User(AbstractUser):
     #            [_('Negalime išsiųsti laiško į nurodytą adresą.')])
     #        return render(request, url, {'form': form})
 
+    @property
+    def ongoing_orders_count(self):
+        return self.evaluator_orders.filter(status=STATUS_CHOICES[3][0]).count()
+
+    @property
+    def completed_orders_count(self):
+        return self.evaluator_orders.filter(status=STATUS_CHOICES[4][0]).count()
 
 class UserMeta(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

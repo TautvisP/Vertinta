@@ -51,8 +51,8 @@ HOUSE_TYPE_CHOICES = [
     (HOUSE_TYPE_6, HOUSE_TYPE_6),
 ]
 
-
 STATUS_CHOICES = (
+    (_('Nebaigtas'), _('Nebaigtas')),
     (_('Naujas'), _('Naujas')),
     (_('Patvirtintas'), _('Patvirtintas')),
     (_('Vykdomas'), _('Vykdomas')),
@@ -61,9 +61,9 @@ STATUS_CHOICES = (
 )
 
 PRIORITY_CHOICES = (
-    (_('žemas'), _('žemas')),
-    (_('vidutinis'), _('vidutinis')),
-    (_('aukštas'), _('aukštas'))
+    (_('Žemas'), _('Žemas')),
+    (_('Vidutinis'), _('Vidutinis')),
+    (_('Aukštas'), _('Aukštas'))
 )
 
 VILNIUS_CITY = _('Vilnius')

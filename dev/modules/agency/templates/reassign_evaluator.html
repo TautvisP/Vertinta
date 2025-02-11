@@ -1,0 +1,42 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans 'Priskirti Kitą Vertintoją' %}{% endblock %}
+
+{% block content %}
+<div class="content-page">
+    <div class="container">
+        <h2 class="title">{% trans 'Priskirti Kitą Vertintoją' %}</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>{% trans 'Vardas' %}</th>
+                    <th>{% trans 'Pavardė' %}</th>
+                    <th>{% trans 'El. Paštas' %}</th>
+                    <th>{% trans 'Vykdomi Užsakymai' %}</th>
+                    <th>{% trans 'Užbaigti Užsakymai' %}</th>
+                    <th>{% trans 'Veiksmai' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for evaluator in evaluator_data %}
+                <tr>
+                    <td>{{ evaluator.first_name }}</td>
+                    <td>{{ evaluator.last_name }}</td>
+                    <td>{{ evaluator.email }}</td>
+                    <td>{{ evaluator.ongoing_orders_count }}</td>
+                    <td>{{ evaluator.completed_orders_count }}</td>
+                    <td>
+                        <form method="post" action="{% url 'modules.agency:assign_evaluator' order_id evaluator.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary">{% trans 'Priskirti' %}</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

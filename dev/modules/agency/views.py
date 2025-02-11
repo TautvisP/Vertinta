@@ -1,14 +1,17 @@
 from django.conf import settings
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
+from shared.mixins.mixins import UserRoleContextMixin
 from modules.agency.forms import AgencyEditForm, AgencyPasswordChangeForm, EvaluatorCreationForm
 from core.uauth.models import User, UserMeta, Group
+from modules.orders.models import Order
 from django.urls import reverse_lazy
-from django.views.generic import ListView
+from django.views.generic import ListView, View
 from django.views.generic.edit import UpdateView, CreateView
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.utils.translation import gettext as _
+from modules.orders.enums import STATUS_CHOICES
 
 # Global message variables
 SUCCESS_MESSAGE = _("Profilis sėkmingai atnaujintas!")
@@ -16,14 +19,18 @@ MISTAKE_MESSAGE = _("Pataisykite klaidas.")
 NO_PERMISSION_MESSAGE = _("Neturite leidimo pasiekti šį puslapį.")
 
 
-
 def index(request):
     return render(request, 'agency/index.html')
 
 
 
-
 class EditAgencyAccountView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """
+    View to edit the agency account details. Has seperate forms in the same window for general account info
+    and password change.
+    Requires the user to be logged in and have the 'Agency' role.
+    """
+    
     model = User
     model_meta = UserMeta
     form_class = AgencyEditForm
@@ -104,6 +111,10 @@ class EditAgencyAccountView(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
 
 
 class EvaluatorListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    """
+    View to display a list of evaluators for the current agency. Shows each evaluators data and order counts.
+    Requires the user to be logged in and have the 'Agency' role.
+    """
     model = User
     template_name = 'evaluator_list.html'
     context_object_name = 'evaluators'
@@ -129,7 +140,14 @@ class EvaluatorListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         evaluators = self.get_queryset()
         evaluator_data = []
 
+        new_status = STATUS_CHOICES[1][0]
+        ongoing_status = STATUS_CHOICES[3][0]
+        completed_status = STATUS_CHOICES[4][0]
+
         for evaluator in evaluators:
+            new_orders_count = Order.objects.filter(evaluator=evaluator, status=new_status).count()
+            ongoing_orders_count = Order.objects.filter(evaluator=evaluator, status=ongoing_status).count()
+            completed_orders_count = Order.objects.filter(evaluator=evaluator, status=completed_status).count()
             evaluator_data.append({
                 'id': evaluator.id,
                 'first_name': evaluator.first_name,
@@ -137,6 +155,9 @@ class EvaluatorListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
                 'email': evaluator.email,
                 'phone_num': UserMeta.get_meta(evaluator, 'phone_num'),
                 'date_joined': evaluator.date_joined,
+                'new_orders_count': new_orders_count,
+                'ongoing_orders_count': ongoing_orders_count,
+                'completed_orders_count': completed_orders_count,
             })
 
         context['evaluator_data'] = evaluator_data
@@ -148,6 +169,10 @@ class EvaluatorListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
 
 class CreateEvaluatorAccountView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    """
+    View to create a new evaluator account by completing the form.
+    Requires the user to be logged in and have the 'Agency' role.
+    """
     model = User
     form_class = EvaluatorCreationForm
     template_name = 'create_evaluator_account.html'
@@ -184,3 +209,69 @@ class CreateEvaluatorAccountView(LoginRequiredMixin, UserPassesTestMixin, Create
         context = super().get_context_data(**kwargs)
         context['is_agency'] = self.request.user.groups.filter(name='Agency').exists()
         return context
+    
+
+
+
+class ReassignEvaluatorView(LoginRequiredMixin, UserRoleContextMixin, ListView):
+    """
+    View to reassign an evaluator to an order. Transfers the order to the new evaluator and keeps 
+    the progress made by the last evaluator. Used to load the template and display the evaluators' data.
+    Requires the user to be logged in and have the appropriate role.
+    """
+    model = User
+    template_name = 'reassign_evaluator.html'
+    context_object_name = 'evaluators'
+    login_url = 'core.uauth:login'
+    redirect_field_name = 'next'
+
+
+    def get_queryset(self):
+        return self.model.objects.filter(groups__name='Evaluator')
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['order_id'] = self.kwargs.get('order_id')
+        evaluators = self.get_queryset()
+        evaluator_data = []
+
+        ongoing_status = STATUS_CHOICES[3][0]
+        completed_status = STATUS_CHOICES[4][0]
+
+        for evaluator in evaluators:
+            evaluator_data.append({
+                'id': evaluator.id,
+                'first_name': evaluator.first_name,
+                'last_name': evaluator.last_name,
+                'email': evaluator.email,
+                'ongoing_orders_count': evaluator.evaluator_orders.filter(status=ongoing_status).count(),
+                'completed_orders_count': evaluator.evaluator_orders.filter(status=completed_status).count(),
+            })
+
+        context['evaluator_data'] = evaluator_data
+        return context
+
+
+
+
+class AssignEvaluatorView(LoginRequiredMixin, UserRoleContextMixin, View):
+    """
+    View to assign a new evaluator to an order. Used to complete the reasigning process.
+    Requires the user to be logged in and have the appropriate role.
+    """
+    login_url = 'core.uauth:login'
+    redirect_field_name = 'next'
+
+    def post(self, request, *args, **kwargs):
+        order_id = self.kwargs.get('order_id')
+        evaluator_id = self.kwargs.get('evaluator_id')
+        order = get_object_or_404(Order, id=order_id)
+        new_evaluator = get_object_or_404(User, id=evaluator_id)
+
+        # Assign the new evaluator to the order
+        order.evaluator = new_evaluator
+        order.save()
+
+        messages.success(request, _("Vertintojas sėkmingai priskirtas!"))
+        return redirect('modules.orders:specific_evaluator_order_list', id=evaluator_id)

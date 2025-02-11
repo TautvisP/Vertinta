@@ -136,6 +136,10 @@ class ImageAnnotationView(LoginRequiredMixin, UserRoleContextMixin, TemplateView
 
 
 class DeleteAnnotationView(LoginRequiredMixin, UserRoleContextMixin, View):
+    """
+    View to handle the deletion of an image annotation.
+    Requires the user to be logged in and have the appropriate role.
+    """
     def delete(self, request, annotation_id):
         annotation = get_object_or_404(ImageAnnotation, id=annotation_id)
         annotation.delete()
@@ -145,6 +149,10 @@ class DeleteAnnotationView(LoginRequiredMixin, UserRoleContextMixin, View):
 
 
 class EditAnnotationView(LoginRequiredMixin, UserRoleContextMixin, View):
+    """
+    View to handle the editing of an image annotation.
+    Requires the user to be logged in and have the appropriate role.
+    """
     def post(self, request, annotation_id):
         annotation = get_object_or_404(ImageAnnotation, id=annotation_id)
         data = request.POST.copy()

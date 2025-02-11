@@ -1,5 +1,5 @@
 from django.db import models
-from .enums import OBJECT_TYPE_CHOICES, IMAGE_CHOICES, STATUS_CHOICES
+from .enums import OBJECT_TYPE_CHOICES, IMAGE_CHOICES, STATUS_CHOICES, PRIORITY_CHOICES
 from django.core.exceptions import MultipleObjectsReturned
 from django.utils import timezone
 from core.uauth.models import User
@@ -222,6 +222,8 @@ class Object(models.Model):
         return Object.get_meta(self, 'object_type')
 
 
+
+
 class ObjectMeta(models.Model):
     # object_meta_id = models.AutoField(primary_key=True, editable=False)
     ev_object = models.ForeignKey(Object, on_delete=models.CASCADE)
@@ -232,12 +234,15 @@ class ObjectMeta(models.Model):
         return self.meta_key
 
 
+
+
 class ObjectImage(models.Model):
     object = models.ForeignKey(Object, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='object_images/')
     comment = models.CharField(max_length=255, blank=True)
     category = models.CharField(choices=IMAGE_CHOICES, max_length=45)
     uploaded_at = models.DateTimeField(auto_now_add=True)
+
 
 
 
@@ -251,6 +256,7 @@ class ImageAnnotation(models.Model):
 
 
 
+
 class Order(models.Model):
     client = models.ForeignKey(User, on_delete=models.CASCADE, related_name='order_client')
     agency = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
@@ -258,7 +264,7 @@ class Order(models.Model):
     object = models.ForeignKey(Object, on_delete=models.CASCADE, null=True, blank=True)
     created = models.DateTimeField(default=timezone.now)
     status = models.CharField(choices=STATUS_CHOICES, max_length=45)
-    #priority = models.CharField(choices=PRIORITY_CHOICES, max_length=45)
+    priority = models.CharField(choices=PRIORITY_CHOICES, max_length=45)
 
     class Meta:
         permissions = [
@@ -296,9 +302,9 @@ class SimilarObjectMetadata(models.Model):
 
     def __str__(self):
         return f"{self.key}: {self.value}"
-    
 
-    
+
+
 
 class UploadedDocument(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -310,7 +316,7 @@ class UploadedDocument(models.Model):
 
     def __str__(self):
         return self.file_name
-    
+
 
 
 
@@ -325,7 +331,6 @@ class NearbyOrganization(models.Model):
 
     def __str__(self):
         return self.name
-    
 
 
 

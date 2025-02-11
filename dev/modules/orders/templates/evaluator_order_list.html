@@ -23,6 +23,18 @@
                     <option value="{{ key }}" {% if key|stringformat:"d" == request.GET.municipality %}selected{% endif %}>{{ value }}</option>
                     {% endfor %}
                 </select>
+                <select class="dropdown" name="status">
+                    <option value="">{% trans 'Statusas' %}</option>
+                    {% for key, value in status_choices %}
+                    <option value="{{ key }}" {% if key == request.GET.status %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+                <select class="dropdown" name="priority">
+                    <option value="">{% trans 'Prioritetas' %}</option>
+                    {% for key, value in priority_choices %}
+                    <option value="{{ key }}" {% if key == request.GET.priority %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
                 <button type="submit" class="clear-button">{% trans 'Filtruoti' %}</button>
                 <a href="{% url 'modules.orders:evaluator_order_list' %}" class="clear-button">{% trans 'Išvalyti' %}</a>
             </div>
@@ -36,7 +48,7 @@
                     <p class="request-title">#{{ forloop.counter }} {{ order.object.street }} {{ order.object.house_no }}, {{ order.object.municipality|get_municipality_name }}</p>
                     <p class="request-info">
                         <span class="priority {{ request.priority_class }}"></span>
-                        {{ order.status }}
+                        {{ order.status }} · {{ order.priority }}
                         · {{ order.client.get_full_name }} · {{ order.created|date:"Y-m-d" }}
                     </p>
                 </div>
@@ -56,6 +68,12 @@
                     </button>
                 </div>
                 {% endif %}
+                {% if is_agency %}
+                    <a href="{% url 'modules.agency:reassign_evaluator' order.id %}" class="btn btn-primary">{% trans 'Priskirti kitą vertintoją' %}</a>
+                {% endif %}
+                <a href="{% url 'modules.orders:edit_order_status_priority' order.id %}" class="btn btn-primary">
+                    {% trans 'Keisti Būseną ir Prioritetą' %}
+                </a>
             </div>
             {% endfor %}
         </div>

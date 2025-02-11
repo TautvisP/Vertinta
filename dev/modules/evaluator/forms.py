@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 from core.uauth.models import User, UserMeta
-from ..orders.enums import (HOUSE_TYPE_CHOICES, FLOOR_COUNT_CHOICES, HEATING_CHOICES,COMERCIAL_CHOICES, BUILDING_CHOICES, EQUIPMENT_CHOICES, SIMILAR_OBJECT_CHOICES, SIMILAR_ACTION_CHOICES, MUNICIPALITY_CHOICES, LAND_PURPOSE_CHOICES, EVALUATION_PURPOSE_CHOICES, EVALUATION_CASE_CHOICES, IMAGE_CHOICES, CATEGORY_CHOICES, OBJECT_TYPE_CHOICES )
+from ..orders.enums import (HOUSE_TYPE_CHOICES, FLOOR_COUNT_CHOICES, STATUS_CHOICES, HEATING_CHOICES,COMERCIAL_CHOICES, BUILDING_CHOICES, EQUIPMENT_CHOICES, SIMILAR_OBJECT_CHOICES, SIMILAR_ACTION_CHOICES, MUNICIPALITY_CHOICES, LAND_PURPOSE_CHOICES, EVALUATION_PURPOSE_CHOICES, EVALUATION_CASE_CHOICES, IMAGE_CHOICES, CATEGORY_CHOICES, OBJECT_TYPE_CHOICES )
 from ..orders.models import ObjectImage, ImageAnnotation, Report
 from django.utils.translation import gettext as _
 
@@ -351,30 +351,6 @@ class NearbyOrganizationForm(forms.Form):
 
 
 class FinalReportForm(forms.ModelForm):
-    customer_name = forms.CharField(
-        label=_('Užsakovo vardas'),
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': _('Užsakovo vardas')
-        })
-    )
-    
-    customer_surname = forms.CharField(
-        label=_('Užsakovo pavardė'),
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': _('Užsakovo pavardė')
-        })
-    )
-    
-    customer_phone = forms.CharField(
-        label=_('Telefono numeris'),
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': _('Telefono numeris')
-        })
-    )
-    
     visit_date = forms.DateField(
         label=_('Turto apžiūros data'),
         widget=forms.DateInput(attrs={
@@ -401,11 +377,8 @@ class FinalReportForm(forms.ModelForm):
     
     class Meta:
         model = Report
-        fields = ['customer_name', 'customer_surname', 'customer_phone', 'visit_date', 'report_date', 'description']
+        fields = ['visit_date', 'report_date', 'description']
         widgets = {
-            'customer_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Užsakovo vardas')}),
-            'customer_surname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Užsakovo pavardė')}),
-            'customer_phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Telefono numeris')}),
             'visit_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'report_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': _('Įveskite aprašymą')}),

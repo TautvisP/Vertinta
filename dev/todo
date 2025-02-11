@@ -56,7 +56,7 @@ In AgencySelectionView the appraiser_with_least_orders function doesnt seem to b
 
 Fix responsive design
 
-Would be a good idea to have some sort of list for added additional files for the object, so the evaluator would be able to remove or edit added files and their content.
++ Would be a good idea to have some sort of list for added additional files for the object, so the evaluator would be able to remove or edit added files and their content.
 
 + When a user is editing his account, seperate the account data and password change forms. Its annoying to enter your password 3 times to change the name.
 
@@ -91,7 +91,7 @@ An apartament can have a basement. Pamatai for apartament is irrelivant
 
 + Should have the ability to delete or edit an annotation. Fix annotation modal size, because different size images change the size of the modal.
 
-Need to fix image annotation display in latex. Useful links below:
++ / - Need to fix image annotation display in latex. Useful links below:
 https://www.reddit.com/r/LaTeX/comments/krmegm/annotate_an_image_in_latex_with_two_methods_1st/?rdt=51616
 https://latexdraw.com/how-to-annotate-an-image-in-latex/
 
@@ -105,3 +105,10 @@ Would benefit from adding additional information that would specify some data. F
 
 Add comment section in order for user.
 
+admin page
+
++ http://127.0.0.1:8000/evaluator/evaluation_steps/24/edit_similar_object_data/50/ 'EditSimilarObjectDataView' object has no attribute 'render_to_response'
+
+Agency select evaluator count is still random
+
+When user is creating an order and doesnt select the agency, there is no way to continue selecting it after he leaves the window.

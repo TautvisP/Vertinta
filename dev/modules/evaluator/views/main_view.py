@@ -169,10 +169,3 @@ class RCDataEditView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
         context['total_steps'] = TOTAL_STEPS
 
         return context
-
-
-
-    
-
-
-

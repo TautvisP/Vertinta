@@ -13,7 +13,7 @@
     <div class="content">
         <div class="container-fluid col-10">
             <h2>{% trans '3. Agentūros pasirinkimas' %}</h2>
-            <form method="POST" action="{% url 'modules.orders:select_agency' %}">
+            <form method="POST" action="{% url 'modules.orders:select_agency' order_id=order_id %}">
                 {% csrf_token %}
                 <table class="table">
                     <thead>
@@ -21,6 +21,7 @@
                             <th>{% trans 'Pavadinimas' %}</th>
                             <th>{% trans 'Agentūris įkurimo data' %}</th>
                             <th>{% trans 'Vertintojų skaičius' %}</th>
+                            <th>{% trans 'Vykdomi užsakymai' %}</th>
                             <th>{% trans 'Užbaigti užsakymai' %}</th>
                             <th>{% trans 'Vertinimo pradinė kaina' %}</th>
                             <th>{% trans 'Veiksmai' %}</th>
@@ -32,6 +33,7 @@
                             <td>{{ agency.name }}</td>
                             <td>{{ agency.date_joined|date:"Y-m-d" }}</td>
                             <td>{{ agency.evaluator_count }}</td>
+                            <td>{{ agency.ongoing_orders }}</td>
                             <td>{{ agency.completed_orders }}</td>
                             <td>{{ agency.evaluation_starting_price }}</td>
                             <td>

@@ -1,0 +1,37 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans 'Redaguoti Užsakymo Būseną ir Prioritetą' %}{% endblock %}
+
+{% block bootstrap_css %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="content-page">
+    <div class="container">
+        <h2 class="title">{% trans 'Redaguoti Užsakymo Būseną ir Prioritetą' %}</h2>
+        <form method="post" action="">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="status">{% trans 'Būsena' %}</label>
+                <select class="form-control" name="status" id="status">
+                    {% for key, value in form.fields.status.choices %}
+                    <option value="{{ key }}" {% if key == form.initial.status %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="priority">{% trans 'Prioritetas' %}</label>
+                <select class="form-control" name="priority" id="priority">
+                    {% for key, value in priority_choices %}
+                    <option value="{{ key }}" {% if key == form.initial.priority %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">{% trans 'Išsaugoti' %}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

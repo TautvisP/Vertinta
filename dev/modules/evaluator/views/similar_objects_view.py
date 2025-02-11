@@ -138,12 +138,14 @@ class SimilarObjectSearchView(LoginRequiredMixin, UserRoleContextMixin, Template
         soup = BeautifulSoup(response.text, 'html.parser')
         # print(f"Soup: {soup}")  # Debugging statement
         listings = []
+
         for listing in soup.select('.advert'):
             title = listing.select_one('.list-item-title').get_text(strip=True)
             price = listing.select_one('.list-item-price').get_text(strip=True)
             link = listing.select_one('.list-item-title a')['href']
             print(f"Found listing Title: {title}, Price: {price}, Link: {link}")  # Debugging statement
             listings.append({'title': title, 'price': price, 'link': link})
+
         return listings
 
 
@@ -162,14 +164,11 @@ class SimilarObjectSearchView(LoginRequiredMixin, UserRoleContextMixin, Template
         }
         #print(f"Constructed URL params: {params}")  # Debugging statement
         return params
+    
 
 
 
-
-
-
-
-class EditSimilarObjectDataView(LoginRequiredMixin, UserRoleContextMixin, View):    
+class EditSimilarObjectDataView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):    
     """
     This view handles both the creation of new similar objects and the editing of existing similar objects.
     It includes forms for similar object data, location data, and additional data based on the object type.
@@ -190,7 +189,6 @@ class EditSimilarObjectDataView(LoginRequiredMixin, UserRoleContextMixin, View):
     form_class_apartament = ApartamentForm
     form_class_cottage = CottageForm
     form_class_similar_object = SimilarObjectForm
-
 
 
     def get_object(self):
@@ -301,6 +299,7 @@ class EditSimilarObjectDataView(LoginRequiredMixin, UserRoleContextMixin, View):
 
                 if additional_form:
                     self.save_metadata(similar_object, additional_form)
+                    
             else:
                 similar_object = self.model_similar_object(
                     original_object=context['object'],
@@ -336,9 +335,8 @@ class EditSimilarObjectDataView(LoginRequiredMixin, UserRoleContextMixin, View):
             )
 
 
+
             
-
-
 class EditSimilarObjectDecorationView(LoginRequiredMixin, UserRoleContextMixin, View):
     """
     This view includes a form for decoration information and updates the metadata for the similar object.
