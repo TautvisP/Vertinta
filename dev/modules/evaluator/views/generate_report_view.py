@@ -1,3 +1,9 @@
+"""
+This view contains logic for the final step of the evaluation process, generating a final report.
+It includes methods for rendering the final report form, saving the report data, and generating the report.
+The view also includes a method to check for missing data required to generate the report.
+Report generation is handled by rendering LaTeX templates and combining them into a PDF file.
+"""
 import os
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, View
@@ -15,13 +21,14 @@ from django.http import FileResponse
 import subprocess
 from datetime import datetime
 from django.contrib import messages
+from shared.mixins.evaluator_access_mixin import EvaluatorAccessMixin
 
 # Global context variables
 TOTAL_STEPS = 8
 SHOW_PROGRESS_BAR = True
 
 
-class GenerateReportView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+class GenerateReportView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, TemplateView):
     """
     View to generate a final report for an order.
     Requires the user to be logged in and have the appropriate role.
@@ -157,7 +164,7 @@ class GenerateReportView(LoginRequiredMixin, UserRoleContextMixin, TemplateView)
 
 
 
-class FinalReportEngineeringView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+class FinalReportEngineeringView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, TemplateView):
     """
     View to handle the final report engineering step in the report generation process.
     Requires the user to be logged in and have the appropriate role.
@@ -213,8 +220,7 @@ class FinalReportEngineeringView(LoginRequiredMixin, UserRoleContextMixin, Templ
 
         context = self.get_context_data(**kwargs)
         context['final_report_text_form'] = final_report_text_form
-        return self.render_to_response(context)
-    
+        return self.render_to_response(context)    
 
 
 
@@ -239,6 +245,7 @@ class GenerateLatexReportView(LoginRequiredMixin, UserRoleContextMixin, View):
         order = get_object_or_404(Order, id=order_id)
         obj = order.object
         client = order.client
+        phone_number = self.user_meta.get_meta(client, 'phone_num')
         report = get_object_or_404(Report, order=order)
 
         images = obj.images.all()
@@ -265,7 +272,7 @@ class GenerateLatexReportView(LoginRequiredMixin, UserRoleContextMixin, View):
             'report_date': datetime.now().strftime('%Y-%m-%d'),
             'customer_name': client.first_name,
             'customer_surname': client.last_name,
-            'customer_phone': client.phone,
+            'customer_phone': phone_number,
             'visit_date': report.visit_date,
             'description': report.description,
             'engineering': report.engineering,

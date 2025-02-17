@@ -4,15 +4,20 @@ from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView, ListView, View, UpdateView, DetailView
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
-from django.forms import formset_factory
 from modules.orders.enums import MUNICIPALITY_CHOICES, STATUS_CHOICES, PRIORITY_CHOICES
 from modules.orders.models import Order, Object, ObjectMeta
 from modules.orders.forms import HouseForm, LandForm, ApartamentForm, CottageForm, ObjectLocationForm, DecorationForm, UtilityForm, CommonInformationForm, OrderStatusForm, GarageForm, ShedForm, GazeboForm
 from core.uauth.models import User, UserMeta
 from django.db.models import Count, Q, F
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from shared.mixins.mixins import UserRoleContextMixin
-from django.http import JsonResponse
+from django.contrib import messages
+
+# Global message variables
+SUCCESS_MESSAGE = _("Profilis sėkmingai atnaujintas!")
+MISTAKE_MESSAGE = _("Pataisykite klaidas.")
+NO_PERMISSION_MESSAGE = _("Neturite leidimo pasiekti šį puslapį.")
+
 
 def index(request):
     return render(request, 'orders/index.html')
@@ -21,7 +26,7 @@ def test_view(request):
     return render(request, 'shared/header.html')
 
 
-class LandingView(LoginRequiredMixin, UserRoleContextMixin, ListView):
+class LandingView(LoginRequiredMixin, UserPassesTestMixin, UserRoleContextMixin, ListView):
     """
     Displays a list of object images for the landing page.
     Requires the user to be logged in and have the appropriate role.
@@ -31,9 +36,16 @@ class LandingView(LoginRequiredMixin, UserRoleContextMixin, ListView):
     login_url = 'core.uauth:login'
     redirect_field_name = 'next'
 
+    def test_func(self):
+        return not (self.request.user.groups.filter(name='Agency').exists() or self.request.user.groups.filter(name='Evaluator').exists())
+
+    def handle_no_permission(self):
+        messages.error(self.request, NO_PERMISSION_MESSAGE)
+        return redirect('core.uauth:login')
+
+
     def get_queryset(self):
         return ObjectImages
-
 
     def get_selected_obj_type(self, request):
 
@@ -61,7 +73,7 @@ class LandingView(LoginRequiredMixin, UserRoleContextMixin, ListView):
 
 
 #possibly get_context_data POST part is repetative with the post function, could be refactored
-class FirsStepView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+class FirsStepView(LoginRequiredMixin, UserRoleContextMixin, UserPassesTestMixin, TemplateView):
     """
     Handles the first step of the order creation process.
     Includes forms for location, decoration, utility, and common information.
@@ -79,6 +91,13 @@ class FirsStepView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
     form_decoration = DecorationForm
     form_utility = UtilityForm
     form_common_info = CommonInformationForm
+
+    def test_func(self):
+        return not (self.request.user.groups.filter(name='Agency').exists() or self.request.user.groups.filter(name='Evaluator').exists())
+
+    def handle_no_permission(self):
+        messages.error(self.request, NO_PERMISSION_MESSAGE)
+        return redirect('core.uauth:login')
 
 
     def get_queryset(self):
@@ -278,7 +297,7 @@ class FirsStepView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
 
 
 
-class AdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+class AdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, UserPassesTestMixin, TemplateView):
     """
     Handles the additional buildings step in the order creation process.
     Includes forms for garage, shed, and gazebo data.
@@ -292,6 +311,13 @@ class AdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, Template
     form_shed = ShedForm
     form_gazebo = GazeboForm
 
+    def test_func(self):
+        return not (self.request.user.groups.filter(name='Agency').exists() or self.request.user.groups.filter(name='Evaluator').exists())
+
+    def handle_no_permission(self):
+        messages.error(self.request, NO_PERMISSION_MESSAGE)
+        return redirect('core.uauth:login')
+    
 
     def get_forms(self):
         object_id = self.kwargs.get('object_id')
@@ -410,7 +436,7 @@ class AdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, Template
 
     
 
-class OrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView):
+class OrderListView(LoginRequiredMixin, UserRoleContextMixin, UserPassesTestMixin, ListView):
     """
     Displays a list of orders for the current user.
     Requires the user to be logged in and have the appropriate role.
@@ -421,6 +447,13 @@ class OrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView):
     context_object_name = "orders"
     login_url = 'core.uauth:login'
     redirect_field_name = 'next'
+
+    def test_func(self):
+        return not self.request.user.groups.filter(name='Evaluator').exists()
+
+    def handle_no_permission(self):
+        messages.error(self.request, NO_PERMISSION_MESSAGE)
+        return redirect('core.uauth:login')
 
     def get_queryset(self):
         user = self.request.user
@@ -439,7 +472,7 @@ class OrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView):
 
 
 
-class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView):
+class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, UserPassesTestMixin, ListView):
     """
     Displays a list of orders for the evaluator.
     Requires the user to be logged in and have the appropriate role.
@@ -450,6 +483,13 @@ class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView)
     context_object_name = "orders"
     login_url = 'core.uauth:login'
     redirect_field_name = 'next'
+
+    def test_func(self):
+        return self.request.user.groups.filter(name='Evaluator').exists() or self.request.user.groups.filter(name='Agency').exists()
+
+    def handle_no_permission(self):
+        messages.error(self.request, NO_PERMISSION_MESSAGE)
+        return redirect('core.uauth:login')
 
     def get_queryset(self):
         user = self.request.user
@@ -487,27 +527,35 @@ class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, ListView)
 
 
 
-class OrderDeleteView(View):
+class OrderDeleteView(LoginRequiredMixin, View):
     """
-    Handles the deletion of an order.
-    Deletes the associated object and its metadata.
+    Handles the deletion of an order and its metadata.
+    Only allows deletion if the user is the creator of the order.
     """
     
     def post(self, request, *args, **kwargs):
         order_id = kwargs.get('pk')
-        order = Order.objects.get(id=order_id)
+        order = get_object_or_404(Order, id=order_id)
+
+        # Check if the user is the creator of the order
+        if order.client != request.user:
+            messages.error(request, "Neturite teisių ištrinti šį įrašą.")
+            return redirect('modules.orders:order_list')
+
         obj = order.object
 
+        # Delete associated metadata and object
         ObjectMeta.objects.filter(ev_object=obj).delete()
         obj.delete()
         order.delete()
 
+        messages.success(request, "Užsakymas ištrintas sėkmingai.")
         return HttpResponseRedirect(reverse_lazy('modules.orders:order_list'))
 
 
 
 
-class ObjectUpdateView(UpdateView):
+class ObjectUpdateView(UserRoleContextMixin, UserPassesTestMixin, UpdateView):
     """
     Handles the updating of object data.
     Includes forms for location, decoration, utility, and common information.
@@ -527,7 +575,12 @@ class ObjectUpdateView(UpdateView):
     form_apartament = ApartamentForm
     form_cottage = CottageForm
 
+    def test_func(self):
+        return not (self.request.user.groups.filter(name='Agency').exists() or self.request.user.groups.filter(name='Evaluator').exists())
 
+    def handle_no_permission(self):
+        messages.error(self.request, NO_PERMISSION_MESSAGE)
+        return redirect('core.uauth:login')
 
     def get_initial_data(self, obj):
         initial_data = {}
@@ -641,7 +694,7 @@ class ObjectUpdateView(UpdateView):
 
 
 
-class EditAdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
+class EditAdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, UserPassesTestMixin, UpdateView):
     """
     Handles the editing of additional buildings associated with an object.
     Includes forms for garage, shed, and gazebo data.
@@ -657,6 +710,14 @@ class EditAdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, Upda
     form_shed = ShedForm
     form_gazebo = GazeboForm
 
+    def test_func(self):
+        return not (self.request.user.groups.filter(name='Agency').exists() or self.request.user.groups.filter(name='Evaluator').exists())
+
+
+    def handle_no_permission(self):
+        messages.error(self.request, NO_PERMISSION_MESSAGE)
+        return redirect('core.uauth:login')
+    
 
     def get_object(self, queryset=None):
         return get_object_or_404(self.model, pk=self.kwargs['pk'])
@@ -758,7 +819,7 @@ class EditAdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, Upda
 
 
 
-class AgencySelectionView(LoginRequiredMixin, ListView):
+class AgencySelectionView(LoginRequiredMixin, UserPassesTestMixin, UserRoleContextMixin, ListView):
     """
     Displays a list of agencies for the user to select from.
     Requires the user to be logged in.
@@ -771,6 +832,14 @@ class AgencySelectionView(LoginRequiredMixin, ListView):
     context_object_name = 'agencies'
     login_url = 'core.uauth:login'
     redirect_field_name = 'next'
+
+    def test_func(self):
+        return not (self.request.user.groups.filter(name='Agency').exists() or self.request.user.groups.filter(name='Evaluator').exists())
+
+    def handle_no_permission(self):
+        messages.error(self.request, NO_PERMISSION_MESSAGE)
+        return redirect('core.uauth:login')
+    
 
     def get_queryset(self):
         return self.model.objects.filter(groups__name='Agency').annotate(
@@ -839,11 +908,24 @@ class AgencySelectionView(LoginRequiredMixin, ListView):
 class ViewObjectDataView(LoginRequiredMixin, UserRoleContextMixin, DetailView):
     """
     This view displays the object data without editing capabilities.
+    Only the associated users (client, evaluator, and agency) can view it.
     """
     model = Object
     template_name = 'view_object_data.html'
     context_object_name = 'object'
     user_meta = ObjectMeta
+
+    def dispatch(self, request, *args, **kwargs):
+        order_id = self.kwargs.get('order_id')
+        order = get_object_or_404(Order, id=order_id)
+        user = request.user
+
+        # Check if the user is the client, evaluator, or agency associated with the order
+        if not (order.client == user or order.evaluator == user or (order.evaluator and order.evaluator.agency == user)):
+            messages.error(request, "Neturite teisių peržiūrėti šios informacijos.")
+            return redirect('modules.orders:order_list')
+
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -865,11 +947,11 @@ class ViewObjectDataView(LoginRequiredMixin, UserRoleContextMixin, DetailView):
             return reverse_lazy('modules.evaluator:evaluator_order_list')
         else:
             return reverse_lazy('modules.orders:order_list')
-        
 
 
 
-class EditOrderStatusPriorityView(LoginRequiredMixin, UpdateView):
+
+class EditOrderStatusPriorityView(LoginRequiredMixin, UserRoleContextMixin, UserPassesTestMixin, UpdateView):
     """
     View to edit the status and priority of an order.
     Requires the user to be logged in.
@@ -878,6 +960,13 @@ class EditOrderStatusPriorityView(LoginRequiredMixin, UpdateView):
     form_class = OrderStatusForm
     template_name = 'edit_order_status_priority.html'
     context_object_name = 'order'
+
+    def test_func(self):
+        return self.request.user.groups.filter(name='Agency').exists() or self.request.user.groups.filter(name='Evaluator').exists()
+
+    def handle_no_permission(self):
+        messages.error(self.request, NO_PERMISSION_MESSAGE)
+        return redirect('core.uauth:login')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

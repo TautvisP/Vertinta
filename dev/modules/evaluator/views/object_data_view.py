@@ -13,6 +13,7 @@ from modules.orders.models import Object, ObjectMeta, Order
 from modules.orders.forms import ObjectLocationForm, HouseForm, LandForm, ApartamentForm, CottageForm, DecorationForm, CommonInformationForm, UtilityForm, GarageForm, ShedForm, GazeboForm
 from modules.evaluator.forms import EvaluationForm
 from django.utils.translation import gettext as _
+from shared.mixins.evaluator_access_mixin import EvaluatorAccessMixin
 
 
 # Global context variables
@@ -21,7 +22,7 @@ SHOW_PROGRESS_BAR = True
 
 
 
-class EditObjectDataView(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
+class EditObjectDataView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, UpdateView):
     """
     This is the first of four views of the object data edit process. This view gets the order and object data and displays populated forms. 
     Is used for editing the data
@@ -156,7 +157,7 @@ class EditObjectDataView(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
 
 
 
-class EditEvaluationAndDecoInfo(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
+class EditEvaluationAndDecoInfo(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, UpdateView):
     """
     This is the second of four views of the object data edit process. This view gets the order and object data and displays populated forms. 
     Is used for editing the data.
@@ -238,7 +239,7 @@ class EditEvaluationAndDecoInfo(LoginRequiredMixin, UserRoleContextMixin, Update
 
 
 
-class EditCommonInfo(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
+class EditCommonInfo(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, UpdateView):
     """
     This is the third of four views of the object data edit process. This view gets the order and object data and displays populated forms. 
     Is used for editing the data.
@@ -315,7 +316,7 @@ class EditCommonInfo(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
 
 
 
-class EditUtilityInfo(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
+class EditUtilityInfo(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, UpdateView):
     """
     This is the last of four views of the object data edit process. This view gets the order and object data and displays populated forms. 
     Is used for editing the data
@@ -390,7 +391,7 @@ class EditUtilityInfo(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
             self.model.save_meta(obj, key, value)
 
 
-class EvaluatorEditAdditionalBuildings(LoginRequiredMixin, UserRoleContextMixin, UpdateView):
+class EvaluatorEditAdditionalBuildings(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, UpdateView):
     """
     Second step of the evaluation process. This view provides the evaluator with the ability 
     to edit objects additional buildings data. Only the associated additional buildings are loaded.
@@ -484,7 +485,6 @@ class EvaluatorEditAdditionalBuildings(LoginRequiredMixin, UserRoleContextMixin,
     def post(self, request, *args, **kwargs):
         obj = self.get_object()
         self.object = obj
-        print("POST request received")
 
         garage_form = self.form_class_garage(request.POST, prefix='garage')
         shed_form = self.form_class_shed(request.POST, prefix='shed')

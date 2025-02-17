@@ -1,5 +1,5 @@
 """
-This view contains is meant for similar objects to the ones being evaluated. 
+This view contains logic for similar object search and manipulation to the one being evaluated. 
 Contains web scraping logic to automatically find similar objects on aruodas.lt (not implemented as of yet).
 Contains logic for manually adding and editing similar objects.
 Contains logic for displaying found and added similar objects.
@@ -20,12 +20,14 @@ from django.template.loader import render_to_string
 import requests
 from bs4 import BeautifulSoup
 from django.http import JsonResponse, HttpResponseBadRequest
+from shared.mixins.evaluator_access_mixin import EvaluatorAccessMixin
+
 
 # Global context variables
 TOTAL_STEPS = 8
 SHOW_PROGRESS_BAR = True
 
-class SimilarObjectSearchView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+class SimilarObjectSearchView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, TemplateView):
     """
     This function still needs to be developed. Currently aruodas scraper is not working because of the human verification
     """
@@ -168,7 +170,7 @@ class SimilarObjectSearchView(LoginRequiredMixin, UserRoleContextMixin, Template
 
 
 
-class EditSimilarObjectDataView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):    
+class EditSimilarObjectDataView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, TemplateView):    
     """
     This view handles both the creation of new similar objects and the editing of existing similar objects.
     It includes forms for similar object data, location data, and additional data based on the object type.
@@ -337,7 +339,7 @@ class EditSimilarObjectDataView(LoginRequiredMixin, UserRoleContextMixin, Templa
 
 
             
-class EditSimilarObjectDecorationView(LoginRequiredMixin, UserRoleContextMixin, View):
+class EditSimilarObjectDecorationView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, View):
     """
     This view includes a form for decoration information and updates the metadata for the similar object.
     """
@@ -421,7 +423,7 @@ class EditSimilarObjectDecorationView(LoginRequiredMixin, UserRoleContextMixin, 
 
 
     
-class EditSimilarObjectCommonInfoView(LoginRequiredMixin, UserRoleContextMixin, View):
+class EditSimilarObjectCommonInfoView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, View):
     """
     This view includes a form for common information and updates the metadata for the similar object.
     """
@@ -505,7 +507,7 @@ class EditSimilarObjectCommonInfoView(LoginRequiredMixin, UserRoleContextMixin, 
 
 
 
-class EditSimilarObjectUtilityInfoView(LoginRequiredMixin, UserRoleContextMixin, View):
+class EditSimilarObjectUtilityInfoView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, View):
     """
     This view includes a form for utility information and updates the metadata for the similar object.
     """
@@ -591,7 +593,7 @@ class EditSimilarObjectUtilityInfoView(LoginRequiredMixin, UserRoleContextMixin,
 
 
 
-class SimilarObjectResultsView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+class SimilarObjectResultsView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, TemplateView):
     """
     This view retrieves and displays the search results for similar objects based on the search criteria.
     """
@@ -624,7 +626,7 @@ class SimilarObjectResultsView(LoginRequiredMixin, UserRoleContextMixin, Templat
 
 
 
-class SimilarObjectListView(LoginRequiredMixin, UserRoleContextMixin, View):
+class SimilarObjectListView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, View):
     """
     This view retrieves and displays the list of similar objects associated with a specific order and object.
     """

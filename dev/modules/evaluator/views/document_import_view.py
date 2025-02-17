@@ -1,3 +1,8 @@
+"""
+This view contains logic for document import and conversion to PDF.
+It handles the conversion of .txt, .odt, and .docx files to PDF format.
+Also contains a view to delete the converted PDF file.
+"""
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -22,16 +27,25 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from shared.mixins.evaluator_access_mixin import EvaluatorAccessMixin
+from django.contrib import messages
 
 # Global context variables
 TOTAL_STEPS = 8
 SHOW_PROGRESS_BAR = True
 
-class DocumentView(LoginRequiredMixin, View):
+class DocumentView(LoginRequiredMixin, EvaluatorAccessMixin, View):
     """
     View to open the converted pdf file in the browser.
     Requires the user to be logged in.
     """
+
+    def dispatch(self, request, *args, **kwargs):
+        document_id = self.kwargs.get('document_id')
+        document = get_object_or_404(UploadedDocument, id=document_id)
+        order_id = document.order.id
+        self.kwargs['order_id'] = order_id
+        return super().dispatch(request, *args, **kwargs)
     
     def get(self, request, document_id):
         document = get_object_or_404(UploadedDocument, id=document_id)
@@ -42,7 +56,7 @@ class DocumentView(LoginRequiredMixin, View):
 
 
 
-class DocumentImportView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+class DocumentImportView(LoginRequiredMixin, EvaluatorAccessMixin, TemplateView):
     """
     View to handle the import of documents. Handles .txt .odt file conversion to .pdf.
     Requires the user to be logged in and have the appropriate role.

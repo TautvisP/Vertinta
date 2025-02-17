@@ -1,3 +1,8 @@
+"""
+This view contains the views for the nearby organizations feature.
+Nearby organizations are found by giving Overpass API a set of coordinates and a search radius.
+The API returns a list of nearby organizations based on the given criteria.
+"""
 import requests
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, View
@@ -11,13 +16,14 @@ from geopy.distance import geodesic
 from decimal import Decimal
 from django.contrib import messages
 from modules.evaluator.forms import NearbyOrganizationForm
+from shared.mixins.evaluator_access_mixin import EvaluatorAccessMixin
 
 # Global context variables
 TOTAL_STEPS = 8
 SHOW_PROGRESS_BAR = True
 
 
-class FoundNearbyOrganizationView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+class FoundNearbyOrganizationView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, TemplateView):
     model = Object
     user_meta = UserMeta
     template_name = "found_nearby_objects.html"
@@ -176,7 +182,7 @@ class FoundNearbyOrganizationView(LoginRequiredMixin, UserRoleContextMixin, Temp
 
 
 
-class NearbyOrganizationListView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+class NearbyOrganizationListView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, TemplateView):
     template_name = "nearby_object_list.html"
     login_url = 'core.uauth:login'
     redirectfield_name = 'next'
@@ -215,7 +221,7 @@ class DeleteNearbyOrganizationView(LoginRequiredMixin, View):
 
 
 
-class AddNearbyOrganizationView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+class AddNearbyOrganizationView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, TemplateView):
     template_name = "add_nearby_organization.html"
     login_url = 'core.uauth:login'
     redirect_field_name = 'next'

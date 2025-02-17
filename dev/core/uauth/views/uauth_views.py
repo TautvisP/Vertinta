@@ -1,4 +1,5 @@
 from django.urls import reverse_lazy
+from django.shortcuts import redirect
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib import messages
 from core.uauth.forms import *
@@ -8,10 +9,13 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.translation import gettext as _
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from shared.mixins.mixins import UserRoleContextMixin
 
 # Global message variables
 MISTAKE_MESSAGE = _("Pataisykite klaidas.")
 FAILED_REGISTRATION_MESSAGE = _("Registracija nepavyko. Ištaisykite klaidas.")
+NO_PERMISSION_MESSAGE = _("Neturite leidimo pasiekti šį puslapį.")
 
 class CustomLoginView(LoginView):
     form_class = LoginForm
@@ -111,7 +115,7 @@ class EvaluatorRegisterView(CreateView):
 
 
 
-class UserEditView(LoginRequiredMixin, UpdateView):
+class UserEditView(LoginRequiredMixin, UserPassesTestMixin, UserRoleContextMixin, UpdateView):
     model = User
     form_class = UserEditForm
     form_class_password = UserPasswordChangeForm
@@ -120,6 +124,12 @@ class UserEditView(LoginRequiredMixin, UpdateView):
     login_url = 'core.uauth:login'
     redirect_field_name = 'next'
 
+    def test_func(self):
+        return not (self.request.user.groups.filter(name='Agency').exists() or self.request.user.groups.filter(name='Evaluator').exists())
+
+    def handle_no_permission(self):
+        messages.error(self.request, NO_PERMISSION_MESSAGE)
+        return redirect('core.uauth:login')
 
     def get_object(self):
         return self.request.user

@@ -10,13 +10,13 @@ unregistered users should be able to select what object they want to evaluate
 
 when adding an additional object, the user should be able to add more than one, and have a seperate button for going to the next step, now after adding a single garage, the next step is loaded. Also make it so that when editing a user can change the type of the building.
 
-after agency_select the user gets redirected to the login page instead of order list
++ after agency_select the user gets redirected to the login page instead of order list
 
 + possibly header styling is messed up, since after removing it some pages react differently, some with the added link to the header do not print their content
 
-agency_select window incorrectly calculates evaluator count
++ agency_select window incorrectly calculates evaluator count
 
-allow agency to change order evaluator
++ allow agency to change order evaluator
 
 + Fix evaluator/forms.py with correct input fields and enums, make it so that the first step of evaluating an order consists of many different templates with at most 2 forms populated with order data.
 
@@ -44,7 +44,7 @@ add build type to house object form; object type kita should have COMERCIAL_CHOI
 
 + Need to check with mentor, but possibly would be a good idea to seperate evaluator view into a couple of views
 
-In AgencySelectionView the appraiser_with_least_orders function doesnt seem to be working, possibly the evaluator order fields are not saved in the database.
++ In AgencySelectionView the appraiser_with_least_orders function doesnt seem to be working, possibly the evaluator order fields are not saved in the database.
 
 + Make constant context['total_steps'] = 8
 
@@ -69,7 +69,7 @@ in https://docs.djangoproject.com/en/5.1/topics/auth/default/#topic-authorizatio
 
 Additional documents should be converted to pdf, the final report to latex and then to pdf, as the last step of the final report generation, combine additional documents with the final one using linux built in commands (pdftk, imagemagic) https://stackoverflow.com/questions/2507766/merge-convert-multiple-pdf-files-into-one-pdf
 
-Need to further implement document addition, since the conversion from odt to pdf doesnt keep the formatting, and most other approaches I've tested do not work. Currently .txt to .pdf seems to work fine, .odt to .pdf doesnt keep the formatting (new lines and tabulations), .docx to .pdf isnt tested yet. Also need to test with pictures, tables and other more difficult scenarios in the files. IDEA: maybe upload original documents content as pictures to pdf?
++ Need to further implement document addition, since the conversion from odt to pdf doesnt keep the formatting, and most other approaches I've tested do not work. Currently .txt to .pdf seems to work fine, .odt to .pdf doesnt keep the formatting (new lines and tabulations), .docx to .pdf isnt tested yet. Also need to test with pictures, tables and other more difficult scenarios in the files. IDEA: maybe upload original documents content as pictures to pdf?
 
 should use css instead of .csv: https://fontawesome.com/icons/categories/coding
 
@@ -85,7 +85,7 @@ Need to make warning and success messages to the standards of codex/osom. Also m
 
 Would be a good idea to have a help page (or a quesntion mark which after pressed would bring up a pop up with info) for the more intricate input fields. Or an info page that would provide with general information(link to https://e-seimas.lrs.lt/portal/legalAct/lt/TAD/TAIS.82185)
 
-Wouble be nice to have a check at the report generation, which would warn the evaluator if theres specific data missing that the report needs.
++ Wouble be nice to have a check at the report generation, which would warn the evaluator if theres specific data missing that the report needs.
 
 An apartament can have a basement. Pamatai for apartament is irrelivant
 
@@ -97,7 +97,7 @@ https://latexdraw.com/how-to-annotate-an-image-in-latex/
 
 Need to fix header, in some windows it starts at the top left corner, while in some it is closer to the middle of the screen. Possibly because some templates extend a template with bootstrap.
 
-Add counter for how many current projects, and completed evaluations each evaluator and agency has.
++ Add counter for how many current projects, and completed evaluations each evaluator and agency has.
 
 + Missing values in report: house_number or flat_number; building_floor_count, floor; interior_deco, interior_floors, ceiling_deco; garage_size, garage_cars_count; shed_size, shed_type; gazebo_size, gazebo_type, gazebo_electricity; object_type; evaluation_info.
 
@@ -105,10 +105,24 @@ Would benefit from adding additional information that would specify some data. F
 
 Add comment section in order for user.
 
-admin page
+admin page, use default django admin panel with different skins.
 
 + http://127.0.0.1:8000/evaluator/evaluation_steps/24/edit_similar_object_data/50/ 'EditSimilarObjectDataView' object has no attribute 'render_to_response'
 
-Agency select evaluator count is still random
++ Agency select evaluator count is still random
 
-When user is creating an order and doesnt select the agency, there is no way to continue selecting it after he leaves the window.
++ When user is creating an order and doesnt select the agency, there is no way to continue selecting it after he leaves the window.
+
+Need to think of a logical solution to register agency and evaluator role users, maybe have a button. Maybe add invitation logic, similar to password change. Have the token in url. Agency invites evaluator, admin invites agency through admin panel.
+
+
++ permissions have been fixed in agency view, tested with evaluator and regular user. Make it so that orders can only be edited or deleted by the parties involved with that order, not with any random user.
+
+
+Warning messages (for example you do not have permission to access this page) only appear when the user logs out in the log in form. Need to make mesasges appear in the appropriate windows.
+
+remove api path from annotations.
+
+need to look into pandoc, because now two versions of them are present in the project.
+
+in found organization the error message is barelly visible and in an incorrect language.

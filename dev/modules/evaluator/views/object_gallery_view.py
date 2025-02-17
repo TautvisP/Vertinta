@@ -1,5 +1,7 @@
 """"
 Contains logic for objects image gallery and image annotations.
+Image annotations are displayed on the image and can be edited or deleted.
+They have coordinates and text and or an image.
 """
 
 from django.shortcuts import redirect, get_object_or_404
@@ -13,6 +15,8 @@ from modules.evaluator.forms import ObjectImageForm, ImageAnnotationForm
 from django.views import View
 from django.http import JsonResponse
 from django.utils.translation import gettext as _
+from shared.mixins.evaluator_access_mixin import EvaluatorAccessMixin
+
 
 # Global context variables
 TOTAL_STEPS = 8
@@ -21,7 +25,7 @@ SHOW_PROGRESS_BAR = True
 
 
 
-class EditObjectGalleryView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+class EditObjectGalleryView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, TemplateView):
     """
     This view is responsible for displaying the object gallery page.
     Handles image upload and deletion
@@ -87,7 +91,7 @@ class EditObjectGalleryView(LoginRequiredMixin, UserRoleContextMixin, TemplateVi
 
 
 
-class ImageAnnotationView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+class ImageAnnotationView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, TemplateView):
     """
     This view is responsible for displaying the image annotation page.
     Validates the form and saves the annotation to the database

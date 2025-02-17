@@ -1,3 +1,7 @@
+"""
+This view contains the views for the evaluator module.
+The views are responsible for handling some of the evaluation process steps and the evaluator's account management.
+"""
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
@@ -11,6 +15,7 @@ from modules.orders.models import Object, Order
 from django.views.generic import TemplateView
 from modules.evaluator.forms import EvaluatorEditForm, EvaluatorPasswordChangeForm
 from django.utils.translation import gettext as _
+from shared.mixins.evaluator_access_mixin import EvaluatorAccessMixin
 
 
 # Global message variables
@@ -112,7 +117,7 @@ class EditEvaluatorAccountView(LoginRequiredMixin, UserPassesTestMixin, UserRole
 
 
 
-class EvaluationStepsView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+class EvaluationStepsView(LoginRequiredMixin, EvaluatorAccessMixin, TemplateView):
     """
     Acts as a hub for the multi-step evaluation process. 
     This view provides the evaluator with the ability to see and navigate through the evaluation steps
@@ -134,7 +139,7 @@ class EvaluationStepsView(LoginRequiredMixin, UserRoleContextMixin, TemplateView
 
 
 
-class RCDataEditView(LoginRequiredMixin, UserRoleContextMixin, TemplateView):
+class RCDataEditView(LoginRequiredMixin, EvaluatorAccessMixin, TemplateView):
     """
     Third step of the evaluation process. This view should be responsible for getting and displaying data from "Registru Centras".
     For now it is just a placeholder

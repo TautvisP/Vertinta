@@ -226,6 +226,22 @@ class ReassignEvaluatorView(LoginRequiredMixin, UserRoleContextMixin, ListView):
     redirect_field_name = 'next'
 
 
+    def test_func(self):
+        return self.request.user.groups.filter(name='Agency').exists()
+
+    def handle_no_permission(self):
+        messages.error(self.request, NO_PERMISSION_MESSAGE)
+        return redirect('core.uauth:login')
+    
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Override the dispatch method to enforce role-based access control.
+        """
+        if not self.test_func():
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
+
+
     def get_queryset(self):
         return self.model.objects.filter(groups__name='Evaluator')
 
@@ -262,6 +278,22 @@ class AssignEvaluatorView(LoginRequiredMixin, UserRoleContextMixin, View):
     """
     login_url = 'core.uauth:login'
     redirect_field_name = 'next'
+
+    def test_func(self):
+        return self.request.user.groups.filter(name='Agency').exists()
+
+    def handle_no_permission(self):
+        messages.error(self.request, NO_PERMISSION_MESSAGE)
+        return redirect('core.uauth:login')
+    
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Override the dispatch method to enforce role-based access control.
+        """
+        if not self.test_func():
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
+
 
     def post(self, request, *args, **kwargs):
         order_id = self.kwargs.get('order_id')
