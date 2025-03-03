@@ -113,11 +113,9 @@ admin page, use default django admin panel with different skins.
 
 + When user is creating an order and doesnt select the agency, there is no way to continue selecting it after he leaves the window.
 
-Need to think of a logical solution to register agency and evaluator role users, maybe have a button. Maybe add invitation logic, similar to password change. Have the token in url. Agency invites evaluator, admin invites agency through admin panel.
-
+Need to think of a logical solution to register agency and evaluator role users, maybe have a button. Maybe add invitation logic, similar to password change. Have the token in url. Agency invites evaluator, admin invites agency through admin panel. https://docs.python.org/3/library/uuid.html
 
 + permissions have been fixed in agency view, tested with evaluator and regular user. Make it so that orders can only be edited or deleted by the parties involved with that order, not with any random user.
-
 
 Warning messages (for example you do not have permission to access this page) only appear when the user logs out in the log in form. Need to make mesasges appear in the appropriate windows.
 
