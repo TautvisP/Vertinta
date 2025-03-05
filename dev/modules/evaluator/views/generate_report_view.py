@@ -336,4 +336,9 @@ class GenerateLatexReportView(LoginRequiredMixin, UserRoleContextMixin, View):
         pdf_file_path = os.path.join(settings.MEDIA_ROOT, 'report.pdf')
         subprocess.run(['pdflatex', '-output-directory', settings.MEDIA_ROOT, latex_file_path])
 
-        return FileResponse(open(pdf_file_path, 'rb'), content_type='application/pdf', as_attachment=True, filename='report.pdf')
+        # Save the generated PDF file to the report
+        with open(pdf_file_path, 'rb') as pdf_file:
+            report.report_file.save(f'report_{order.id}.pdf', pdf_file)
+
+        messages.success(request, _("Ataskaita sėkmingai sugeneruota!"))
+        return redirect('modules.orders:evaluator_order_list')

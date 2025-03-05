@@ -15,19 +15,30 @@
 <div class="content-page">
     <div class="container">
         <h2>{% trans "Nuotraukos Anotavimas" %}</h2>
-        <div class="annotation-container" id="annotation-container" style="position: relative;">
-            <img id="annotatable-image" src="{{ image.image.url }}" alt="Object Image" style="max-width: 100%;">
-            {% for annotation in annotations %}
-            <div class="marker existing-marker" data-id="{{ annotation.id }}" style="left: {{ annotation.x_coordinate }}%; top: {{ annotation.y_coordinate }}%;">
-                <span class="marker-number">{{ forloop.counter }}</span>
+        <div class="content">
+            <div class="annotation-container" id="annotation-container" style="position: relative;">
+                <img id="annotatable-image" src="{{ image.image.url }}" alt="Object Image" class="annotatable-image">
+                {% for annotation in annotations %}
+                <div class="marker existing-marker" data-id="{{ annotation.id }}" style="left: {{ annotation.x_coordinate }}%; top: {{ annotation.y_coordinate }}%;">
+                    <span class="marker-number">{{ forloop.counter }}</span>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            <div class="annotation-form-container">
+                <form id="annotation-form" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ annotation_form.x_coordinate }}
+                    {{ annotation_form.y_coordinate }}
+                    {{ annotation_form.annotation_text }}
+                    <div id="drop-area" class="drop">
+                        <img src="{% static 'icons/upload.svg' %}" alt="{% trans 'Pasirinkti failą' %}">
+                        <p>{% trans "Spustelėkite čia, kad įkeltumėte failą arba vilkite ir numeskite" %}</p>
+                        <input type="file" id="annotation-image-input" name="annotation_image" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary">{% trans "Išsaugoti anotaciją" %}</button>
+                </form>
+            </div>
         </div>
-        <form id="annotation-form" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ annotation_form.as_p }}
-            <button type="submit" class="btn btn-primary">{% trans "Išsaugoti anotaciją" %}</button>
-        </form>
     </div>
 
     <!-- Modal for displaying annotation details -->
@@ -42,15 +53,22 @@
                 <input type="file" id="annotation-edit-image" name="annotation_image" style="display: none;">
                 <input type="hidden" id="id_x_coordinate" name="x_coordinate" value="">
                 <input type="hidden" id="id_y_coordinate" name="y_coordinate" value="">
+                <img id="annotation-image" src="" style="max-width: 100%;">
                 <button id="save-annotation" class="btn btn-primary" data-id="" style="display: none;">{% trans "Išsaugoti" %}</button>
             </form>
-            <img id="annotation-image" src="" style="max-width: 100%;">
-            <button id="edit-annotation" class="btn btn-primary" data-id="">{% trans "Redaguoti" %}</button>
-            <button id="delete-annotation" class="btn btn-danger" data-id="">{% trans "Ištrinti" %}</button>
+            <button id="edit-annotation" class="icon-button" data-id="{{ annotation.id }}" title="{% trans 'Redaguoti' %}">
+                <img src="{% static 'icons/edit-pencil.svg' %}" alt="{% trans 'Redaguoti' %}">
+            </button>
+            <form id="delete-annotation-form" method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="annotation_id" id="delete-annotation-id">
+                <button type="submit" id="delete-annotation" class="icon-button" data-id="{{ annotation.id }}" title="{% trans 'Ištrinti' %}">
+                    <img src="{% static 'icons/trash.svg' %}" alt="{% trans 'Ištrinti' %}">
+                </button>
+            </form>
         </div>
     </div>
 </div>
-
 <div class="navigation-buttons">
     <a href="{% url 'modules.evaluator:edit_gallery' order_id=order.id pk=pk %}" class="btn-back">{% trans "Atgal" %}</a>
 </div>

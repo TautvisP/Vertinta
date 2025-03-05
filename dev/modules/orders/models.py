@@ -349,6 +349,8 @@ class Report(models.Model):
     district = models.TextField(blank=True, null=True)
     conclusion = models.TextField(blank=True, null=True)
     valuation_methodology = models.TextField(blank=True, null=True)
+    report_file = models.FileField(upload_to='reports/', blank=True, null=True)
+
 
     def __str__(self):
         return f"Report for Order {self.order.id}"

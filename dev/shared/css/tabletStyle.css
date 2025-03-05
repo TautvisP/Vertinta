@@ -116,10 +116,33 @@ body {
     object-fit: cover;
     border-radius: 8px;
 }
-.image-title, .image-buttons {
+.image-title {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+}
+
+.image-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+}
+
+.icon-button img {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
 }
 
 .annotate-btn {

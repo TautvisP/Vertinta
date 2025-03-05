@@ -47,7 +47,11 @@
                     <form method="post" style="display:inline;">
                         {% csrf_token %}
                         <input type="hidden" name="image_id" value="{{ image.id }}">
-                        <button type="submit" name="delete_image" class="delete-buttons">{% trans "Ištrinti" %}</button>
+                        <button type="submit" class="icon-button" title="{% trans 'Ištrinti' %}">
+                            <img src="{% static 'icons/trash.svg' %}">
+                        </button>
+
+
                     </form>
                 </div>
             </div>

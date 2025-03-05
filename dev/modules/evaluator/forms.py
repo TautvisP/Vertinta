@@ -114,10 +114,17 @@ class ImageAnnotationForm(forms.ModelForm):
         widget=forms.HiddenInput())
     
     annotation_text = forms.CharField(
-        label=_('Anotacijos tekstas'), widget=forms.Textarea(attrs={'class': 'form-control'}), required=False)
-    
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': _('Anotacijos tekstas')
+        }), required=False)
+        
     annotation_image = forms.ImageField(
-        label=_('Anotacijos nuotrauka'), widget=forms.ClearableFileInput(attrs={'class': 'form-control'}), required=False)
+        widget=forms.ClearableFileInput(attrs={
+            'class': 'form-control',
+            'id': 'annotation-image-input'
+        }), required=False)
+    
     class Meta:
         model = ImageAnnotation
         fields = ['x_coordinate', 'y_coordinate', 'annotation_text', 'annotation_image']

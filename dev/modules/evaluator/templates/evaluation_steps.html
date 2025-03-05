@@ -19,7 +19,8 @@
             <a href="{% url 'modules.evaluator:found_organizations' order.id order.object.id %}" class="step-button">{% trans '7. Netoliese esančios įstaigos' %}</a>
             <a href="{% url 'modules.evaluator:generate_report' order.id order.object.id %}" class="step-button">{% trans '8. Ataskaitos generavimas' %}</a>
         </div>
-        <button class="start-button">{% trans 'Pradėti' %}</button>
+        <a href="{% url 'modules.orders:evaluator_order_list' %}" class="btn-back">{% trans "Atgal" %}</a>
+
     </div>
 </div>
 {% endblock %}

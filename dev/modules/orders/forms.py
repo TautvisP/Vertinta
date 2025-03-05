@@ -78,10 +78,10 @@ class ObjectLocationForm(forms.Form):
         label=_('Namo nr.'),  min_value=1, error_messages=default_errors)
     
     latitude = forms.DecimalField(
-        label=_('Platuma'), max_digits=9, decimal_places=6, required=False, widget=forms.NumberInput(attrs={'class': 'form-control'}))
+        label=_('Platuma'), max_digits=9, decimal_places=6, widget=forms.NumberInput(attrs={'class': 'form-control'}), error_messages=default_errors)
     
     longitude = forms.DecimalField(
-        label=_('Ilguma'), max_digits=9, decimal_places=6, required=False, widget=forms.NumberInput(attrs={'class': 'form-control'}))
+        label=_('Ilguma'), max_digits=9, decimal_places=6, widget=forms.NumberInput(attrs={'class': 'form-control'}), error_messages=default_errors)
 
 
     def get_fields(self, *args, **kwargs):

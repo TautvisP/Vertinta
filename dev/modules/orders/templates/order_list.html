@@ -39,6 +39,11 @@
                         {% endif %}
                         <td>{{ order.status }}</td>
                         <td>
+                            {% if order.report and order.report.report_file %}
+                                <a href="{{ order.report.report_file.url }}" class="icon-button" download title="{% trans 'Atsisiųsti Ataskaitą' %}" >
+                                    <img src="{% static 'icons/report.svg' %}" alt="Document Icon">
+                                </a>
+                            {% endif %}
                             {% if order.status == 'Nebaigtas' %}
                             <a href="{% url 'modules.orders:select_agency' order.id %}" class="btn btn-primary">{% trans 'Tęsti' %}</a>
                             {% else %}

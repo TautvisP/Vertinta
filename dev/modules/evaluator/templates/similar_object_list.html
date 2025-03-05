@@ -48,18 +48,22 @@
                     </div>
                     <p>{{ similar_object.price }} EUR</p>
                     <div class="request-actions">
-                        <a href="{% url 'modules.evaluator:edit_similar_object_data' order_id=order_id pk=pk %}?edit={{ similar_object.id }}" class="btn btn-primary">{% trans "Redaguoti" %}</a>
+                        <a href="{% url 'modules.evaluator:edit_similar_object_data' order_id=order_id pk=pk %}?edit={{ similar_object.id }}" class="icon-button" title="{% trans 'Redaguoti' %}">
+                            <img src="{% static 'icons/edit-pencil.svg' %}" alt="{% trans 'Redaguoti' %}">
+                        </a>
                         <form action="{% url 'modules.evaluator:similar_object_list' order_id=order_id pk=pk %}" method="POST" style="display:inline;">
                             {% csrf_token %}
                             <input type="hidden" name="similar_object_id" value="{{ similar_object.id }}">
-                            <button type="submit" class="btn btn-danger">{% trans "Ištrinti" %}</button>
+                            <button type="submit" class="icon-button">
+                                <img src="{% static 'icons/trash.svg' %}" title="{% trans 'Ištrinti' %}" >
+                            </button>
                         </form>
                     </div>
                 </div>
                 {% endfor %}
             </div>
         </div>
-        <a href="{% url 'modules.evaluator:edit_similar_object_data' order_id pk %}" class="btn btn-primary">{% trans "Pridėti Panašų Objektą" %}</a>
+        <a href="{% url 'modules.evaluator:edit_similar_object_data' order_id pk %}" class="btn-forward">{% trans "Pridėti Panašų Objektą" %}</a>
     </div>
 </div>
 <div class="navigation-buttons">

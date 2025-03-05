@@ -42,7 +42,7 @@
             <form method="post" id="object-type-form">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="button" id="load-form-button" class="btn btn-primary">{% trans "Pasirinkti" %}</button>
+                <button type="button" id="load-form-button" class="btn-forward">{% trans "Pasirinkti" %}</button>
             </form>
             <div id="dynamic-form-container"></div>
         </div>

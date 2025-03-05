@@ -12,10 +12,18 @@
 </head>
 <body>
     {% include 'shared/header.html' %}
-    {% block content %}{% endblock %}
+    <main>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
     {% block extra_body %}{% endblock %}
     {% block extra_js %}{% endblock %}
-
     <footer class="footer">
         <span class="text-muted">&copy; {% now 'Y' %} Indeform Vertinta</span>
     </footer>
