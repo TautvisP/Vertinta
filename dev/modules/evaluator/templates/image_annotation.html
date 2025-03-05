@@ -52,7 +52,7 @@
                 <input type="hidden" id="id_x_coordinate" name="x_coordinate" value="">
                 <input type="hidden" id="id_y_coordinate" name="y_coordinate" value="">
                 <img id="annotation-image" src="" style="max-width: 100%;">
-                <button id="save-annotation" class="btn btn-primary" data-id="" style="display: none;">{% trans "Išsaugoti" %}</button>
+                <button id="save-annotation" class="btn-forward" data-id="" style="display: none;">{% trans "Išsaugoti" %}</button>
             </form>
             <button id="edit-annotation" class="icon-button" data-id="{{ annotation.id }}" title="{% trans 'Redaguoti' %}">
                 <img src="{% static 'icons/edit-pencil.svg' %}" alt="{% trans 'Redaguoti' %}">

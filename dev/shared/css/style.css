@@ -563,7 +563,7 @@ header {
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 30%;
 }
 .close {
     color: #aaa;
@@ -764,4 +764,43 @@ header {
     display: flex;
     justify-content: center;
     margin-top: 20px;
+}
+
+input[type="file"].form-control {
+    display: none;
+}
+.drop {
+    border-radius: 10px;
+    border: 2px dashed #ccc;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+}
+
+.drop img {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 10px;
+}
+
+.modal-input {
+    margin-bottom: 15px;
+}
+
+.modal-input label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.modal-input input,
+.modal-input select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }

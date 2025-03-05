@@ -1,7 +1,7 @@
 from django.urls import path
 from .views.main_view import EditEvaluatorAccountView, EvaluationStepsView,  RCDataEditView, index
 from .views.object_data_view import EditObjectDataView, EditEvaluationAndDecoInfo, EditCommonInfo, EditUtilityInfo, EvaluatorEditAdditionalBuildings
-from .views.object_gallery_view import EditObjectGalleryView, ImageAnnotationView, CreateAnnotationView, AnnotationDetailView, DeleteAnnotationView, EditAnnotationView
+from .views.object_gallery_view import EditObjectGalleryView, DeleteObjectImageView, ImageAnnotationView, CreateAnnotationView, AnnotationDetailView, DeleteAnnotationView, EditAnnotationView
 from .views.similar_objects_view import SimilarObjectSearchView, SimilarObjectListView, SimilarObjectResultsView, EditSimilarObjectDataView, EditSimilarObjectDecorationView, EditSimilarObjectCommonInfoView, EditSimilarObjectUtilityInfoView
 from .views.document_import_view import DocumentImportView, DocumentView, DeleteDocumentView
 from .views.nearby_organization_view import FoundNearbyOrganizationView, NearbyOrganizationListView, DeleteNearbyOrganizationView, AddNearbyOrganizationView
@@ -34,6 +34,7 @@ urlpatterns = [
 
     #4
     path('evaluation_steps/<int:order_id>/edit_gallery/<int:pk>/', EditObjectGalleryView.as_view(), name='edit_gallery'),
+    path('delete_image/<int:order_id>/<int:image_id>/', DeleteObjectImageView.as_view(), name='delete_image'),
     path('evaluation_steps/<int:order_id>/image_annotation/<int:image_id>/<int:pk>/', ImageAnnotationView.as_view(), name='image_annotation'),
     path('evaluation_steps/<int:order_id>/image_annotation/<int:image_id>/<int:pk>/create/', CreateAnnotationView.as_view(), name='create_annotation'),
     path('api/annotations/<int:annotation_id>/edit/', EditAnnotationView.as_view(), name='edit_annotation'),

@@ -44,27 +44,36 @@
                 </div> 
                 <div class="image-buttons">
                     <a href="{% url 'modules.evaluator:image_annotation' order_id=order.id image_id=image.id pk=pk %}" class="btn btn-secondary">{% trans "Anotuoti" %}</a>
-                    <form method="post" style="display:inline;">
+                    <form method="post" action="{% url 'modules.evaluator:delete_image' order_id=order.id image_id=image.id %}" style="display:inline;">
                         {% csrf_token %}
-                        <input type="hidden" name="image_id" value="{{ image.id }}">
                         <button type="submit" class="icon-button" title="{% trans 'Ištrinti' %}">
                             <img src="{% static 'icons/trash.svg' %}">
                         </button>
-
-
                     </form>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
-
+    
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ image_form.as_p }}
+                <div class="modal-input">
+                    <label for="{{ image_form.comment.id_for_label }}">{{ image_form.comment.label }}</label>
+                    {{ image_form.comment }}
+                </div>
+                <div class="modal-input">
+                    <label for="{{ image_form.category.id_for_label }}">{{ image_form.category.label }}</label>
+                    {{ image_form.category }}
+                </div>
+                <div id="drop-area" class="drop">
+                    <img src="{% static 'icons/upload.svg' %}" alt="{% trans 'Pasirinkti failą' %}">
+                    <p>{% trans "Spustelėkite čia, kad įkeltumėte failą arba vilkite ir numeskite" %}</p>
+                    {{ image_form.image }}
+                </div>
                 <button type="submit" name="upload_image" class="btn btn-primary">{% trans "Pridėti nuotrauką" %}</button>
             </form>
         </div>

@@ -77,14 +77,27 @@ class EditObjectGalleryView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleCo
                 image.object = obj
                 image.save()
                 return redirect(self.get_success_url())
-            
-        elif 'delete_image' in request.POST:
-            image_id = request.POST.get('image_id')
-            image = get_object_or_404(self.image_model, id=image_id)
-            image.delete()
-            return redirect(self.get_success_url())
         
         return self.get(request, *args, **kwargs)
+    
+
+
+
+class DeleteObjectImageView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, View):
+    """
+    View to handle the deletion of an object image along with its annotations.
+    Requires the user to be logged in and have the appropriate role.
+    """
+    def post(self, request, *args, **kwargs):
+        order_id = self.kwargs.get('order_id')
+        image_id = self.kwargs.get('image_id')
+        order = get_object_or_404(Order, id=order_id)
+        image = get_object_or_404(ObjectImage, id=image_id, object=order.object)
+
+        image.annotations.all().delete()
+        image.delete()
+
+        return JsonResponse({'status': 'success'})
 
 
 

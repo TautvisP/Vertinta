@@ -97,7 +97,11 @@ class ObjectImageForm(forms.ModelForm):
         fields = ['image', 'comment', 'category']
 
     image = forms.ImageField(
-        label=_('Nuotrauka'), widget=forms.ClearableFileInput(attrs={'class': 'form-control'}))
+        widget=forms.ClearableFileInput(attrs={
+            'class': 'form-control',
+            'id': 'file-input'
+        })
+    )
 
     comment = forms.CharField(
         label=_('Komentaras'), widget=forms.TextInput(attrs={'class': 'form-control'}))

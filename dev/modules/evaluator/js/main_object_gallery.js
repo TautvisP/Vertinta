@@ -10,4 +10,6 @@ class MainObjectGallery {
     }
 }
 
-new MainObjectGallery();
+document.addEventListener('DOMContentLoaded', function() {
+    new MainObjectGallery();
+});
