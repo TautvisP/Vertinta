@@ -1,13 +1,10 @@
 {% extends 'shared/base.html' %}
 {% load static %}
 {% load i18n %}
-
 {% block title %}{% trans 'Nuotraukos Anotavimas' %}{% endblock %}
-
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'css/annotation.css' %}">
 {% endblock %}
-
 {% block content %}
 {% if show_progress_bar %}
     {% include 'shared/progress_bar.html' %}
@@ -15,6 +12,7 @@
 <div class="content-page">
     <div class="container">
         <h2>{% trans "Nuotraukos Anotavimas" %}</h2>
+        <div id="notification-container" class="notification-container"></div>
         <div class="content">
             <div class="annotation-container" id="annotation-container" style="position: relative;">
                 <img id="annotatable-image" src="{{ image.image.url }}" alt="Object Image" class="annotatable-image">
@@ -25,7 +23,7 @@
                 {% endfor %}
             </div>
             <div class="annotation-form-container">
-                <form id="annotation-form" method="post" enctype="multipart/form-data">
+                <form id="annotation-form" method="post" enctype="multipart/form-data" data-order-id="{{ order.id }}" data-image-id="{{ image.id }}" data-pk="{{ pk }}">
                     {% csrf_token %}
                     {{ annotation_form.x_coordinate }}
                     {{ annotation_form.y_coordinate }}
@@ -35,7 +33,7 @@
                         <p>{% trans "Spustelėkite čia, kad įkeltumėte failą arba vilkite ir numeskite" %}</p>
                         <input type="file" id="annotation-image-input" name="annotation_image" class="form-control">
                     </div>
-                    <button type="submit" class="btn btn-primary">{% trans "Išsaugoti anotaciją" %}</button>
+                    <button type="submit" class="btn-forward">{% trans "Išsaugoti anotaciją" %}</button>
                 </form>
             </div>
         </div>

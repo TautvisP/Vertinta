@@ -23,8 +23,6 @@ TOTAL_STEPS = 8
 SHOW_PROGRESS_BAR = True
 
 
-
-
 class EditObjectGalleryView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, TemplateView):
     """
     This view is responsible for displaying the object gallery page.
@@ -118,23 +116,38 @@ class ImageAnnotationView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleCont
         context['pk'] = pk
         return context
 
+
+
+
+class CreateAnnotationView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, View):
+    """
+    This view is responsible for creating a new annotation.
+    """
+    model = Order
+    model_image = ObjectImage
+    form_class_annotation = ImageAnnotationForm
+
     def post(self, request, *args, **kwargs):
         order_id = self.kwargs.get('order_id')
         image_id = self.kwargs.get('image_id')
         order = get_object_or_404(self.model, id=order_id)
         image = get_object_or_404(self.model_image, id=image_id, object=order.object)
         annotation_form = self.form_class_annotation(request.POST, request.FILES)
-        print(annotation_form.data)
 
         if annotation_form.is_valid():
             annotation = annotation_form.save(commit=False)
             annotation.image = image
             annotation.save()
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                response_data = {'status': 'success'}
+                return JsonResponse(response_data, content_type='application/json')
             return redirect('modules.evaluator:image_annotation', order_id=order_id, image_id=image_id, pk=order.object.id)
         
-        context = self.get_context_data(**kwargs)
-        context['annotation_form'] = annotation_form
-        return self.render_to_response(context)
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            response_data = {'status': 'error', 'errors': annotation_form.errors}
+            return JsonResponse(response_data, content_type='application/json')
+        
+        return redirect('modules.evaluator:image_annotation', order_id=order_id, image_id=image_id, pk=order.object.id)
 
 
 
