@@ -11,51 +11,62 @@
 <div class="content-page">
     <div class="content">
         <div class="container-fluid col-10">
+            <h2>{% trans '1. Vertinamo Objekto Duomenys' %}</h2>
+
             <form action="{% if is_similar_object %}{% url 'modules.evaluator:edit_similar_object_data' order_id pk %}{% else %}{% url 'modules.evaluator:edit_object_data' order_id pk %}{% endif %}" method="POST">{% csrf_token %}
                 <input type="hidden" name="is_similar_object" value="{{ is_similar_object }}">
                 {% if is_similar_object %}
                 <input type="hidden" name="edit_id" value="{{ similar_object_id }}">
                 <div class="form-section">
                     <div class="col-sm-12">
-                        <div class="card-box">
                             <h3 class="header-title">{% trans "Lokacijos duomenys" %}</h3>
                             <div class="col-lg-12">
-                                <div class="form-row">
-                                    {{ location_form.as_p }}
+                                <div class="grid-form">
+                                    {% for field in location_form %}
+                                    <div class="form-group">
+                                        {{ field.label_tag }}
+                                        {{ field }}
+                                    </div>
+                                    {% endfor %}
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
                 {% else %}
                 <div class="form-section">
                     <div class="col-sm-12">
-                        <div class="card-box">
                             <h3 class="header-title">{% trans "Lokacijos duomenys" %}</h3>
                             <div class="col-lg-12">
-                                <div class="form-row">
-                                    {{ location_form.as_p }}
+                                <div class="grid-form">
+                                    {% for field in location_form %}
+                                    <div class="form-group">
+                                        {{ field.label_tag }}
+                                        {{ field }}
+                                    </div>
+                                    {% endfor %}
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
                 {% endif %}
                 {% if additional_form %}
                 <div class="form-section">
                     <div class="col-sm-12">
-                        <div class="card-box">
                             <h3 class="header-title">{% trans "Papildoma informacija" %}</h3>
                             <div class="col-lg-12">
-                                <div class="form-row">
-                                    {{ additional_form.as_p }}
+                                <div class="grid-form">
+                                    {% for field in additional_form %}
+                                    <div class="form-group">
+                                        {{ field.label_tag }}
+                                        {{ field }}
+                                    </div>
+                                    {% endfor %}
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
                 {% endif %}
-                <button type="submit" class="btn-forward">{% trans "Patvirtinti duomenis" %}</button>
+                <button type="submit" class="btn-form">{% trans "Patvirtinti duomenis" %}</button>
             </form>
         </div>
     </div>

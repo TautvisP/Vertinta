@@ -9,14 +9,13 @@
 {% if show_progress_bar %}
     {% include 'shared/progress_bar.html' %}
 {% endif %}
-<link rel="stylesheet" href="{% static 'css/tabletStyle.css' %}">
+<div class="content-page">
+    <div class="content">
 <div class="form-container">
-    <div class="rc-data">
         <div class="container-fluid col-10">
-            <h3 class="header-title">{% trans "3. Gauti duomenys iš Registrų Centro" %}</h3>
+            <h2 class="header-title">{% trans "3. Gauti duomenys iš Registrų Centro" %}</h3>
 
         </div>
-    </div>
     <div class="container-fluid col-10">
         <h3>{% trans "Vertinamas turtas" %}</h3>
         <div class="order-data">
@@ -28,7 +27,9 @@
 </div>
 <form>
     {% csrf_token %}
-    <p>{% trans 'Šiuo metu duomenų neturime' %}</p>
+    <div class="form-section">
+        <h3>{% trans 'Šiuo metu duomenų neturime' %}</h3>
+    </div>
 </form>
 <div class="navigation-buttons">
     <a href="{% url 'modules.evaluator:edit_additional_buildings' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>

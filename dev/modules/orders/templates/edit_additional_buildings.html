@@ -21,55 +21,55 @@
                 {% if show_garage_form %}
                 <div class="form-section">
                     <div class="col-sm-12">
-                        <div class="card-box">
                             <h3 class="header-title">{% trans "Garažas" %}</h3>
                             <div class="col-lg-12">
                                 <div class="form-row">
                                     {{ garage_form.as_p }}
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
                 {% endif %}
                 {% if show_shed_form %}
                 <div class="form-section">
                     <div class="col-sm-12">
-                        <div class="card-box">
                             <h3 class="header-title">{% trans "Sandėliukas" %}</h3>
                             <div class="col-lg-12">
-                                <div class="form-row">
-                                    {{ shed_form.as_p }}
+
+
+                                <div class="grid-form">
+                                    {% for field in shed_form %}
+                                    <div class="form-group">
+                                        {{ field.label_tag }}
+                                        {{ field }}
+                                    </div>
+                                    {% endfor %}
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
                 {% endif %}
                 {% if show_gazebo_form %}
                 <div class="form-section">
                     <div class="col-sm-12">
-                        <div class="card-box">
                             <h3 class="header-title">{% trans "Pavėsinė" %}</h3>
                             <div class="col-lg-12">
                                 <div class="form-row">
                                     {{ gazebo_form.as_p }}
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
                 {% endif %}
-                <button type="submit" class="btn btn-primary">{% trans 'Išsaugoti' %}</button>
+                <button type="submit" class="btn-form">{% trans 'Išsaugoti' %}</button>
             </form>
         </div>
     </div>
-    
-</div>
-{% if is_evaluator %}
+    {% if is_evaluator %}
 <div class="navigation-buttons">
     <a href="{% url 'modules.evaluator:edit_utility_info' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
     <a href="{% url 'modules.evaluator:edit_RC_data' order_id pk %}" class="btn-forward">{% trans "Pirmyn" %}</a>
+</div>
 </div>
 {% endif %}
 {% endblock %}

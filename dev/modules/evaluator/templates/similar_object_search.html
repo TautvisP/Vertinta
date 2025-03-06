@@ -11,10 +11,8 @@
 <link rel="stylesheet" href="{% static 'css/tabletStyle.css' %}">
 <div class="tablet-container">
     <div class="form-container">
-        <div class="rc-data">
-            <div class="container-fluid col-10">
-                <h3 class="header-title">{% trans "5. Panašių objektų paieška" %}</h3>
-            </div>
+        <div class="container-fluid col-10">
+            <h2 class="header-title">{% trans "5. Panašių objektų paieška" %}</h2>
         </div>
         <div class="container-fluid col-10">
             <h3>{% trans "Vertinamas turtas" %}</h3>
@@ -41,17 +39,31 @@
         <div class="gallery">
             <form method="post" id="object-type-form">
                 {% csrf_token %}
-                {{ form.as_p }}
+                <div class="grid-form">
+                    {% for field in form %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                </div>
                 <button type="button" id="load-form-button" class="btn-forward">{% trans "Pasirinkti" %}</button>
             </form>
-            <div id="dynamic-form-container"></div>
+            <div id="dynamic-form-container" class="grid-form">
+                {% for field in dynamic_form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                </div>
+                {% endfor %}
+            </div>
+            
         </div>
     </div>
-</div>
-<div class="navigation-buttons">
-    <a href="{% url 'modules.evaluator:edit_gallery' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
-    <a href="{% url 'modules.evaluator:document_import' order_id pk %}" class="btn-forward">{% trans "Pirmyn" %}</a>
-</div>
+    <div class="navigation-buttons">
+        <a href="{% url 'modules.evaluator:edit_gallery' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
+        <a href="{% url 'modules.evaluator:document_import' order_id pk %}" class="btn-forward">{% trans "Pirmyn" %}</a>
+    </div>
 </div>
 <script>
 function getCookie(name) {

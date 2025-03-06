@@ -196,11 +196,11 @@ class CommonInformationForm(forms.Form):
         label=_('Išorės durys'), choices=OUTER_DOOR_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
     
     build_years = forms.DateField(
-        label=_('Pastatymo metai'), widget=forms.SelectDateWidget(years=range(1900, 2100), attrs={'class': 'form-control'}))
+        label=_('Pastatymo metai'), widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}))
     
     renovation_years = forms.DateField(
-        label=_('Renovacijos metai'), widget=forms.SelectDateWidget(years=range(1900, 2100), attrs={'class': 'form-control'}))
-    
+        label=_('Renovacijos metai'), widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}))
+
     room_count = forms.IntegerField(
         label=_('Kambarių skaičius'), min_value=1, error_messages=default_errors)
     

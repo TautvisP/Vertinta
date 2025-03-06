@@ -4,9 +4,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
-    margin-bottom: 50px;
-    padding-top: 100px;
+    margin-top: 3%;
+    margin-bottom: 5%;
+    padding-top: 5%;
     align-items: flex-start;
     width: 100%;
 }
@@ -50,4 +50,11 @@
     outline-color: #4E78D2;
     outline-width: 3px;
     outline-style: solid;
+}
+
+/* Media Queries for Tablet Devices */
+@media (max-width: 1024px) {
+    .progress-container {
+        margin-top: 6%;
+    };
 }

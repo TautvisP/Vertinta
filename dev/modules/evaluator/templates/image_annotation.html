@@ -8,6 +8,8 @@
 {% block content %}
 {% if show_progress_bar %}
     {% include 'shared/progress_bar.html' %}
+{% else %}
+    <div class="progress-bar-placeholder"></div>
 {% endif %}
 <div class="content-page">
     <div class="container">
@@ -33,7 +35,7 @@
                         <p>{% trans "Spustelėkite čia, kad įkeltumėte failą arba vilkite ir numeskite" %}</p>
                         <input type="file" id="annotation-image-input" name="annotation_image" class="form-control">
                     </div>
-                    <button type="submit" class="btn-forward">{% trans "Išsaugoti anotaciją" %}</button>
+                    <button type="submit" class="btn-annotation">{% trans "Išsaugoti anotaciją" %}</button>
                 </form>
             </div>
         </div>
@@ -52,7 +54,7 @@
                 <input type="hidden" id="id_x_coordinate" name="x_coordinate" value="">
                 <input type="hidden" id="id_y_coordinate" name="y_coordinate" value="">
                 <img id="annotation-image" src="" style="max-width: 100%;">
-                <button id="save-annotation" class="btn-forward" data-id="" style="display: none;">{% trans "Išsaugoti" %}</button>
+                <button id="save-annotation" class="btn-annotation" data-id="" style="display: none;">{% trans "Išsaugoti" %}</button>
             </form>
             <button id="edit-annotation" class="icon-button" data-id="{{ annotation.id }}" title="{% trans 'Redaguoti' %}">
                 <img src="{% static 'icons/edit-pencil.svg' %}" alt="{% trans 'Redaguoti' %}">

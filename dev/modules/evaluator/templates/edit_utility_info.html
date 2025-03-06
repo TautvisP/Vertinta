@@ -17,15 +17,18 @@
                     <div class="col-sm-12">
                         <div class="card-box">
                             <h3 class="header-title">{% trans "Komunalinių Paslaugų Informacija" %}</h3>
-                            <div class="col-lg-12">
-                                <div class="form-row">
-                                    {{ utility_form.as_p }}
+                            <div class="grid-form">
+                                {% for field in utility_form %}
+                                <div class="form-group">
+                                    {{ field.label_tag }}
+                                    {{ field }}
                                 </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="btn-forward">{% trans 'Patvirtinti duomenis' %}</button>
+                <button type="submit" class="btn-form">{% trans 'Patvirtinti duomenis' %}</button>
             </form>
         </div>
     </div>

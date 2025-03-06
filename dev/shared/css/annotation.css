@@ -142,13 +142,19 @@ h2 {
     border: 1px solid #888;
     width: 80%;
     max-width: 600px;
+    margin-top: 80px;
 }
 .modal-content textarea {
     resize: none;
     height: 100px;
     overflow: hidden;
-    border-radius: 10px;
-    padding: 10px;
+    
+    padding: 8px;
+    border: 2px solid #76767698;
+    border-radius: 6px;
+    background-color: #F8F8F8;
+    font-size: 17px;
+    color: #767676;
 }
 
 @media (max-width: 600px) {
@@ -156,6 +162,7 @@ h2 {
         width: 95%;
     }
 }
+
 
 .annotation-form-container {
     flex: 1;
@@ -177,8 +184,12 @@ h2 {
     resize: none;
     height: 100px;
     overflow: hidden;
-    border-radius: 10px;
     padding: 10px;
+    color: #767676;
+    font-size: 17px;
+
+    border: 2px solid #76767698;
+    border-radius: 6px;
 }
 
 #annotation-image-input,
@@ -229,4 +240,24 @@ h2 {
 .notification .close-notification {
     margin-left: 10px;
     cursor: pointer;
+}
+
+.btn-annotation {
+    font-weight: bold;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    background-color: #4E78D2;
+    color: white;
+    border: none;
+    font-size: 14px;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.btn-annotation:hover {
+    background-color: #2563EB;
 }

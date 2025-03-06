@@ -25,9 +25,18 @@
                 {% csrf_token %}
                 {{ garage_form.management_form }}
                 <div id="garages-forms">
-                    <div class="form-row">
-                        {{ garage_form.as_p }}
+
+
+                    <div class="grid-form">
+                        {% for field in garage_form %}
+                        <div class="form-group">
+                            {{ field.label_tag }}
+                            {{ field }}
+                        </div>
+                        {% endfor %}
                     </div>
+
+
                 </div>
                 <button type="submit" name="garage_submit" class="btn-submit">{% trans 'Pridėti Garažą' %}</button>
             </form>
@@ -39,9 +48,18 @@
                 {% csrf_token %}
                 {{ shed_form.management_form }}
                 <div id="sheds-forms">
-                    <div class="form-row">
-                        {{ shed_form.as_p }}
+
+                    
+                    <div class="grid-form">
+                        {% for field in shed_form %}
+                        <div class="form-group">
+                            {{ field.label_tag }}
+                            {{ field }}
+                        </div>
+                        {% endfor %}
                     </div>
+
+                    
                 </div>
                 <button type="submit" name="shed_submit" class="btn-submit">{% trans 'Pridėti Sandėliuką' %}</button>
             </form>
@@ -53,9 +71,18 @@
                 {% csrf_token %}
                 {{ gazebo_form.management_form }}
                 <div id="gazebos-forms">
-                    <div class="form-row">
-                        {{ gazebo_form.as_p }}
+
+
+                    <div class="grid-form">
+                        {% for field in gazebo_form %}
+                        <div class="form-group">
+                            {{ field.label_tag }}
+                            {{ field }}
+                        </div>
+                        {% endfor %}
                     </div>
+                    
+
                 </div>
                 <button type="submit" name="gazebo_submit" class="btn-submit">{% trans 'Pridėti Pavėsinę' %}</button>
             </form>
