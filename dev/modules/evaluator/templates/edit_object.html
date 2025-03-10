@@ -7,6 +7,8 @@
 {% block content %}
 {% if show_progress_bar %}
     {% include 'shared/progress_bar.html' %}
+{% else %}
+    <div class="progress-bar-placeholder-larger"></div>
 {% endif %}
 <div class="content-page">
     <div class="content">
@@ -30,6 +32,21 @@
                                     {% endfor %}
                                 </div>
                             </div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <div class="col-sm-12">
+                        <h3 class="header-title">{% trans "Panašaus objekto duomenys" %}</h3>
+                        <div class="col-lg-12">
+                            <div class="grid-form">
+                                {% for field in similar_object_form %}
+                                <div class="form-group">
+                                    {{ field.label_tag }}
+                                    {{ field }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 {% else %}
