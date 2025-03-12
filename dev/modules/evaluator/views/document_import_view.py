@@ -29,6 +29,10 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from shared.mixins.evaluator_access_mixin import EvaluatorAccessMixin
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_protect
+from django.utils.decorators import method_decorator
+from django.http import JsonResponse
+
 
 # Global context variables
 TOTAL_STEPS = 8
@@ -283,3 +287,24 @@ class DeleteDocumentView(LoginRequiredMixin, View):
         document = get_object_or_404(UploadedDocument, id=document_id)
         document.delete()
         return redirect(request.META.get('HTTP_REFERER', 'modules.evaluator:document_import'))
+
+
+
+
+@method_decorator(csrf_protect, name='dispatch')
+class UpdateDocumentCommentView(View):
+    """
+    View to edit the converted .pdf file's comment.
+    Requires the user to be logged in.
+    """
+        
+    def post(self, request, *args, **kwargs):
+        document_id = request.POST.get('document_id')
+        comment = request.POST.get('comment')
+        try:
+            document = UploadedDocument.objects.get(id=document_id)
+            document.comment = comment
+            document.save()
+            return JsonResponse({'status': 'success'})
+        except UploadedDocument.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Document not found'})

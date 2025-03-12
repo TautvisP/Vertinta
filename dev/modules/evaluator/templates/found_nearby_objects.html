@@ -40,60 +40,82 @@
                 {% endfor %}
             </div>
         {% endif %}
-        <form method="get" class="filter-form">
-            <label for="object_type">{% trans "Objekto tipas" %}</label>
-            <select name="object_type" id="object_type">
-                <option value="all" {% if object_type == 'all' %}selected{% endif %}>{% trans "Visi" %}</option>
-                <option value="school" {% if object_type == 'school' %}selected{% endif %}>{% trans "Mokykla" %}</option>
-                <option value="hospital" {% if object_type == 'hospital' %}selected{% endif %}>{% trans "Ligoninė" %}</option>
-                <option value="supermarket" {% if object_type == 'supermarket' %}selected{% endif %}>{% trans "Prekybos centras" %}</option>
-                <option value="pharmacy" {% if object_type == 'pharmacy' %}selected{% endif %}>{% trans "Vaistinė" %}</option>
-                <option value="bakery" {% if object_type == 'bakery' %}selected{% endif %}>{% trans "Kepykla" %}</option>
-                <option value="police" {% if object_type == 'police' %}selected{% endif %}>{% trans "Policija" %}</option>
-                <option value="fire_station" {% if object_type == 'fire_station' %}selected{% endif %}>{% trans "Gaisrinė" %}</option>
-                <option value="post_office" {% if object_type == 'post_office' %}selected{% endif %}>{% trans "Paštas" %}</option>
-            </select>
+        <div class="form-section">
+            <div class="col-sm-12">
+                <div class="col-lg-12 filter-form-container">
+                    <div class="filter-form-horizontal">
+                        <form method="get" class="filter-form-horizontal">
+                            <div class="form-group">
+                                <label for="object_type">{% trans "Objekto tipas" %}</label>
+                                <select name="object_type" id="object_type">
+                                    <option value="all" {% if object_type == 'all' %}selected{% endif %}>{% trans "Visi" %}</option>
+                                    <option value="school" {% if object_type == 'school' %}selected{% endif %}>{% trans "Mokykla" %}</option>
+                                    <option value="hospital" {% if object_type == 'hospital' %}selected{% endif %}>{% trans "Ligoninė" %}</option>
+                                    <option value="supermarket" {% if object_type == 'supermarket' %}selected{% endif %}>{% trans "Prekybos centras" %}</option>
+                                    <option value="pharmacy" {% if object_type == 'pharmacy' %}selected{% endif %}>{% trans "Vaistinė" %}</option>
+                                    <option value="bakery" {% if object_type == 'bakery' %}selected{% endif %}>{% trans "Kepykla" %}</option>
+                                    <option value="police" {% if object_type == 'police' %}selected{% endif %}>{% trans "Policija" %}</option>
+                                    <option value="fire_station" {% if object_type == 'fire_station' %}selected{% endif %}>{% trans "Gaisrinė" %}</option>
+                                    <option value="post_office" {% if object_type == 'post_office' %}selected{% endif %}>{% trans "Paštas" %}</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="search_radius">{% trans "Paieškos spindulys (m)" %}</label>
+                                <input type="number" name="search_radius" id="search_radius" value="{{ search_radius }}" min="100" max="10000" step="100">
+                            </div>
 
-            <label for="search_radius">{% trans "Paieškos spindulys (m)" %}</label>
-            <input type="number" name="search_radius" id="search_radius" value="{{ search_radius }}" min="100" max="10000" step="100">
+                            <div class="form-group">
+                                <label for="sort_order">{% trans "Rūšiuoti pagal atstumą" %}</label>
+                                <select name="sort_order" id="sort_order">
+                                    <option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>{% trans "Didėjančia tvarka" %}</option>
+                                    <option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>{% trans "Mažėjančia tvarka" %}</option>
+                                </select>
+                            </div>
 
-            <button type="submit" class="btn btn-primary">{% trans "Filtruoti" %}</button>
-        </form>
-
-        {% if nearby_organizations %}
-        <table class="table">
-            <tbody>
-                {% for org in nearby_organizations %}
-                <tr><td>                
-                <div class="request-details">
-                    <p class="request-title">{{ org.category|translate_category }} · {{ org.name }} · {{ org.address }}</p>
-                    <p class="request-info">
-                        <span class="priority {{ request.priority_class }}"></span>
-                        {{ org.distance }} m</p>
-                    </td>
-                    <td>
-                        <button class="btn btn-primary" onclick="copyToClipboard('{{ org.latitude }}, {{ org.longitude }}')">{% trans "Kopijuoti vietą" %}</button>
-                        <form method="post" action="{% url 'modules.evaluator:found_organizations' order_id=order.id pk=pk %}" style="display:inline;">
-                            {% csrf_token %}
-                            <input type="hidden" name="name" value="{{ org.name }}">
-                            <input type="hidden" name="latitude" value="{{ org.latitude }}">
-                            <input type="hidden" name="longitude" value="{{ org.longitude }}">
-                            <input type="hidden" name="address" value="{{ org.address }}">
-                            <input type="hidden" name="distance" value="{{ org.distance }}">
-                            <input type="hidden" name="category" value="{{ org.category }}">
-                            <button type="submit" class="btn btn-secondary">{% trans "Pridėti" %}</button>
+                            <button type="submit" class="btn-filter">{% trans "Filtruoti" %}</button>
                         </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p>{% trans "Netoliese esančių įstaigų nerasta." %}</p>
-        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="content">
+            <div class="requests-list">
+                {% if nearby_organizations %}
+                    {% for org in nearby_organizations %}
+                    <div class="request-item">
+                        <div class="request-details">
+                            <p class="request-title">{{ org.category|translate_category }} · {{ org.name }} · {{ org.address }}</p>
+                            <p class="request-info">{{ org.distance }} m</p>
+                        </div>
+                        <div class="request-actions">
+                            <button class="icon-button" onclick="copyToClipboard('{{ org.latitude }}, {{ org.longitude }}')" title="{% trans 'Kopijuoti vietą' %}">
+                                <img src="{% static 'icons/link.svg' %}" alt="{% trans 'Kopijuoti vietą' %}">
+                            </button>
+                            <form method="post" action="{% url 'modules.evaluator:found_organizations' order_id=order.id pk=pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="name" value="{{ org.name }}">
+                                <input type="hidden" name="latitude" value="{{ org.latitude }}">
+                                <input type="hidden" name="longitude" value="{{ org.longitude }}">
+                                <input type="hidden" name="address" value="{{ org.address }}">
+                                <input type="hidden" name="distance" value="{{ org.distance }}">
+                                <input type="hidden" name="category" value="{{ org.category }}">
+                                <button type="submit" class="icon-button">
+                                    <img src="{% static 'icons/plus-circle.svg' %}" title="{% trans 'Pridėti' %}">
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>{% trans "Netoliese esančių įstaigų nerasta." %}</p>
+                {% endif %}
+            </div>
     </div>
 </div>
-
 <div class="navigation-buttons">
     <a href="{% url 'modules.evaluator:similar_object_search' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
     <a href="{% url 'modules.evaluator:generate_report' order_id pk %}" class="btn-forward">{% trans "Pirmyn" %}</a>

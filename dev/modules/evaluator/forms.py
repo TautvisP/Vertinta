@@ -328,7 +328,7 @@ class NearbyOrganizationForm(forms.Form):
     )
     
     distance = forms.DecimalField(
-        label=_('Atstumas iki vertinamo objekto (m)'),
+        label=_('Atstumas iki vertinamo objekto'),
         min_value=0,
         decimal_places=2,
         widget=forms.NumberInput(attrs={

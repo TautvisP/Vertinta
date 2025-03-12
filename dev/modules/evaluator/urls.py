@@ -3,7 +3,7 @@ from .views.main_view import EditEvaluatorAccountView, EvaluationStepsView,  RCD
 from .views.object_data_view import EditObjectDataView, EditEvaluationAndDecoInfo, EditCommonInfo, EditUtilityInfo, EvaluatorEditAdditionalBuildings
 from .views.object_gallery_view import EditObjectGalleryView, DeleteObjectImageView, ImageAnnotationView, CreateAnnotationView, AnnotationDetailView, DeleteAnnotationView, EditAnnotationView
 from .views.similar_objects_view import SimilarObjectSearchView, SimilarObjectListView, SimilarObjectResultsView, EditSimilarObjectDataView, EditSimilarObjectDecorationView, EditSimilarObjectCommonInfoView, EditSimilarObjectUtilityInfoView
-from .views.document_import_view import DocumentImportView, DocumentView, DeleteDocumentView
+from .views.document_import_view import DocumentImportView, DocumentView, DeleteDocumentView, UpdateDocumentCommentView
 from .views.nearby_organization_view import FoundNearbyOrganizationView, NearbyOrganizationListView, DeleteNearbyOrganizationView, AddNearbyOrganizationView
 from .views.generate_report_view import GenerateReportView, FinalReportEngineeringView, GenerateLatexReportView
 
@@ -56,6 +56,7 @@ urlpatterns = [
     path('evaluation_steps/<int:order_id>/document_import/<int:pk>/', DocumentImportView.as_view(), name='document_import'),
     path('documents/<int:document_id>/', DocumentView.as_view(), name='view_document'),
     path('documents/delete/<int:document_id>/', DeleteDocumentView.as_view(), name='delete_document'),
+    path('documents/update_document_comment/', UpdateDocumentCommentView.as_view(), name='update_document_comment'),
 
     #7
     path('evaluation_steps/<int:order_id>/found_organizations/<int:pk>/', FoundNearbyOrganizationView.as_view(), name='found_organizations'),

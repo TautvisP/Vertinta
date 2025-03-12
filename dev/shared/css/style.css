@@ -217,6 +217,8 @@ h2 {
 .btn-forward:hover {
     background-color: #2563EB;
 }
+
+
 .order-data {
     padding-bottom: 10%;
 }
@@ -344,12 +346,17 @@ h2 {
     text-decoration: underline;
 }
 
-form {
+.formal {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
+.formal-for-nearbys {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
 
 .form-group {
     position: relative;
@@ -824,6 +831,13 @@ header {
     border-radius: 6px;
     background-color: #F8F8F8;
 }
+.form-group textarea {
+    resize: none;
+    padding: 8px;
+    border: 2px solid #76767698;
+    border-radius: 6px;
+    background-color: #F8F8F8;
+}
 
 /* Message Styles */
 .messages {
@@ -936,6 +950,10 @@ input[type="file"].form-control {
     margin-bottom: 15px;
 }
 
+.modal-input textarea {
+    resize: none;
+}
+
 .modal-input label {
     display: block;
     margin-bottom: 5px;
@@ -943,6 +961,7 @@ input[type="file"].form-control {
 }
 
 .modal-input input,
+.modal-input textarea,
 .modal-input select {
     width: 100%;
     padding: 8px;
@@ -956,4 +975,106 @@ input[type="file"].form-control {
 .progress-bar-placeholder-larger {
     height: 7rem;
     background-color: transparent;
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    table-layout: fixed;
+}
+
+.modern-table th, .modern-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.modern-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.modern-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.modern-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+
+.single-row-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.single-row-form .form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.single-row-form .form-group label {
+    color: #343434;
+    margin-bottom: 5px;
+}
+
+.single-row-form .form-group input,
+.single-row-form .form-group select {
+    padding: 8px;
+    border: 2px solid #76767698;
+    border-radius: 6px;
+    background-color: #F8F8F8;
+}
+
+.filter-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Adjust this value as needed */
+}
+
+.filter-form-horizontal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 100px;
+}
+
+.filter-form-horizontal .form-group {
+    flex: 1;
+}
+
+.filter-form-horizontal .form-group label {
+    color: #343434;
+    margin-bottom: 5px;
+}
+
+.filter-form-horizontal .form-group input,
+.filter-form-horizontal .form-group select {
+    padding: 8px;
+    border: 2px solid #76767698;
+    border-radius: 6px;
+    background-color: #F8F8F8;
+}
+
+.filter-form-horizontal .btn-filter {
+    min-width: 200px;
+    padding: 8px;
+    border: 2px solid #76767698;
+    border-radius: 6px;
+    background-color: #3b82f6;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 22px;
+}
+
+.filter-form-horizontal .btn-filter:hover {
+    background-color: #2563eb;
 }

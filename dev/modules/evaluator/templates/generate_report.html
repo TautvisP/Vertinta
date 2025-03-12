@@ -2,24 +2,23 @@
 {% load static %}
 {% load i18n %}
 {% load custom_filters %}
-{% block title %}{% trans 'Ataskaitos generavimas' %}{% endblock %}
-
+{% block title %}{% trans 'Ataskaitos Generavimas' %}{% endblock %}
 {% block content %}
 {% if show_progress_bar %}
     {% include 'shared/progress_bar.html' %}
 {% endif %}
-<link rel="stylesheet" href="{% static 'css/tabletStyle.css' %}">
-<div class="tablet-container">
+<div class="content-page">
+    <div class="content">
     <div class="form-container">
         <div class="rc-data">
             <div class="container-fluid col-10">
-                <h3 class="header-title">{% trans "8. Ataskaitos generavimas" %}</h3>
+                <h2 class="header-title">{% trans "8. Ataskaitos generavimas" %}</h2>
             </div>
         </div>
         <div class="container-fluid col-10">
             <h3>{% trans "Vertinamas turtas" %}</h3>
             <div class="order-data">
-                <p> {{ object.object_type }} {{ object.street }} {{ object.house_no }}, {{ object.municipality|get_municipality_name }}</p>
+                <p>{{ object.object_type }} {{ object.street }} {{ object.house_no }}, {{ object.municipality|get_municipality_name }}</p>
                 <p><strong>{% trans "Klientas:" %}</strong> {{ client.first_name }} {{ client.last_name }}</p>
                 <p>{{ phone_number }}</p>
             </div>
@@ -30,29 +29,36 @@
         {% if missing_data %}
         <div class="missing-data-messages">
             <h3>{% trans "Trūksta duomenų:" %}</h3>
-                {% for data in missing_data %}
+            {% for data in missing_data %}
                 <p class="error-message">{{ data }}</p>
-                {% endfor %}
+            {% endfor %}
         </div>
         {% endif %}
 
-        <form method="post" class="single-line-form">
-            {% csrf_token %}
-            {% for field in final_report_form %}
-                <div class="form-group">
-                    {{ field.label_tag }}
-                    {{ field }}
+        <div class="form-section">
+            <div class="col-sm-12">
+                <h3 class="header-title">{% trans "Ataskaitos generavimas" %}</h3>
+                <div class="col-lg-12">
+                    <form method="post" class="formal">
+                        {% csrf_token %}
+                        <div class="grid-form">
+                            {% for field in final_report_form %}
+                            <div class="form-group">
+                                {{ field.label_tag }}
+                                {{ field }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn-form">{% trans 'Kitas' %}</button>
+                    </form>
                 </div>
-            {% endfor %}
-            <div class="btn-container">
-                <button type="submit" class="btn-submit">{% trans 'Kitas' %}</button>
             </div>
-        </form>
+        </div>
+    </div>
 
+    <div class="navigation-buttons">
+        <a href="{% url 'modules.evaluator:nearby_organization_list' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
     </div>
 </div>
-
-<div class="navigation-buttons">
-    <a href="{% url 'modules.evaluator:nearby_organization_list' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
 </div>
 {% endblock %}

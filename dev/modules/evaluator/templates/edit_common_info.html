@@ -18,7 +18,7 @@
 <div class="content-page">
     <div class="content">
         <div class="container-fluid col-10">
-            <form action="{% if is_similar_object %}{% url 'modules.evaluator:edit_similar_object_common_info' order_id pk similar_object_id %}{% else %}{% url 'modules.evaluator:edit_common_info' order_id pk %}{% endif %}" method="POST">{% csrf_token %}
+            <form action="{% if is_similar_object %}{% url 'modules.evaluator:edit_similar_object_common_info' order_id pk similar_object_id %}{% else %}{% url 'modules.evaluator:edit_common_info' order_id pk %}{% endif %}" method="POST" class="formal">{% csrf_token %}
                 <input type="hidden" name="is_similar_object" value="{{ is_similar_object }}">
                 <div class="form-section-large">
                     <div class="col-sm-12">

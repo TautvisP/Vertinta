@@ -47,7 +47,7 @@
             <span class="close">&times;</span>
             <h3>{% trans "Anotacijos informacija" %}</h3>
             <p id="annotation-text"></p>
-            <form id="annotation-edit-form" method="post" enctype="multipart/form-data">
+            <form id="annotation-edit-form" method="post" enctype="multipart/form-data" class="formal">
                 {% csrf_token %}
                 <textarea id="annotation-edit-text" name="annotation_text" style="display: none;"></textarea>
                 <input type="file" id="annotation-edit-image" name="annotation_image" style="display: none;">

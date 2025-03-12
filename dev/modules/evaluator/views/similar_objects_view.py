@@ -21,6 +21,8 @@ import requests
 from bs4 import BeautifulSoup
 from django.http import JsonResponse, HttpResponseBadRequest
 from shared.mixins.evaluator_access_mixin import EvaluatorAccessMixin
+from django.contrib import messages
+
 
 
 # Global context variables
@@ -677,3 +679,20 @@ class SimilarObjectListView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleCo
             'phone_number': phone_number
         }
         return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        similar_object_id = request.POST.get('similar_object_id')
+
+        if similar_object_id:
+            try:
+                similar_object = self.model_similar_object.objects.get(id=similar_object_id)
+                similar_object.metadata.all().delete()
+                similar_object.delete()
+                messages.success(request, _('Similar object has been deleted successfully.'))
+
+            except self.model_similar_object.DoesNotExist:
+                messages.error(request, _('Similar object not found.'))
+                
+        return redirect('modules.evaluator:similar_object_list', 
+                        order_id=self.kwargs.get('order_id'), 
+                        pk=self.kwargs.get('pk'))

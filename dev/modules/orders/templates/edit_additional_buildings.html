@@ -12,10 +12,10 @@
     <div class="content">
         <div class="container-fluid col-10">
         {% if is_evaluator %}
-            <form action="{% url 'modules.evaluator:edit_additional_buildings' order_id pk %}" method="POST">{% csrf_token %}
+            <form action="{% url 'modules.evaluator:edit_additional_buildings' order_id pk %}" method="POST" class="formal">{% csrf_token %}
             <h2>{% trans '2. Vertinamo Objekto Papildomi Statiniai' %}</h2>
         {% else %}
-            <form action="{% url 'modules.orders:edit_additional_buildings' object.id %}" method="POST">{% csrf_token %}
+            <form action="{% url 'modules.orders:edit_additional_buildings' object.id %}" method="POST" class="formal">{% csrf_token %}
         {% endif %}
                 {% csrf_token %}
                 {% if show_garage_form %}

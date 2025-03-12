@@ -50,15 +50,29 @@ class FoundNearbyOrganizationView(LoginRequiredMixin, EvaluatorAccessMixin, User
         # Filters
         object_type = self.request.GET.get('object_type', 'all')
         search_radius = int(self.request.GET.get('search_radius', 2000))
+        sort_order = self.request.GET.get('sort_order', 'asc')  # Default to ascending order
 
         if obj.latitude is None or obj.longitude is None:
             context['nearby_organizations'] = []
+            context['object_type'] = object_type
+            context['search_radius'] = search_radius
+            context['sort_order'] = sort_order
             return context
 
         nearby_organizations = self.find_nearby_organizations(obj.latitude, obj.longitude, object_type, search_radius)
+
+        # Apply sorting based on sort_order parameter
+        if sort_order == 'desc':
+            # Sort by distance in descending order (furthest first)
+            nearby_organizations = sorted(nearby_organizations, key=lambda x: x['distance'], reverse=True)
+        else:
+            # Sort by distance in ascending order (closest first)
+            nearby_organizations = sorted(nearby_organizations, key=lambda x: x['distance'])
+
         context['nearby_organizations'] = nearby_organizations
         context['object_type'] = object_type
         context['search_radius'] = search_radius
+        context['sort_order'] = sort_order
 
         return context
 
@@ -183,6 +197,9 @@ class FoundNearbyOrganizationView(LoginRequiredMixin, EvaluatorAccessMixin, User
 
 
 class NearbyOrganizationListView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, TemplateView):
+    """
+    View for displaying the list of nearby organizations added to an evaluation.
+    """
     template_name = "nearby_object_list.html"
     login_url = 'core.uauth:login'
     redirectfield_name = 'next'
@@ -204,7 +221,28 @@ class NearbyOrganizationListView(LoginRequiredMixin, EvaluatorAccessMixin, UserR
         context['show_progress_bar'] = SHOW_PROGRESS_BAR
         context['current_step'] = 7
         context['total_steps'] = TOTAL_STEPS
-        context['added_nearby_organizations'] = obj.nearby_organizations.all()
+        
+        # Get filter and sort parameters
+        category = self.request.GET.get('category', 'all')
+        sort_order = self.request.GET.get('sort_order', 'asc')
+        
+        # Get nearby organizations
+        nearby_organizations = NearbyOrganization.objects.filter(object=obj)
+        
+        # Apply category filter if not 'all'
+        if category != 'all':
+            nearby_organizations = nearby_organizations.filter(category=category)
+        
+        # Apply sorting
+        if sort_order == 'desc':
+            nearby_organizations = nearby_organizations.order_by('-distance')
+        else:
+            nearby_organizations = nearby_organizations.order_by('distance')
+        
+        context['added_nearby_organizations'] = nearby_organizations
+        context['category'] = category
+        context['sort_order'] = sort_order
+        
         return context
 
 

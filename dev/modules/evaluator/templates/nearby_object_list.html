@@ -32,36 +32,73 @@
         <a href="{% url 'modules.evaluator:add_nearby_organization' order_id pk %}" class="tab">{% trans "Artimo objekto pridėjimas" %}</a>
     </div>
 
+    
+
     <div class="gallery-container">
-        {% if added_nearby_organizations %}
-        <table class="table">
-            <tbody>
-                {% for org in added_nearby_organizations %}
-                <tr><td>                
-                <div class="request-details">
-                    <p class="request-title">{{ org.category|translate_category }} · {{ org.name }} · {{ org.address }}</p>
-                    <p class="request-info">
-                        <span class="priority {{ request.priority_class }}"></span>
-                        {{ org.distance }} m</p>
-                    </td>
-                    <td>
-                        <button class="btn btn-primary" onclick="copyToClipboard('{{ org.latitude }}, {{ org.longitude }}')">{% trans "Kopijuoti vietą" %}</button>
-                        <form method="post" action="{% url 'modules.evaluator:delete_nearby_organization' organization_id=org.id %}" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="icon-button">
-                                <img src="{% static 'icons/trash.svg' %}" alt="Trash Icon">
-                            </button>
+        <!-- Add filter section -->
+        <div class="form-section">
+            <div class="col-sm-12">
+                <div class="col-lg-12 filter-form-container">
+                    <div class="filter-form-horizontal">
+                        <form method="get" class="filter-form-horizontal">
+                            <div class="form-group">
+                                <label for="category">{% trans "Objekto tipas" %}</label>
+                                <select name="category" id="category">
+                                    <option value="all" {% if category == 'all' %}selected{% endif %}>{% trans "Visi" %}</option>
+                                    <option value="school" {% if category == 'school' %}selected{% endif %}>{% trans "Mokykla" %}</option>
+                                    <option value="hospital" {% if category == 'hospital' %}selected{% endif %}>{% trans "Ligoninė" %}</option>
+                                    <option value="supermarket" {% if category == 'supermarket' %}selected{% endif %}>{% trans "Prekybos centras" %}</option>
+                                    <option value="pharmacy" {% if category == 'pharmacy' %}selected{% endif %}>{% trans "Vaistinė" %}</option>
+                                    <option value="bakery" {% if category == 'bakery' %}selected{% endif %}>{% trans "Kepykla" %}</option>
+                                    <option value="police" {% if category == 'police' %}selected{% endif %}>{% trans "Policija" %}</option>
+                                    <option value="fire_station" {% if category == 'fire_station' %}selected{% endif %}>{% trans "Gaisrinė" %}</option>
+                                    <option value="post_office" {% if category == 'post_office' %}selected{% endif %}>{% trans "Paštas" %}</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sort_order">{% trans "Rūšiuoti pagal atstumą" %}</label>
+                                <select name="sort_order" id="sort_order">
+                                    <option value="asc" {% if sort_order == 'asc' %}selected{% endif %}>{% trans "Didėjančia tvarka" %}</option>
+                                    <option value="desc" {% if sort_order == 'desc' %}selected{% endif %}>{% trans "Mažėjančia tvarka" %}</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn-filter">{% trans "Filtruoti" %}</button>
                         </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p>{% trans "Pridėtų netoliese esančių įstaigų nerasta." %}</p>
-        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="requests-list">
+                {% if added_nearby_organizations %}
+                    {% for org in added_nearby_organizations %}
+                    <div class="request-item">
+                        <div class="request-details">
+                            <p class="request-title">{{ org.category|translate_category }} · {{ org.name }} · {{ org.address }}</p>
+                            <p class="request-info">{{ org.distance|floatformat:"0" }} m</p>
+                        </div>
+                        <div class="request-actions">
+                            <button type="button" class="icon-button" onclick="copyToClipboard('{{ org.latitude }}, {{ org.longitude }}')" title="{% trans 'Kopijuoti vietą' %}">
+                                <img src="{% static 'icons/link.svg' %}" alt="{% trans 'Kopijuoti vietą' %}">
+                            </button>
+                            <form method="post" action="{% url 'modules.evaluator:delete_nearby_organization' organization_id=org.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="icon-button">
+                                    <img src="{% static 'icons/trash.svg' %}" title="{% trans 'Ištrinti' %}">
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <p>{% trans "Pridėtų netoliese esančių įstaigų nerasta." %}</p>
+                {% endif %}
+            </div>
+        </div>
     </div>
-</div>
 
 <div class="navigation-buttons">
     <a href="{% url 'modules.evaluator:document_import' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>

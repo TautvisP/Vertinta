@@ -59,7 +59,7 @@
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" class="formal">
                 {% csrf_token %}
                 <div class="modal-input">
                     <label for="{{ image_form.comment.id_for_label }}">{{ image_form.comment.label }}</label>
@@ -74,7 +74,7 @@
                     <p>{% trans "Spustelėkite čia, kad įkeltumėte failą arba vilkite ir numeskite" %}</p>
                     {{ image_form.image }}
                 </div>
-                <button type="submit" name="upload_image" class="btn btn-primary">{% trans "Pridėti nuotrauką" %}</button>
+                <button type="submit" name="upload_image" class="btn-form">{% trans "Pridėti nuotrauką" %}</button>
             </form>
         </div>
     </div>
