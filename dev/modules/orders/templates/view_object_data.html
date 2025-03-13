@@ -10,6 +10,8 @@
 {% endblock %}
 
 {% block content %}
+<div class="progress-bar-placeholder-larger"></div>
+
 <div class="tablet-container">
     <div class="content-page">
         <div class="container">
@@ -26,6 +28,10 @@
                         <p><strong>{% trans "Turto numeris" %}:</strong> {% if meta_data.house_number %}{{ meta_data.house_number }}{% else %}nežinomas{% endif %} {% if object.house_no %}{{ object.house_no }}{% endif %} {% if meta_data.flat_number %}butas numeris {{ meta_data.flat_number }}{% endif %}</p>
                         <p><strong>{% trans "Turto tipas" %}:</strong> {{ object.object_type }}</p>
                         <p><strong>{% trans "Aukštų skaičius" %}:</strong> {% if meta_data.building_floor_count %}{{ meta_data.building_floor_count }}{% else %}nežinomas{% endif %}, {% if meta_data.floor %}{{ meta_data.floor }}{% else %}nežinomas{% endif %}</p>
+                        <p><strong>{% trans "Žemės paskirtis" %}:</strong> {{ meta_data.land_purpose }}</p>
+                        <p><strong>{% trans "Žemės plotas" %}:</strong> {{ meta_data.land_size }}</p>
+                        <p><strong>{% trans "Pamatai" %}:</strong> {{ meta_data.foundation }}</p>
+                        <p><strong>{% trans "Sienos" %}:</strong> {{ meta_data.walls }}</p>
                         <p><strong>{% trans "Pogrindis" %}:</strong> {{ meta_data.subfloor }}</p>
                         <p><strong>{% trans "Vidinės sienos" %}:</strong> {{ meta_data.inside_walls }}</p>
                         <p><strong>{% trans "Rūsys" %}:</strong> {{ meta_data.basement }}</p>
@@ -46,6 +52,7 @@
                         <p><strong>{% trans "Interjero apdaila" %}:</strong> {{ meta_data.interior_deco }}</p>
                         <p><strong>{% trans "Grindys" %}:</strong> {{ meta_data.interior_floors }}</p>
                         <p><strong>{% trans "Lubos" %}:</strong> {{ meta_data.ceiling_deco }}</p>
+                        <p><strong>{% trans "Išorės apdaila" %}:</strong> {{ meta_data.outside_deco }}</p>
                     </div>
                 </div>
                 <div class="column">
@@ -58,18 +65,21 @@
                         <p><strong>{% trans "Šildymas" %}:</strong> {{ meta_data.heating }}</p>
                         <p><strong>{% trans "Energijos efektyvumas" %}:</strong> {{ meta_data.energy_efficiency }}</p>
                         <p><strong>{% trans "Oro kondicionavimas" %}:</strong> {{ meta_data.air_conditioning }}</p>
+                        <p><strong>{% trans "Saugumas" %}:</strong> {{ meta_data.security }}</p>
                     </div>
                     <div class="section">
                         <h3>{% trans "Papildoma informacija" %}</h3>
                         <p><strong>{% trans "Parkavimo vietos" %}:</strong> {{ meta_data.parking_spaces }}</p>
-                        {% if meta_data.garage_size or meta_data.garage_cars_count %}
-                            <p><strong>{% trans "Garažo dydis" %}:</strong> {{ meta_data.garage_size }} m2, {% trans "Garažas gali talpinti" %} {{ meta_data.garage_cars_count }} {% trans "automobilių" %}</p>
+                        {% if meta_data.garage_size or meta_data.garage_cars_count or meta_data.garage_attached %}
+                            <p><strong>{% trans "Garažo dydis" %}:</strong> {{ meta_data.garage_size }} m²</p>
+                            <p><strong>{% trans "Garažas gali talpinti" %}:</strong> {{ meta_data.garage_cars_count }} {% trans "automobilių" %}</p>
+                            <p><strong>{% trans "Garažas sujungtas su namu" %}:</strong> {{ meta_data.garage_attached }}</p>
                         {% endif %}
                         {% if meta_data.shed_size or meta_data.shed_type or meta_data.shed_electricity %}
-                            <p><strong>{% trans "Sandėlio dydis" %}:</strong> {{ meta_data.shed_size }} m2, {% trans "Sandėlio elektra" %}: {{ meta_data.shed_electricity }}, {% trans "Sandėlio tipas" %}: {{ meta_data.shed_type }}</p>
+                            <p><strong>{% trans "Sandėlio dydis" %}:</strong> {{ meta_data.shed_size }} m², {% trans "Sandėlio elektra" %}: {{ meta_data.shed_electricity }}, {% trans "Sandėlio tipas" %}: {{ meta_data.shed_type }}</p>
                         {% endif %}
                         {% if meta_data.gazebo_size or meta_data.gazebo_type or meta_data.gazebo_electricity %}
-                            <p><strong>{% trans "Pavėsinės dydis" %}:</strong> {{ meta_data.gazebo_size }} m2, {% trans "Pavėsinės tipas" %}: {{ meta_data.gazebo_type }}, {% trans "Pavėsinėje yra elektra" %}: {{ meta_data.gazebo_electricity }}</p>
+                            <p><strong>{% trans "Pavėsinės dydis" %}:</strong> {{ meta_data.gazebo_size }} m², {% trans "Pavėsinės tipas" %}: {{ meta_data.gazebo_type }}, {% trans "Pavėsinėje yra elektra" %}: {{ meta_data.gazebo_electricity }}</p>
                         {% endif %}
                     </div>
                 </div>

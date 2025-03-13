@@ -5,22 +5,41 @@
 {% block title %}{% trans 'Vertinimo Žingsniai' %}{% endblock %}
 
 {% block content %}
+<div class="progress-bar-placeholder-larger"></div>
+
 <div class="content-page">
     <div class="container">
         <h2 class="title">{% trans 'Vertinimo Žingsniai' %}</h2>
 
         <div class="steps-list">
-            <a href="{% url 'modules.evaluator:edit_object_data' order.id order.object.id %}" class="step-button">{% trans '1. Pildyti vertinamo objekto duomenis' %}</a>
-            <a href="{% url 'modules.evaluator:edit_additional_buildings' order.id order.object.id %}" class="step-button">{% trans '2. Vertinamo objekto papildomi statiniai' %}</a>
-            <a href="{% url 'modules.evaluator:edit_RC_data' order.id order.object.id %}" class="step-button">{% trans '3. Gauti duomenis iš Registrų centro' %}</a>
-            <a href="{% url 'modules.evaluator:edit_gallery' order.id order.object.id %}" class="step-button">{% trans '4. Vertinamo objekto nuotraukos' %}</a>
-            <a href="{% url 'modules.evaluator:similar_object_search' order.id order.object.id %}" class="step-button">{% trans '5. Panašių objektų paieška' %}</a>
-            <a href="{% url 'modules.evaluator:document_import' order.id order.object.id %}" class="step-button">{% trans '6. Dokumentų pridėjimas' %}</a>
-            <a href="{% url 'modules.evaluator:found_organizations' order.id order.object.id %}" class="step-button">{% trans '7. Netoliese esančios įstaigos' %}</a>
-            <a href="{% url 'modules.evaluator:generate_report' order.id order.object.id %}" class="step-button">{% trans '8. Ataskaitos generavimas' %}</a>
+            <a href="{% url 'modules.evaluator:edit_object_data' order.id order.object.id %}">
+                <div class="step-button">{% trans '1. Pildyti vertinamo objekto duomenis' %}</div>
+            </a>
+            <a href="{% url 'modules.evaluator:edit_additional_buildings' order.id order.object.id %}">
+                <div class="step-button">{% trans '2. Vertinamo objekto papildomi statiniai' %}</div>
+            </a>
+            <a href="{% url 'modules.evaluator:edit_RC_data' order.id order.object.id %}">
+                <div class="step-button">{% trans '3. Gauti duomenis iš Registrų centro' %}</div>
+            </a>
+            <a href="{% url 'modules.evaluator:edit_gallery' order.id order.object.id %}">
+                <div class="step-button">{% trans '4. Vertinamo objekto nuotraukos' %}</div>
+            </a>
+            <a href="{% url 'modules.evaluator:similar_object_search' order.id order.object.id %}">
+                <div class="step-button">{% trans '5. Panašių objektų paieška' %}</div>
+            </a>
+            <a href="{% url 'modules.evaluator:document_import' order.id order.object.id %}">
+                <div class="step-button">{% trans '6. Dokumentų pridėjimas' %}</div>
+            </a>
+            <a href="{% url 'modules.evaluator:found_organizations' order.id order.object.id %}">
+                <div class="step-button">{% trans '7. Netoliese esančios įstaigos' %}</div>
+            </a>
+            <a href="{% url 'modules.evaluator:generate_report' order.id order.object.id %}">
+                <div class="step-button">{% trans '8. Ataskaitos generavimas' %}</div>
+            </a>
         </div>
-        <a href="{% url 'modules.orders:evaluator_order_list' %}" class="btn-back">{% trans "Atgal" %}</a>
-
+        <div style="margin-top: 20px;">
+            <a href="{% url 'modules.orders:evaluator_order_list' %}" class="btn-forward">{% trans "Atgal" %}</a>
+        </div>
     </div>
 </div>
 {% endblock %}

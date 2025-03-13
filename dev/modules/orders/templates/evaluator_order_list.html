@@ -5,17 +5,15 @@
 
 {% block title %}{% trans 'Vertintojo užsakymai' %}{% endblock %}
 
-{% block bootstrap_css %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-{% endblock %}
-
 {% block content %}
+<div class="progress-bar-placeholder-larger"></div>
 <div class="content-page">
-    <div class="container">
+    <div class="content">
+        <div class="container-fluid col-10">
         <h2 class="title">{% trans 'Vertintojo užsakymai' %}</h2>
 
         <!-- Filter Section -->
-        <form method="GET" action="{% url 'modules.orders:evaluator_order_list' %}">
+        <form method="GET" action="{% if request.resolver_match.kwargs.id %}{% url 'modules.orders:specific_evaluator_order_list' id=request.resolver_match.kwargs.id %}{% else %}{% url 'modules.orders:evaluator_order_list' %}{% endif %}">
             <div class="filters">
                 <select class="dropdown" name="municipality">
                     <option value="">{% trans 'Miestas' %}</option>
@@ -36,48 +34,82 @@
                     {% endfor %}
                 </select>
                 <button type="submit" class="clear-button">{% trans 'Filtruoti' %}</button>
-                <a href="{% url 'modules.orders:evaluator_order_list' %}" class="clear-button">{% trans 'Išvalyti' %}</a>
+                <a href="{% if request.resolver_match.kwargs.id %}{% url 'modules.orders:specific_evaluator_order_list' id=request.resolver_match.kwargs.id %}{% else %}{% url 'modules.orders:evaluator_order_list' %}{% endif %}" class="clear-button">{% trans 'Išvalyti' %}</a>
             </div>
         </form>
 
         <!-- Requests List -->
-        <div class="requests-list">
-            {% for order in orders %}
-            <div class="request-item">
-                <div class="request-details">
-                    <p class="request-title">#{{ forloop.counter }} {{ order.object.street }} {{ order.object.house_no }}, {{ order.object.municipality|get_municipality_name }}</p>
-                    <p class="request-info">
-                        <span class="priority {{ request.priority_class }}"></span>
-                        {{ order.status }} · {{ order.priority }}
-                        · {{ order.client.get_full_name }} · {{ order.created|date:"Y-m-d" }}
-                    </p>
-                </div>
-                {% if is_evaluator %}
-                <div class="request-actions">
-                    {% if order.report and order.report.report_file %}
-                        <a href="{{ order.report.report_file.url }}" class="icon-button" download title = "{% trans 'Atsisiųsti Ataskaitą' %}">
-                            <img src="{% static 'icons/report.svg' %}" alt="Document Icon">
+        <div class="order-list">
+            {% if orders %}
+                {% for order in orders %}
+                <div class="order-item">
+                    <div class="order-details">
+                        <p class="order-title">#{{ forloop.counter }} {{ order.object.street }} {{ order.object.house_no }}, {{ order.object.municipality|get_municipality_name }}</p>
+                        <p class="order-info">
+                            <span class="priority-bubble 
+                                {% if order.priority == 'Žemas' %}priority-low
+                                {% elif order.priority == 'Vidutinis' %}priority-medium
+                                {% elif order.priority == 'Aukštas' %}priority-high{% endif %}">
+                            </span>
+                            {{ order.priority }} · {{ order.status }}
+                            · {{ order.client.get_full_name }} · {{ order.created|date:"Y-m-d" }}
+                        </p>
+                    </div>
+                    {% if is_evaluator %}
+                    <div class="order-actions">
+                        {% if order.report and order.report.report_file %}
+                            <a href="{{ order.report.report_file.url }}" class="icon-button" download title="{% trans 'Atsisiųsti Ataskaitą' %}">
+                                <img src="{% static 'icons/report.svg' %}" alt="Document Icon">
+                            </a>
+                        {% endif %}
+                        <a href="{% url 'modules.evaluator:evaluation_steps' order.id %}" class="btn-evaluate">{% trans 'Vertinti' %}</a>
+                        
+                        <a href="{% url 'modules.orders:view_object_data' order.id order.object.id %}" class="icon-button" title="{% trans 'Peržiūrėti objektą' %}">
+                            <img src="{% static 'icons/eye.svg' %}" alt="Image Icon">
                         </a>
+                        <a href="{% url 'modules.evaluator:edit_gallery' order.id order.object.id %}" class="icon-button" title="{% trans 'Peržiūrėti galeriją' %}">
+                            <img src="{% static 'icons/media-images.svg' %}" alt="Image Icon">
+                        </a>
+                        
+                        <form action="{% url 'modules.orders:delete_order' order.id %}" method="post" style="display:inline;" onsubmit="return confirm('{% trans 'Ar tikrai norite ištrinti šį užsakymą?' %}')">
+                            {% csrf_token %}
+                            <button type="submit" class="icon-button" title="{% trans 'Ištrinti užsakymą' %}">
+                                <img src="{% static 'icons/trash.svg' %}" alt="Trash Icon">
+                            </button>
+                        </form>
+                    </div>
                     {% endif %}
-                    <a href="{% url 'modules.evaluator:evaluation_steps' order.id %}" class="evaluate-button">{% trans 'Vertinti' %}</a>
-                    <a href="{% url 'modules.orders:view_object_data' order.id order.object.id %}" class="evaluate-button">{% trans 'Peržiūrėti objektą' %}</a>
-
-                    <button class="icon-button">
-                        <img src="{% static 'icons/media-images.svg' %}" alt="Image Icon">
-                    </button>
-                    <button class="icon-button">
-                        <img src="{% static 'icons/trash.svg' %}" alt="Trash Icon">
-                    </button>
+                    {% if is_agency %}
+                        <a href="{% url 'modules.agency:reassign_evaluator' order.id %}" class="btn btn-primary">{% trans 'Priskirti kitą vertintoją' %}</a>
+                    {% endif %}
+                    <a href="{% url 'modules.orders:edit_order_status_priority' order.id %}" class="btn-evaluate">
+                        {% trans 'Keisti Būseną ir Prioritetą' %}
+                    </a>
                 </div>
+                {% endfor %}
+            {% else %}
+            <div class="no-orders-message">
+                {% if request.GET.municipality or request.GET.status or request.GET.priority %}
+                    <div class="order-item">
+                        <p>{% trans "Pagal pasirinktus filtrus nerasta užsakymų." %}</p>
+                    </div>
+                    <p>
+                        {% if is_evaluator %}
+                            <a href="{% url 'modules.orders:evaluator_order_list' %}" class="btn-evaluate">{% trans 'Rodyti visus užsakymus' %}</a>
+                        {% elif is_agency %}
+                            {% if request.resolver_match.kwargs.id %}
+                                <a href="{% url 'modules.orders:specific_evaluator_order_list' id=request.resolver_match.kwargs.id %}" class="btn-evaluate">{% trans 'Rodyti visus užsakymus' %}</a>
+                            {% endif %}
+                        {% endif %}
+                    </p>
+                {% else %}
+                    <p>{% trans "Šiuo metu neturite priskirtų užsakymų." %}</p>
+                    {% if is_agency %}
+                        <p>{% trans "Galite priskirti užsakymus vertintojams administratoriaus skydelyje." %}</p>
+                    {% endif %}
                 {% endif %}
-                {% if is_agency %}
-                    <a href="{% url 'modules.agency:reassign_evaluator' order.id %}" class="btn btn-primary">{% trans 'Priskirti kitą vertintoją' %}</a>
-                {% endif %}
-                <a href="{% url 'modules.orders:edit_order_status_priority' order.id %}" class="btn btn-primary">
-                    {% trans 'Keisti Būseną ir Prioritetą' %}
-                </a>
             </div>
-            {% endfor %}
+            {% endif %}
         </div>
     </div>
 </div>

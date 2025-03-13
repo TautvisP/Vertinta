@@ -12,6 +12,7 @@ from django.db.models import Count, Q, F
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from shared.mixins.mixins import UserRoleContextMixin
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 
 # Global message variables
 SUCCESS_MESSAGE = _("Profilis sėkmingai atnaujintas!")
@@ -485,10 +486,44 @@ class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, UserPasse
     redirect_field_name = 'next'
 
     def test_func(self):
-        return self.request.user.groups.filter(name='Evaluator').exists() or self.request.user.groups.filter(name='Agency').exists()
+        user = self.request.user
+        evaluator_id = self.kwargs.get('id')
+        
+        # If viewing a specific evaluator's orders
+        if evaluator_id:
+
+            # For agency users: Check if the evaluator belongs to their agency
+            if user.groups.filter(name='Agency').exists():
+                try:
+                    evaluator = get_user_model().objects.get(id=evaluator_id)
+                    # Check if this evaluator belongs to the current agency
+                    return evaluator.agency == user
+                
+                except get_user_model().DoesNotExist:
+                    return False
+                
+            # Evaluators can only view their own orders
+            elif user.groups.filter(name='Evaluator').exists():
+                return str(user.id) == str(evaluator_id)
+            
+            return False
+        
+        else:
+            # If no specific ID, just check if user is either an evaluator or agency
+            return user.groups.filter(name__in=['Evaluator', 'Agency']).exists()
+
 
     def handle_no_permission(self):
-        messages.error(self.request, NO_PERMISSION_MESSAGE)
+        messages.error(self.request, _("Jūs neturite teisės peržiūrėti šio vertintojo užsakymų."))
+        
+        # Redirect evaluators to their own orders page
+        if self.request.user.groups.filter(name='Evaluator').exists():
+            return redirect('modules.orders:evaluator_order_list')
+        
+        # Redirect agency users to evaluator list
+        elif self.request.user.groups.filter(name='Agency').exists():
+            return redirect('modules.agency:evaluator_list')
+            
         return redirect('core.uauth:login')
 
     def get_queryset(self):

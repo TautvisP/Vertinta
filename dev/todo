@@ -126,3 +126,5 @@ need to look into pandoc, because now two versions of them are present in the pr
 in found organization the error message is barelly visible and in an incorrect language.
 
 Similar object form is now meant for houses, not for apartaments?
+
+http://127.0.0.1:8000/evaluator/evaluation_steps/19/edit_similar_object_data/45/ has no placeholders

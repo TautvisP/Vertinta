@@ -4,11 +4,8 @@
 
 {% block title %}{% trans 'Redaguoti Užsakymo Būseną ir Prioritetą' %}{% endblock %}
 
-{% block bootstrap_css %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-{% endblock %}
-
 {% block content %}
+<div class="progress-bar-placeholder-larger"></div>
 <div class="content-page">
     <div class="container">
         <h2 class="title">{% trans 'Redaguoti Užsakymo Būseną ir Prioritetą' %}</h2>
@@ -30,7 +27,7 @@
                     {% endfor %}
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">{% trans 'Išsaugoti' %}</button>
+            <button type="submit" class="btn-evaluate">{% trans 'Išsaugoti' %}</button>
         </form>
     </div>
 </div>
