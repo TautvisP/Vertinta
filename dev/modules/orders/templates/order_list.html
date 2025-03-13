@@ -6,66 +6,125 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
+<div class="progress-bar-placeholder-larger"></div>
 <div class="content-page">
-    <div class="row">
-        <div class="col-12">
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <h2>{{ title }}</h2>
+    <div class="content">
+        <div class="container-fluid col-10">
+            <h2 class="title">{{ title }}</h2>
 
-            <table class="table table-responsive">
-                <thead>
-                    <tr>
-                        <th>{% trans 'Objekto tipas' %}</th>
-                        <th>{% trans 'Adresas' %}</th>
-                        <th>{% trans 'Pateikimo data' %}</th>
-                        {% if user_is_agency %}
-                        <th>{% trans 'Kliento vardas' %}</th>
-                        {% endif %}
-                        <th>{% trans 'Būsena' %}</th>
-                        <th>{% trans 'Veiksmai' %}</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <!-- Filter Section -->
+            <form method="GET" action="{% url 'modules.orders:order_list' %}">
+                <div class="filters">
+                    <select class="dropdown" name="municipality">
+                        <option value="">{% trans 'Miestas' %}</option>
+                        {% for key, value in municipality_choices %}
+                        <option value="{{ key }}" {% if key|stringformat:"d" == request.GET.municipality %}selected{% endif %}>{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                    <select class="dropdown" name="status">
+                        <option value="">{% trans 'Statusas' %}</option>
+                        {% for key, value in status_choices %}
+                        <option value="{{ key }}" {% if key == request.GET.status %}selected{% endif %}>{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                    <select class="dropdown" name="priority">
+                        <option value="">{% trans 'Prioritetas' %}</option>
+                        {% for key, value in priority_choices %}
+                        <option value="{{ key }}" {% if key == request.GET.priority %}selected{% endif %}>{{ value }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="clear-button">{% trans 'Filtruoti' %}</button>
+                    <a href="{% url 'modules.orders:order_list' %}" class="clear-button">{% trans 'Išvalyti' %}</a>
+                </div>
+            </form>
+
+            <!-- Orders List -->
+            <div class="order-list">
+                {% if orders %}
                     {% for order in orders %}
-                    <tr>
-                        <td>{{ order.object.object_type }}</td>
-                        <td>{{ order.object.street }} {{ order.object.house_no }}, {{ order.object.municipality|get_municipality_name }}</td>
-                        <td>{{ order.created|date:"Y-m-d" }}</td>
-                        {% if user_is_agency %}
-                        <td>{{ order.client.get_full_name }}</td>
-                        {% endif %}
-                        <td>{{ order.status }}</td>
-                        <td>
+                    <div class="order-item">
+                        <div class="order-details">
+                            <p class="order-title">#{{ forloop.counter }} {{ order.object.street }} {{ order.object.house_no }}, {{ order.object.municipality|get_municipality_name }}</p>
+                            <p class="order-info">
+                                {% if order.priority %}
+                                <span class="priority-bubble 
+                                    {% if order.priority == 'Žemas' %}priority-low
+                                    {% elif order.priority == 'Vidutinis' %}priority-medium
+                                    {% elif order.priority == 'Aukštas' %}priority-high{% endif %}">
+                                </span>
+                                {{ order.priority }} · 
+                                {% endif %}
+                                {{ order.status }}
+                                · {{ order.object.object_type }}
+                                · {{ order.created|date:"Y-m-d" }}
+                                {% if user_is_agency %}
+                                · {{ order.client.get_full_name }}
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="order-actions">
                             {% if order.report and order.report.report_file %}
-                                <a href="{{ order.report.report_file.url }}" class="icon-button" download title="{% trans 'Atsisiųsti Ataskaitą' %}" >
+                                <a href="{{ order.report.report_file.url }}" class="icon-button" download title="{% trans 'Atsisiųsti Ataskaitą' %}">
                                     <img src="{% static 'icons/report.svg' %}" alt="Document Icon">
                                 </a>
                             {% endif %}
+                            
                             {% if order.status == 'Nebaigtas' %}
-                            <a href="{% url 'modules.orders:select_agency' order.id %}" class="btn btn-primary">{% trans 'Tęsti' %}</a>
+                            <a href="{% url 'modules.orders:select_agency' order.id %}" class="btn-evaluate">{% trans 'Tęsti' %}</a>
                             {% else %}
-                            <a href="{% url 'modules.orders:object_update' order.object.id %}" class="btn-primary">{% trans 'Redaguoti Objektą' %}</a>
+                            <a href="{% url 'modules.orders:object_update' order.object.id %}" class="btn-evaluate">{% trans 'Redaguoti Objektą' %}</a>
                             {% endif %}
+                            
+                            <a href="{% url 'modules.orders:view_object_data' order.id order.object.id %}" class="icon-button" title="{% trans 'Peržiūrėti objektą' %}">
+                                <img src="{% static 'icons/eye.svg' %}" alt="Image Icon">
+                            </a>
+                            
                             {% if order.object.object_type|in_list:"Namas,Kotedžas" %}
                                 {% if order.object.has_additional_buildings %}
-                                <a href="{% url 'modules.orders:edit_additional_buildings' order.object.id %}" class="btn-primary">{% trans 'Redaguoti Statinius' %}</a>
+                                <a href="{% url 'modules.orders:edit_additional_buildings' order.object.id %}" class="icon-button" title="{% trans 'Redaguoti Statinius' %}">
+                                    <img src="{% static 'icons/home.svg' %}" alt="Building Icon">
+                                </a>
                                 {% else %}
-                                <a href="{% url 'modules.orders:additional_buildings' object_id=order.object.id %}" class="btn btn-warning">{% trans 'Pridėti papildomą statinį' %}</a>
+                                <a href="{% url 'modules.orders:additional_buildings' object_id=order.object.id %}" class="icon-button" title="{% trans 'Pridėti papildomą statinį' %}">
+                                    <img src="{% static 'icons/plus-circle.svg' %}" alt="Add Building Icon">
+                                </a>
                                 {% endif %}
                             {% endif %}
-                            <a href="{% url 'modules.orders:view_object_data' order.id order.object.id %}" class="btn-primary">{% trans 'Peržiūrėti objektą' %}</a>
-                            <form action="{% url 'modules.orders:delete_order' order.id %}" method="post" style="display:inline;">
+                            
+                            <form action="{% url 'modules.orders:delete_order' order.id %}" method="post" style="display:inline;" onsubmit="return confirm('{% trans 'Ar tikrai norite ištrinti šį užsakymą?' %}')">
                                 {% csrf_token %}
-                                <button type="submit" class="btn-delete">{% trans 'Ištrinti' %}</button>
+                                <button type="submit" class="icon-button" title="{% trans 'Ištrinti' %}">
+                                    <img src="{% static 'icons/trash.svg' %}" alt="Trash Icon">
+                                </button>
                             </form>
-                        </td>
-                    </tr>
+                        </div>
+                    </div>
                     {% endfor %}
-                </tbody>
-            </table>
+                {% else %}
+                <div class="no-orders-message">
+                    <p>{% trans "Užsakymų nerasta." %}</p>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Pagination if needed -->
+            {% if orders.has_other_pages %}
+            <div class="pagination">
+                {% if orders.has_previous %}
+                    <a href="?page={{ orders.previous_page_number }}">&laquo; {% trans 'Ankstesnis' %}</a>
+                {% endif %}
+                
+                {% for i in orders.paginator.page_range %}
+                    {% if i > orders.number|add:"-3" and i < orders.number|add:"3" %}
+                        <a href="?page={{ i }}" {% if i == orders.number %}class="active"{% endif %}>{{ i }}</a>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if orders.has_next %}
+                    <a href="?page={{ orders.next_page_number }}">{% trans 'Sekantis' %} &raquo;</a>
+                {% endif %}
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>

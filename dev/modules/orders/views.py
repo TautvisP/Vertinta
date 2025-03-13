@@ -441,6 +441,7 @@ class OrderListView(LoginRequiredMixin, UserRoleContextMixin, UserPassesTestMixi
     """
     Displays a list of orders for the current user.
     Requires the user to be logged in and have the appropriate role.
+    Includes filtering capabilities for municipality, status, and priority.
     """
         
     model = Order
@@ -457,17 +458,41 @@ class OrderListView(LoginRequiredMixin, UserRoleContextMixin, UserPassesTestMixi
         return redirect('core.uauth:login')
 
     def get_queryset(self):
-        user = self.request.user
+        user = self.request.user    
 
         if user.groups.filter(name='Agency').exists():
-            return self.model.objects.filter(agency=user)
-        
-        return self.model.objects.filter(client=user)
+            queryset = self.model.objects.filter(agency=user)
+        else:
+            queryset = self.model.objects.filter(client=user)
+            
+        municipality = self.request.GET.get('municipality')
+        if municipality:
+            object_ids = ObjectMeta.objects.filter(
+                meta_key='municipality', 
+                meta_value=municipality
+            ).values_list('ev_object_id', flat=True)
+            
+            queryset = queryset.filter(object_id__in=object_ids)    
+
+        status = self.request.GET.get('status')
+        if status:
+            queryset = queryset.filter(status=status)   
+
+        priority = self.request.GET.get('priority')
+        if priority:
+            queryset = queryset.filter(priority=priority)
+            
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = _('Užsakymų sąrašas')
         context['user_is_agency'] = self.request.user.groups.filter(name='Agency').exists()
+        
+        context['municipality_choices'] = MUNICIPALITY_CHOICES
+        context['status_choices'] = STATUS_CHOICES
+        context['priority_choices'] = PRIORITY_CHOICES
+        
         return context
 
 

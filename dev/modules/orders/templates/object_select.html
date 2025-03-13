@@ -1,14 +1,11 @@
 {% extends 'shared/base.html' %}
 {% load static %}
 {% load i18n %}
-
 {% block title %}{% trans 'Objekto pasirinkimas' %}{% endblock %}
-
-{% block bootstrap_css %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-{% endblock %}
-
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/object_select.css' %}">
+<div class="progress-bar-placeholder-larger"></div>
+
 <div class="content-page">
     <div class="content">
         <div class="row">
@@ -18,27 +15,21 @@
                 </div>
             </div>
         </div>
-
         <div class="container">
-            <div class="row">
+            <div class="object-type-grid">
                 {% for key, value in object_list.items %}
-                <div class="col-12 col-md-4">
-                    <div class="object_type_item">
-                        <form method="POST">
-                            {% csrf_token %}
-                            <button type="submit" class="obj_type_img_btn">
-                                {% with 'images/'|add:value as image_static %}
-                                <img src="{% static image_static %}" alt="work-thumbnail" class="landing_page_img">
-                                {% endwith %}
-                                <h5 class="overlay"><b class="img_text">{{ key|upper }}</b></h5>
-                                <input type="hidden" name="object_type" value="{{ key }}">
-                            </button>
-                        </form>
-                    </div>
+                <div class="object-type-item">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="obj_type_img_btn">
+                            {% with 'images/'|add:value as image_static %}
+                            <img src="{% static image_static %}" alt="{{ key }}" class="landing_page_img">
+                            {% endwith %}
+                            <div class="overlay">{{ key }}</div>
+                        </button>
+                        <input type="hidden" name="object_type" value="{{ key }}">
+                    </form>
                 </div>
-                {% if forloop.counter|divisibleby:3 %}
-                <div class="w-100"></div>
-                {% endif %}
                 {% endfor %}
             </div>
         </div>
