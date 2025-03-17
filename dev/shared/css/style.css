@@ -1227,6 +1227,12 @@ input[type="file"].form-control {
     align-items: left;
 }
 
+.order-evaluator {
+    color: #555;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
 .order-actions {
     display: flex;
     align-items: center;

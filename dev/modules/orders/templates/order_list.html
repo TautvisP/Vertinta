@@ -61,6 +61,14 @@
                                 · {{ order.client.get_full_name }}
                                 {% endif %}
                             </p>
+                            {% if order.evaluator %}
+                            <p class="order-evaluator">
+                                <strong>{% trans "Vertintojas: " %}</strong> {{ order.evaluator.first_name }} {{ order.evaluator.last_name }}
+                                {% if evaluator_phones|get_item:order.evaluator.id %}
+                                · Tel: {{ evaluator_phones|get_item:order.evaluator.id }}
+                                {% endif %}
+                            </p>
+                            {% endif %}
                         </div>
                         <div class="order-actions">
                             {% if order.report and order.report.report_file %}
@@ -81,9 +89,7 @@
                             
                             {% if order.object.object_type|in_list:"Namas,Kotedžas" %}
                                 {% if order.object.has_additional_buildings %}
-                                <a href="{% url 'modules.orders:edit_additional_buildings' order.object.id %}" class="icon-button" title="{% trans 'Redaguoti Statinius' %}">
-                                    <img src="{% static 'icons/home.svg' %}" alt="Building Icon">
-                                </a>
+                                    <a href="{% url 'modules.orders:edit_additional_buildings' order.object.id %}" class="btn-evaluate">{% trans 'Redaguoti Statinius' %}</a>
                                 {% else %}
                                 <a href="{% url 'modules.orders:additional_buildings' object_id=order.object.id %}" class="icon-button" title="{% trans 'Pridėti papildomą statinį' %}">
                                     <img src="{% static 'icons/plus-circle.svg' %}" alt="Add Building Icon">

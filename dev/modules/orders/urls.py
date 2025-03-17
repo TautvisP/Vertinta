@@ -1,13 +1,20 @@
 from django.urls import path
 from . import views
-from .views import LandingView, FirsStepView, AdditionalBuildingsView, OrderListView, EvaluatorOrderListView, AgencySelectionView, EditAdditionalBuildingsView, OrderDeleteView, ViewObjectDataView, EditOrderStatusPriorityView
+from .views import LandingView, OrderCreationStepView, ObjectCommonInfoStepView, OrderDecorationStepView, ObjectUtilityStepView, ObjectUtilityStepView, AdditionalBuildingsView, OrderListView, EvaluatorOrderListView, AgencySelectionView, EditAdditionalBuildingsView, OrderDeleteView, ViewObjectDataView, EditOrderStatusPriorityView
 
 app_name = 'modules.orders'
 
 urlpatterns = [
     path('', views.index, name='orders_index'),
     path('select/', LandingView.as_view(), name='selection'),
-    path('first_step/', FirsStepView.as_view(), name='order_first_step'),
+
+    path('order/create/', OrderCreationStepView.as_view(), name='order_creation_step'), #location and additional forms
+    path('order/decoration/', OrderDecorationStepView.as_view(), name='order_decoration_step'), #decoration form
+
+
+    path('order/common_info/', ObjectCommonInfoStepView.as_view(), name='order_common_info_step'),
+    path('order/utility/', ObjectUtilityStepView.as_view(), name='order_utility_step'),
+
     path('additional_buildings/<int:object_id>/', AdditionalBuildingsView.as_view(), name='additional_buildings'),
 
     path('view_object_data/<int:order_id>/<int:pk>/', ViewObjectDataView.as_view(), name='view_object_data'),

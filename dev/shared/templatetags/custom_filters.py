@@ -19,3 +19,7 @@ def range_filter(value, arg):
 @register.filter(name='in_list')
 def in_list(value, arg):
     return value in arg.split(',')
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)

@@ -1,3 +1,4 @@
+import decimal
 from django.shortcuts import render, redirect, get_object_or_404
 from modules.orders.enums import ObjectImages
 from django.http import HttpResponseRedirect
@@ -59,10 +60,19 @@ class LandingView(LoginRequiredMixin, UserPassesTestMixin, UserRoleContextMixin,
         return None
 
 
-    def post(self, request, **kwargs):
+    def post(self, request):
         selected_obj_type = request.POST.get('object_type')
-        request.session['selected_obj_type'] = selected_obj_type
-        return HttpResponseRedirect(reverse_lazy('modules.orders:order_first_step'))
+        if selected_obj_type:
+            request.session['selected_obj_type'] = selected_obj_type
+            # Clear any existing data from previous attempts
+            for key in ['location_data', 'additional_data', 'decoration_data', 'common_info_data', 'utility_data']:
+                if key in request.session:
+                    del request.session[key]
+            return redirect('modules.orders:order_creation_step')
+        
+        # If no object type selected, show an error
+        messages.error(request, _('Please select an object type'))
+        return redirect('modules.orders:selection')
 
 
     def get_context_data(self, **kwargs):
@@ -71,229 +81,340 @@ class LandingView(LoginRequiredMixin, UserPassesTestMixin, UserRoleContextMixin,
         return context
 
 
-
-
-#possibly get_context_data POST part is repetative with the post function, could be refactored
-class FirsStepView(LoginRequiredMixin, UserRoleContextMixin, UserPassesTestMixin, TemplateView):
+class OrderCreationStepView(LoginRequiredMixin, UserRoleContextMixin, View):
     """
-    Handles the first step of the order creation process.
-    Includes forms for location, decoration, utility, and common information.
+    First step of creating an order. This view displays the location form
+    and object type selection, along with an additional form based on the selected type.
     """
-
-    model = Order
-    model_object = Object
-    template_name = "order_first_step.html"
-
+    template_name = 'order_creation_step.html'
+    form_location = ObjectLocationForm
     form_house = HouseForm
     form_land = LandForm
     form_apartament = ApartamentForm
     form_cottage = CottageForm
-    form_location = ObjectLocationForm
-    form_decoration = DecorationForm
-    form_utility = UtilityForm
-    form_common_info = CommonInformationForm
-
-    def test_func(self):
-        return not (self.request.user.groups.filter(name='Agency').exists() or self.request.user.groups.filter(name='Evaluator').exists())
-
-    def handle_no_permission(self):
-        messages.error(self.request, NO_PERMISSION_MESSAGE)
-        return redirect('core.uauth:login')
-
-
-    def get_queryset(self):
-        user = self.request.user
-
-        if user.groups.filter(name='Agency').exists():
-            return self.model.objects.filter(agency=user)
+    
+    def get(self, request):
+        # Get selected object type from session if it exists (set in LandingView)
+        selected_obj_type = request.session.get('selected_obj_type', '')
         
-        return self.model.objects.none()
-
-
-    def get_form_classes(self):
-        return {
-            'location_form': self.form_location,
-            'decoration_form': self.form_decoration,
-            'utility_form': self.form_utility,
-            'common_info_form': self.form_common_info,
+        if not selected_obj_type:
+            # If no object type is selected, redirect back to selection
+            return redirect('modules.orders:selection')
+        
+        location_data = request.session.get('location_data', {})
+        additional_data = request.session.get('additional_data', {})
+        
+        # Initialize location form with session data if it exists
+        location_form = self.form_location(initial=location_data)
+        
+        # Prepare context with minimal data
+        context = {
+            'location_form': location_form,
+            'selected_obj_type': selected_obj_type,
+            'is_creation': True,
+            'show_progress_bar': True,
+            'current_step': 1,
+            'total_steps': 5
         }
-
-
-    def get_context_data(self, **kwargs):
-        """
-        Prepares the context data for rendering the template.
-        Initializes the forms based on the selected object type.
-        """
-
-        context = super().get_context_data(**kwargs)
-        form_classes = self.get_form_classes()
-        selected_obj_type = self.request.session.get('selected_obj_type')
-
-        if self.request.method == 'POST':
-            context.update({
-                'location_form': form_classes['location_form'](self.request.POST),
-                'decoration_form': form_classes['decoration_form'](self.request.POST),
-                'utility_form': form_classes['utility_form'](self.request.POST),
-                'common_info_form': form_classes['common_info_form'](self.request.POST),
-            })
-
-            match selected_obj_type:
-                case 'Namas':
-                    context['additional_form'] = self.form_house(self.request.POST)
-
-                case 'Sklypas':
-                    context['additional_form'] = self.form_land(self.request.POST)
-
-                case 'Butas':
-                    context['additional_form'] = self.form_apartament(self.request.POST)
-
-                case 'Kotedžas':
-                    context['additional_form'] = self.form_cottage(self.request.POST)
-
-                case 'Sodas':
-                    context['additional_form'] = self.form_house(self.request.POST)
-
-                case _:
-                    context['additional_form'] = None
-
-        else:
-            context.update({
-                'location_form': form_classes['location_form'](),
-                'decoration_form': form_classes['decoration_form'](),
-                'utility_form': form_classes['utility_form'](),
-                'common_info_form': form_classes['common_info_form'](),
-            })
-
-            match selected_obj_type:
-                case 'Namas':
-                    context['additional_form'] = self.form_house()
-
-                case 'Sklypas':
-                    context['additional_form'] = self.form_land()
-
-                case 'Butas':
-                    context['additional_form'] = self.form_apartament()
-
-                case 'Kotedžas':
-                    context['additional_form'] = self.form_cottage()
-
-                case 'Sodas':
-                    context['additional_form'] = self.form_house()
-
-                case _:
-                    context['additional_form'] = None
-
-        context['selected_obj_type'] = selected_obj_type
-        return context
-
-
-    def post(self, request, *args, **kwargs):
-        """
-        Handles the POST request to create a new order.
-        Validates the forms and saves the data if valid.
-        """
         
-        form_classes = self.get_form_classes()
-        location_form = form_classes['location_form'](request.POST)
-        decoration_form = form_classes['decoration_form'](request.POST)
-        utility_form = form_classes['utility_form'](request.POST)
-        common_info_form = form_classes['common_info_form'](request.POST)
-        selected_obj_type = self.request.session.get('selected_obj_type')
-
+        # Add the corresponding form based on the object type
+        match selected_obj_type:
+            case 'Namas':
+                context['additional_form'] = self.form_house(initial=additional_data)
+            case 'Sklypas':
+                context['additional_form'] = self.form_land(initial=additional_data)
+            case 'Butas':
+                context['additional_form'] = self.form_apartament(initial=additional_data)
+            case 'Kotedžas':
+                context['additional_form'] = self.form_cottage(initial=additional_data)
+            case 'Sodas':
+                context['additional_form'] = self.form_house(initial=additional_data)
+        
+        return render(request, self.template_name, context)
+    
+    @staticmethod
+    def convert_decimals_in_dict(data_dict):
+        """Convert Decimal objects to strings in a dictionary."""
+        result = data_dict.copy()
+        for key, value in result.items():
+            if isinstance(value, decimal.Decimal):
+                result[key] = str(value)
+        return result
+    
+    def post(self, request):
+        # Get the selected object type from session, not from POST
+        # This ensures we're using the object type selected in the previous step
+        selected_obj_type = request.session.get('selected_obj_type')
+        
+        if not selected_obj_type:
+            # If no object type, redirect back to selection
+            return redirect('modules.orders:selection')
+        
+        # Process location form
+        location_form = self.form_location(request.POST)
+        
+        # Initialize additional form based on object type
+        additional_form = None
         match selected_obj_type:
             case 'Namas':
                 additional_form = self.form_house(request.POST)
-
             case 'Sklypas':
                 additional_form = self.form_land(request.POST)
-
             case 'Butas':
                 additional_form = self.form_apartament(request.POST)
-
             case 'Kotedžas':
                 additional_form = self.form_cottage(request.POST)
-
             case 'Sodas':
                 additional_form = self.form_house(request.POST)
-
-            case _:
-                additional_form = None
-
-        if location_form.is_valid() and decoration_form.is_valid() and utility_form.is_valid() and common_info_form.is_valid() and (additional_form is None or additional_form.is_valid()):
+        
+        # Validate both forms
+        location_valid = location_form.is_valid()
+        additional_valid = additional_form.is_valid() if additional_form else True
+        
+        # Both forms need to be valid to proceed
+        if location_valid and additional_valid:
+            # Store data in session - convert Decimal to str for JSON serialization
+            location_data = location_form.cleaned_data.copy()
+            location_data = self.convert_decimals_in_dict(location_data)
+            request.session['location_data'] = location_data
             
-            try:
-                obj = self.model_object.objects.create(object_type=selected_obj_type)
-                request.session['main_object_id'] = obj.id
-                print("Object created with ID:", obj.id)
-
-            except Exception as e:
-                print("Error creating object:", e)
-                return self.form_invalid(location_form, decoration_form, utility_form, common_info_form, additional_form)
-
-            self.save_form_data(obj, location_form.cleaned_data)
-            self.save_form_data(obj, decoration_form.cleaned_data)
-            self.save_form_data(obj, utility_form.cleaned_data)
-            self.save_form_data(obj, common_info_form.cleaned_data)
-
             if additional_form:
-                self.save_form_data(obj, additional_form.cleaned_data)
-
-            try:
-                default_agency = User.objects.filter(groups__name='Agency', is_active=True).first()
-                
-                if not default_agency:
-                    raise Exception("No active agency found")
-                
-                order = self.model.objects.create(
-                    client=request.user,
-                    agency=default_agency,
-                    object=obj,
-                    status=STATUS_CHOICES[0][0],
-                    priority=PRIORITY_CHOICES[0][0]
-                )
-                request.session['order_id'] = order.id
-                print("Order created successfully with ID:", order.id)
-
-            except Exception as e:
-                print("Error creating order:", e)
-                return self.form_invalid(location_form, decoration_form, utility_form, common_info_form, additional_form)
-
-
-            if selected_obj_type in ['Namas', 'Kotedžas']:
-                return redirect('modules.orders:additional_buildings', object_id=obj.id)
-
-            return redirect('modules.orders:select_agency', order_id=order.id)
-
-        print("Form is invalid")
-        print(location_form.errors)
-        print(decoration_form.errors)
-        print(utility_form.errors)
-        print(common_info_form.errors)
-
-        if additional_form:
-            print(additional_form.errors)
-
-        return self.form_invalid(location_form, decoration_form, utility_form, common_info_form, additional_form)
-
-
-    def save_form_data(self, obj, cleaned_data):
-        for key, value in cleaned_data.items():
-            ObjectMeta.objects.create(ev_object=obj, meta_key=key, meta_value=value)
-
-
-    def form_invalid(self, location_form, decoration_form, utility_form, common_info_form, additional_form=None):
-        context = self.get_context_data()
-        context.update({
+                additional_data = additional_form.cleaned_data.copy()
+                additional_data = self.convert_decimals_in_dict(additional_data)
+                request.session['additional_data'] = additional_data
+            
+            # Redirect to decoration step
+            return redirect('modules.orders:order_decoration_step')
+        
+        # If forms are not valid, prepare context with entered data and errors
+        context = {
             'location_form': location_form,
-            'decoration_form': decoration_form,
-            'utility_form': utility_form,
-            'common_info_form': common_info_form,
-        })
-
+            'selected_obj_type': selected_obj_type,
+            'is_creation': True,
+            'show_progress_bar': True,
+            'current_step': 1,
+            'total_steps': 5
+        }
+        
+        # Add the additional form with errors
         if additional_form:
             context['additional_form'] = additional_form
+        
+        return render(request, self.template_name, context)
 
-        return self.render_to_response(context)
+
+#possibly not needed
+class ObjectFirstStepView(LoginRequiredMixin, UserRoleContextMixin, View):
+    """
+    First step of creating an order. This view displays the object type selection
+    and location form.
+    """
+    template_name = 'order_location_step.html'
+    form_location = ObjectLocationForm
+    
+    def get(self, request):
+        context = {
+            'location_form': self.form_location(),
+            'selected_obj_type': request.session.get('selected_obj_type', ''),
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        location_form = self.form_location(request.POST)
+        
+        if location_form.is_valid():
+            # Store form data in session
+            request.session['location_data'] = location_form.cleaned_data
+            # Save the object type
+            selected_obj_type = request.POST.get('object_type')
+            request.session['selected_obj_type'] = selected_obj_type
+            
+            # Redirect to the next step
+            return redirect('modules.orders:order_additional_step')
+        
+        context = {
+            'location_form': location_form,
+            'selected_obj_type': request.POST.get('object_type', ''),
+        }
+        return render(request, self.template_name, context)
+
+
+
+
+class OrderDecorationStepView(LoginRequiredMixin, UserRoleContextMixin, View):
+    """
+    Second step of creating an order. This view displays the decoration form.
+    """
+    template_name = 'order_decoration_step.html'
+    form_class = DecorationForm
+    
+    def get(self, request):
+        # Check if we have the necessary session data from previous step
+        if not request.session.get('selected_obj_type') or not request.session.get('location_data'):
+            # If essential data is missing, redirect back to the first step
+            return redirect('modules.orders:order_creation_step')
+        
+        # Get decoration data from session if it exists
+        decoration_data = request.session.get('decoration_data', {})
+        
+        # Create the form with initial data
+        decoration_form = self.form_class(initial=decoration_data)
+        
+        context = {
+            'decoration_form': decoration_form,
+            'is_creation': True,
+            'show_progress_bar': True,
+            'current_step': 2,
+            'total_steps': 5
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        # Process the form
+        form = self.form_class(request.POST)
+        
+        if form.is_valid():
+            # Store form data in session
+            request.session['decoration_data'] = form.cleaned_data
+            
+            # Redirect to the next step - common information
+            return redirect('modules.orders:order_common_info_step')
+        
+        # If form is not valid, show errors
+        context = {
+            'decoration_form': form,
+            'is_creation': True,
+            'show_progress_bar': True,
+            'current_step': 2,
+            'total_steps': 5
+        }
+        return render(request, self.template_name, context)
+
+
+
+class ObjectCommonInfoStepView(LoginRequiredMixin, UserRoleContextMixin, View):
+    """
+    Third step of creating an order. This view displays the common information form.
+    """
+    template_name = 'edit_common_info.html'  # Reuse the evaluator template
+    form_class = CommonInformationForm
+    
+    def get(self, request):
+        if not request.session.get('selected_obj_type'):
+            return redirect('modules.orders:order_location_step')
+        
+        context = {
+            'common_info_form': self.form_class(),
+            'is_creation': True,
+            'show_progress_bar': True,
+            'current_step': 3,
+            'total_steps': 5
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        form = self.form_class(request.POST)
+        
+        if form.is_valid():
+            # Store form data in session
+            request.session['common_info_data'] = form.cleaned_data
+            
+            # Redirect to the next step
+            return redirect('modules.orders:order_utility_step')
+        
+        context = {
+            'common_info_form': form,
+            'is_creation': True,
+            'show_progress_bar': True,
+            'current_step': 3,
+            'total_steps': 5
+        }
+        return render(request, self.template_name, context)
+
+
+
+class ObjectUtilityStepView(LoginRequiredMixin, UserRoleContextMixin, View):
+    """
+    Fourth step of creating an order. This view displays the utility form.
+    """
+    template_name = 'edit_utility_info.html'  # Reuse the evaluator template
+    form_class = UtilityForm
+    
+    def get(self, request):
+        if not request.session.get('selected_obj_type'):
+            return redirect('modules.orders:order_location_step')
+        
+        context = {
+            'utility_form': self.form_class(),
+            'is_creation': True,
+            'show_progress_bar': True,
+            'current_step': 4,
+            'total_steps': 5
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        form = self.form_class(request.POST)
+        
+        if form.is_valid():
+            # Store form data in session
+            request.session['utility_data'] = form.cleaned_data
+            
+            # For object type Namas/Kotedžas, redirect to additional buildings
+            selected_obj_type = request.session.get('selected_obj_type')
+            if selected_obj_type in ['Namas', 'Kotedžas']:
+                return redirect('modules.orders:order_additional_buildings_step')
+                
+            # Otherwise, create the object and order
+            obj = self.create_order_and_object(request)
+            
+            # Clear session data
+            self.clear_session_data(request)
+            
+            # Redirect to agency selection
+            return redirect('modules.orders:select_agency', order_id=obj.id)
+        
+        context = {
+            'utility_form': form,
+            'is_creation': True,
+            'show_progress_bar': True,
+            'current_step': 4,
+            'total_steps': 5
+        }
+        return render(request, self.template_name, context)
+    
+    def create_order_and_object(self, request):
+        # Create the object using data from all steps
+        obj = Object.objects.create(
+            object_type=request.session.get('selected_obj_type'),
+            # Other fields from location_data
+        )
+        
+        # Save all form data as object metadata
+        for data_dict in ['location_data', 'decoration_data', 'common_info_data', 'utility_data']:
+            if data_dict in request.session:
+                for key, value in request.session[data_dict].items():
+                    # Skip fields already stored in object model
+                    if key not in ['object_type']:
+                        ObjectMeta.objects.create(ev_object=obj, meta_key=key, meta_value=value)
+        
+        # Create order
+        order = Order.objects.create(
+            client=request.user,
+            object=obj,
+            status='Nebaigtas',  # Or whatever default status you use
+        )
+        
+        return order
+    
+    def clear_session_data(self, request):
+        # Clear all session data related to order creation
+        keys_to_clear = ['selected_obj_type', 'location_data', 'decoration_data', 
+                         'common_info_data', 'utility_data']
+        
+        for key in keys_to_clear:
+            if key in request.session:
+                del request.session[key]
 
 
 
@@ -492,6 +613,14 @@ class OrderListView(LoginRequiredMixin, UserRoleContextMixin, UserPassesTestMixi
         context['municipality_choices'] = MUNICIPALITY_CHOICES
         context['status_choices'] = STATUS_CHOICES
         context['priority_choices'] = PRIORITY_CHOICES
+        
+        evaluator_phones = {}
+        for order in context['orders']:
+            if order.evaluator and order.evaluator.id not in evaluator_phones:
+                phone = UserMeta.get_meta(order.evaluator, 'phone_num')
+                evaluator_phones[order.evaluator.id] = phone
+        context['evaluator_phones'] = evaluator_phones
+    
         
         return context
 

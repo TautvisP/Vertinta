@@ -7,6 +7,8 @@
 {% block content %}
 {% if show_progress_bar %}
     {% include 'shared/progress_bar.html' %}
+{% else %}
+    <div class="progress-bar-placeholder-larger"></div>
 {% endif %}
 <div class="content-page">
     <div class="content">
@@ -23,8 +25,13 @@
                     <div class="col-sm-12">
                             <h3 class="header-title">{% trans "Garažas" %}</h3>
                             <div class="col-lg-12">
-                                <div class="form-row">
-                                    {{ garage_form.as_p }}
+                                <div class="grid-form">
+                                    {% for field in garage_form %}
+                                    <div class="form-group">
+                                        {{ field.label_tag }}
+                                        {{ field }}
+                                    </div>
+                                    {% endfor %}
                                 </div>
                             </div>
                     </div>
@@ -35,8 +42,6 @@
                     <div class="col-sm-12">
                             <h3 class="header-title">{% trans "Sandėliukas" %}</h3>
                             <div class="col-lg-12">
-
-
                                 <div class="grid-form">
                                     {% for field in shed_form %}
                                     <div class="form-group">
@@ -54,8 +59,13 @@
                     <div class="col-sm-12">
                             <h3 class="header-title">{% trans "Pavėsinė" %}</h3>
                             <div class="col-lg-12">
-                                <div class="form-row">
-                                    {{ gazebo_form.as_p }}
+                                <div class="grid-form">
+                                    {% for field in gazebo_form %}
+                                    <div class="form-group">
+                                        {{ field.label_tag }}
+                                        {{ field }}
+                                    </div>
+                                    {% endfor %}
                                 </div>
                             </div>
                     </div>

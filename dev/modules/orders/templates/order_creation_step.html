@@ -1,0 +1,70 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Objekto duomenys" %}{% endblock %}
+
+{% block content %}
+<div class="progress-bar-placeholder-larger"></div>
+
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid col-10">
+            <h2>{% trans '1. Objekto duomenys' %}</h2>
+            <form action="{% url 'modules.orders:order_creation_step' %}" method="POST" class="formal">
+                {% csrf_token %}
+                
+                <!-- First form section: Location data -->
+                <div class="form-section">
+                    <div class="col-sm-12">
+                        <h3 class="header-title">{% trans "Lokacijos duomenys" %}</h3>
+                        <div class="col-lg-12">
+                            <div class="grid-form">
+                                {% for field in location_form %}
+                                <div class="form-group">
+                                    {{ field.label_tag }}
+                                    {{ field }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Additional form section - appears based on the selected object type -->
+                {% if additional_form %}
+                <div class="form-section">
+                    <div class="col-sm-12">
+                        <h3 class="header-title">
+                            {% if selected_obj_type == 'Namas' %}
+                                {% trans "Namo duomenys" %}
+                            {% elif selected_obj_type == 'Sklypas' %}
+                                {% trans "Sklypo duomenys" %}
+                            {% elif selected_obj_type == 'Butas' %}
+                                {% trans "Buto duomenys" %}
+                            {% elif selected_obj_type == 'Kotedžas' %}
+                                {% trans "Kotedžo duomenys" %}
+                            {% elif selected_obj_type == 'Sodas' %}
+                                {% trans "Sodo duomenys" %}
+                            {% endif %}
+                        </h3>
+                        <div class="col-lg-12">
+                            <div class="grid-form">
+                                {% for field in additional_form %}
+                                <div class="form-group">
+                                    {{ field.label_tag }}
+                                    {{ field }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <button type="submit" class="btn-form">{% trans "Tęsti" %}</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
