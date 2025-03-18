@@ -3,91 +3,203 @@
 {% load i18n %}
 {% load custom_filters %}
 
-{% block title %}{% trans 'Peržiūrėti objekto duomenis' %}{% endblock %}
-
-{% block extra_head %}
-<link rel="stylesheet" href="{% static 'css/tabletStyle.css' %}">
-{% endblock %}
+{% block title %}{% trans "Objekto duomenys" %}{% endblock %}
 
 {% block content %}
 <div class="progress-bar-placeholder-larger"></div>
 
-<div class="tablet-container">
-    <div class="content-page">
-        <div class="container">
-            <h2 class="header-title">{% trans "Objekto duomenys" %}</h2>
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid col-10">
+            <h2>{% trans "Objekto duomenys" %}</h2>
+            
+            <!-- Object data content -->
             <div class="object-data-grid">
                 <div class="column">
-                    <div class="section">
-                        <h3>{% trans "Bendra informacija" %}</h3>
-                        <p><strong>{% trans "Savivaldybė" %}:</strong> {{ object.municipality|get_municipality_name }}</p>
-                        <p><strong>{% trans "Gatvė" %}:</strong> {{ object.street }}</p>
-                        <p><strong>{% trans "Namo numeris" %}:</strong> {{ object.house_no }}</p>
-                        <p><strong>{% trans "Platuma" %}:</strong> {{ object.latitude }}</p>
-                        <p><strong>{% trans "Ilguma" %}:</strong> {{ object.longitude }}</p>
-                        <p><strong>{% trans "Turto numeris" %}:</strong> {% if meta_data.house_number %}{{ meta_data.house_number }}{% else %}nežinomas{% endif %} {% if object.house_no %}{{ object.house_no }}{% endif %} {% if meta_data.flat_number %}butas numeris {{ meta_data.flat_number }}{% endif %}</p>
-                        <p><strong>{% trans "Turto tipas" %}:</strong> {{ object.object_type }}</p>
-                        <p><strong>{% trans "Aukštų skaičius" %}:</strong> {% if meta_data.building_floor_count %}{{ meta_data.building_floor_count }}{% else %}nežinomas{% endif %}, {% if meta_data.floor %}{{ meta_data.floor }}{% else %}nežinomas{% endif %}</p>
-                        <p><strong>{% trans "Žemės paskirtis" %}:</strong> {{ meta_data.land_purpose }}</p>
-                        <p><strong>{% trans "Žemės plotas" %}:</strong> {{ meta_data.land_size }}</p>
-                        <p><strong>{% trans "Pamatai" %}:</strong> {{ meta_data.foundation }}</p>
-                        <p><strong>{% trans "Sienos" %}:</strong> {{ meta_data.walls }}</p>
-                        <p><strong>{% trans "Pogrindis" %}:</strong> {{ meta_data.subfloor }}</p>
-                        <p><strong>{% trans "Vidinės sienos" %}:</strong> {{ meta_data.inside_walls }}</p>
-                        <p><strong>{% trans "Rūsys" %}:</strong> {{ meta_data.basement }}</p>
-                        <p><strong>{% trans "Balkonas" %}:</strong> {{ meta_data.balcony }}</p>
-                        <p><strong>{% trans "Stogas" %}:</strong> {{ meta_data.roof }}</p>
-                        <p><strong>{% trans "Langai" %}:</strong> {{ meta_data.windows }}</p>
+                    <div class="data-card">
+                        <h3 class="card-header">{% trans "Bendra informacija" %}</h3>
+                        <div class="card-content">
+                            <p><strong>{% trans "Savivaldybė" %}:</strong> {{ object.municipality|get_municipality_name }}</p>
+                            <p><strong>{% trans "Gatvė" %}:</strong> {{ object.street }}</p>
+                            <p><strong>{% trans "Namo numeris" %}:</strong> {{ object.house_no }}</p>
+                            <p><strong>{% trans "Platuma" %}:</strong> {{ object.latitude }}</p>
+                            <p><strong>{% trans "Ilguma" %}:</strong> {{ object.longitude }}</p>
+                            <p><strong>{% trans "Turto numeris" %}:</strong> {% if meta_data.house_number %}{{ meta_data.house_number }}{% else %}nežinomas{% endif %} {% if object.house_no %}{{ object.house_no }}{% endif %} {% if meta_data.flat_number %}butas numeris {{ meta_data.flat_number }}{% endif %}</p>
+                            <p><strong>{% trans "Turto tipas" %}:</strong> {{ object.object_type }}</p>
+                            <p><strong>{% trans "Aukštų skaičius" %}:</strong> {% if meta_data.building_floor_count %}{{ meta_data.building_floor_count }}{% else %}nežinomas{% endif %}, {% if meta_data.floor %}{{ meta_data.floor }}{% else %}nežinomas{% endif %}</p>
+                            <p><strong>{% trans "Žemės paskirtis" %}:</strong> {{ meta_data.land_purpose }}</p>
+                            <p><strong>{% trans "Žemės plotas" %}:</strong> {{ meta_data.land_size }}</p>
+                            <p><strong>{% trans "Pamatai" %}:</strong> {{ meta_data.foundation }}</p>
+                            <p><strong>{% trans "Sienos" %}:</strong> {{ meta_data.walls }}</p>
+                            <p><strong>{% trans "Pogrindis" %}:</strong> {{ meta_data.subfloor }}</p>
+                            <p><strong>{% trans "Vidinės sienos" %}:</strong> {{ meta_data.inside_walls }}</p>
+                            <p><strong>{% trans "Rūsys" %}:</strong> {{ meta_data.basement }}</p>
+                            <p><strong>{% trans "Balkonas" %}:</strong> {{ meta_data.balcony }}</p>
+                            <p><strong>{% trans "Stogas" %}:</strong> {{ meta_data.roof }}</p>
+                            <p><strong>{% trans "Langai" %}:</strong> {{ meta_data.windows }}</p>
+                        </div>
                     </div>
+
+                    <div class="data-card">
+                        <h3 class="card-header">{% trans "Papildoma informacija" %}</h3>
+                        <div class="card-content">
+                            <p><strong>{% trans "Parkavimo vietos" %}:</strong> {{ meta_data.parking_spaces }}</p>
+                            
+                            {% if meta_data.garage_size or meta_data.garage_cars_count or meta_data.garage_attached %}
+                            <div class="additional-building">
+                                <h4>{% trans "Garažo informacija" %}</h4>
+                                <p><strong>{% trans "Garažo dydis" %}:</strong> {{ meta_data.garage_size }} m²</p>
+                                <p><strong>{% trans "Garažas gali talpinti" %}:</strong> {{ meta_data.garage_cars_count }} {% trans "automobilių" %}</p>
+                                <p><strong>{% trans "Garažas sujungtas su namu" %}:</strong> {{ meta_data.garage_attached }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if meta_data.shed_size or meta_data.shed_type or meta_data.shed_electricity %}
+                            <div class="additional-building">
+                                <h4>{% trans "Sandėlio informacija" %}</h4>
+                                <p><strong>{% trans "Sandėlio dydis" %}:</strong> {{ meta_data.shed_size }} m²</p>
+                                <p><strong>{% trans "Sandėlio tipas" %}:</strong> {{ meta_data.shed_type }}</p>
+                                <p><strong>{% trans "Sandėlio elektra" %}:</strong> {{ meta_data.shed_electricity }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if meta_data.gazebo_size or meta_data.gazebo_type or meta_data.gazebo_electricity %}
+                            <div class="additional-building">
+                                <h4>{% trans "Pavėsinės informacija" %}</h4>
+                                <p><strong>{% trans "Pavėsinės dydis" %}:</strong> {{ meta_data.gazebo_size }} m²</p>
+                                <p><strong>{% trans "Pavėsinės tipas" %}:</strong> {{ meta_data.gazebo_type }}</p>
+                                <p><strong>{% trans "Pavėsinėje yra elektra" %}:</strong> {{ meta_data.gazebo_electricity }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
                 </div>
+                
                 <div class="column">
-                    <div class="section">
-                        <h3>{% trans "Interjero informacija" %}</h3>
-                        <p><strong>{% trans "Vidinės durys" %}:</strong> {{ meta_data.inside_doors }}</p>
-                        <p><strong>{% trans "Išorinės durys" %}:</strong> {{ meta_data.outside_doors }}</p>
-                        <p><strong>{% trans "Statybos metai" %}:</strong> {{ meta_data.build_years }}</p>
-                        <p><strong>{% trans "Renovacijos metai" %}:</strong> {{ meta_data.renovation_years }}</p>
-                        <p><strong>{% trans "Kambarių skaičius" %}:</strong> {{ meta_data.room_count }}</p>
-                        <p><strong>{% trans "Gyvenamasis plotas" %}:</strong> {{ meta_data.living_size }}</p>
-                        <p><strong>{% trans "Interjero apdaila" %}:</strong> {{ meta_data.interior_deco }}</p>
-                        <p><strong>{% trans "Grindys" %}:</strong> {{ meta_data.interior_floors }}</p>
-                        <p><strong>{% trans "Lubos" %}:</strong> {{ meta_data.ceiling_deco }}</p>
-                        <p><strong>{% trans "Išorės apdaila" %}:</strong> {{ meta_data.outside_deco }}</p>
+                    <div class="data-card">
+                        <h3 class="card-header">{% trans "Komunalinės paslaugos" %}</h3>
+                        <div class="card-content">
+                            <p><strong>{% trans "Elektra" %}:</strong> {{ meta_data.electricity }}</p>
+                            <p><strong>{% trans "Vanduo" %}:</strong> {{ meta_data.water }}</p>
+                            <p><strong>{% trans "Dujos" %}:</strong> {{ meta_data.gas }}</p>
+                            <p><strong>{% trans "Nuotekos" %}:</strong> {{ meta_data.wastewater }}</p>
+                            <p><strong>{% trans "Šildymas" %}:</strong> {{ meta_data.heating }}</p>
+                            <p><strong>{% trans "Energijos efektyvumas" %}:</strong> {{ meta_data.energy_efficiency }}</p>
+                            <p><strong>{% trans "Oro kondicionavimas" %}:</strong> {{ meta_data.air_conditioning }}</p>
+                            <p><strong>{% trans "Saugumas" %}:</strong> {{ meta_data.security }}</p>
+                        </div>
                     </div>
-                </div>
-                <div class="column">
-                    <div class="section">
-                        <h3>{% trans "Komunalinės paslaugos" %}</h3>
-                        <p><strong>{% trans "Elektra" %}:</strong> {{ meta_data.electricity }}</p>
-                        <p><strong>{% trans "Vanduo" %}:</strong> {{ meta_data.water }}</p>
-                        <p><strong>{% trans "Dujos" %}:</strong> {{ meta_data.gas }}</p>
-                        <p><strong>{% trans "Nuotekos" %}:</strong> {{ meta_data.wastewater }}</p>
-                        <p><strong>{% trans "Šildymas" %}:</strong> {{ meta_data.heating }}</p>
-                        <p><strong>{% trans "Energijos efektyvumas" %}:</strong> {{ meta_data.energy_efficiency }}</p>
-                        <p><strong>{% trans "Oro kondicionavimas" %}:</strong> {{ meta_data.air_conditioning }}</p>
-                        <p><strong>{% trans "Saugumas" %}:</strong> {{ meta_data.security }}</p>
-                    </div>
-                    <div class="section">
-                        <h3>{% trans "Papildoma informacija" %}</h3>
-                        <p><strong>{% trans "Parkavimo vietos" %}:</strong> {{ meta_data.parking_spaces }}</p>
-                        {% if meta_data.garage_size or meta_data.garage_cars_count or meta_data.garage_attached %}
-                            <p><strong>{% trans "Garažo dydis" %}:</strong> {{ meta_data.garage_size }} m²</p>
-                            <p><strong>{% trans "Garažas gali talpinti" %}:</strong> {{ meta_data.garage_cars_count }} {% trans "automobilių" %}</p>
-                            <p><strong>{% trans "Garažas sujungtas su namu" %}:</strong> {{ meta_data.garage_attached }}</p>
-                        {% endif %}
-                        {% if meta_data.shed_size or meta_data.shed_type or meta_data.shed_electricity %}
-                            <p><strong>{% trans "Sandėlio dydis" %}:</strong> {{ meta_data.shed_size }} m², {% trans "Sandėlio elektra" %}: {{ meta_data.shed_electricity }}, {% trans "Sandėlio tipas" %}: {{ meta_data.shed_type }}</p>
-                        {% endif %}
-                        {% if meta_data.gazebo_size or meta_data.gazebo_type or meta_data.gazebo_electricity %}
-                            <p><strong>{% trans "Pavėsinės dydis" %}:</strong> {{ meta_data.gazebo_size }} m², {% trans "Pavėsinės tipas" %}: {{ meta_data.gazebo_type }}, {% trans "Pavėsinėje yra elektra" %}: {{ meta_data.gazebo_electricity }}</p>
-                        {% endif %}
+
+                    <div class="data-card">
+                        <h3 class="card-header">{% trans "Interjero informacija" %}</h3>
+                        <div class="card-content">
+                            <p><strong>{% trans "Vidinės durys" %}:</strong> {{ meta_data.inside_doors }}</p>
+                            <p><strong>{% trans "Išorinės durys" %}:</strong> {{ meta_data.outside_doors }}</p>
+                            <p><strong>{% trans "Statybos metai" %}:</strong> {{ meta_data.build_years }}</p>
+                            <p><strong>{% trans "Renovacijos metai" %}:</strong> {{ meta_data.renovation_years }}</p>
+                            <p><strong>{% trans "Kambarių skaičius" %}:</strong> {{ meta_data.room_count }}</p>
+                            <p><strong>{% trans "Gyvenamasis plotas" %}:</strong> {{ meta_data.living_size }}</p>
+                            <p><strong>{% trans "Interjero apdaila" %}:</strong> {{ meta_data.interior_deco }}</p>
+                            <p><strong>{% trans "Grindys" %}:</strong> {{ meta_data.interior_floors }}</p>
+                            <p><strong>{% trans "Lubos" %}:</strong> {{ meta_data.ceiling_deco }}</p>
+                            <p><strong>{% trans "Išorės apdaila" %}:</strong> {{ meta_data.outside_deco }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="navigation-buttons">
-            <a href="{% if is_evaluator %}{% url 'modules.orders:evaluator_order_list' %}{% else %}{% url 'modules.orders:order_list' %}{% endif %}" class="btn-back">{% trans "Atgal" %}</a>
+            
+            <!-- Navigation buttons -->
+            <div class="navigation-buttons">
+                <a href="{% url 'modules.orders:order_list' %}" class="btn-back">{% trans "Grįžti" %}</a>
+                <a href="{% url 'modules.orders:edit_object_step' pk=object.id %}" class="btn-evaluate">{% trans "Redaguoti objektą" %}</a>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+    .object-data-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .data-card {
+        background-color: #F8F8F8;
+        border-radius: 8px;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        background-color: #4E78D2;
+        color: white;
+        padding: 15px 20px;
+        font-size: 18px;
+        font-weight: bold;
+        margin: 0;
+    }
+    
+    .card-content {
+        padding: 20px;
+    }
+    
+    .card-content p {
+        border-bottom: 1px solid #e0e0e0;
+        padding: 10px 0;
+        margin: 0;
+        font-size: 16px;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .card-content p:last-child {
+        border-bottom: none;
+    }
+    
+    .card-content p strong {
+        font-weight: 600;
+        color: #333;
+        margin-right: 10px;
+    }
+    
+    .additional-building {
+        background-color: #f0f4ff;
+        border-radius: 6px;
+        padding: 15px;
+        margin-top: 15px;
+    }
+    
+    .additional-building h4 {
+        font-size: 16px;
+        font-weight: bold;
+        color: #4E78D2;
+        margin-top: 0;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #d0d8f0;
+        padding-bottom: 5px;
+    }
+    
+    .additional-building p {
+        border-bottom: none !important;
+        padding: 5px 0 !important;
+    }
+    
+    @media (max-width: 768px) {
+        .object-data-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .card-content p {
+            flex-direction: column;
+        }
+        
+        .card-content p strong {
+            margin-bottom: 5px;
+        }
+    }
+</style>
 {% endblock %}

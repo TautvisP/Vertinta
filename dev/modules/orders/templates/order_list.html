@@ -67,6 +67,7 @@
                                 {% if evaluator_phones|get_item:order.evaluator.id %}
                                 · Tel: {{ evaluator_phones|get_item:order.evaluator.id }}
                                 {% endif %}
+                                · {{ order.evaluator.email }}
                             </p>
                             {% endif %}
                         </div>
@@ -80,7 +81,7 @@
                             {% if order.status == 'Nebaigtas' %}
                             <a href="{% url 'modules.orders:select_agency' order.id %}" class="btn-evaluate">{% trans 'Tęsti' %}</a>
                             {% else %}
-                            <a href="{% url 'modules.orders:object_update' order.object.id %}" class="btn-evaluate">{% trans 'Redaguoti Objektą' %}</a>
+                            <a href="{% url 'modules.orders:edit_object_step' order.object.id %}" class="btn-evaluate">{% trans 'Redaguoti Objektą' %}</a>
                             {% endif %}
                             
                             <a href="{% url 'modules.orders:view_object_data' order.id order.object.id %}" class="icon-button" title="{% trans 'Peržiūrėti objektą' %}">

@@ -131,4 +131,8 @@ http://127.0.0.1:8000/evaluator/evaluation_steps/19/edit_similar_object_data/45/
 
 maybe refactor order first step to use evaluator multi step process.
 
-The final report should only be sent to the user if agency has received payment
+The final report should only be sent to the user if agency has received payment.
+
+when an order is created, the priority and status needs to be fixed
+
+need to once again fix orders creation as a draft, so the user would be able to complete the creation process

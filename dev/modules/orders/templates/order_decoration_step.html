@@ -50,14 +50,12 @@
                 </div>
                 
                 <div class="navigation-buttons">
-                    <!-- Back button changes based on mode -->
                     {% if is_editing %}
                         <a href="{% url 'modules.orders:edit_object_step' pk=pk %}" class="btn-back">{% trans "Atgal" %}</a>
                     {% else %}
                         <a href="{% url 'modules.orders:order_creation_step' %}" class="btn-back">{% trans "Atgal" %}</a>
                     {% endif %}
                     
-                    <!-- Button text changes based on mode -->
                     <button type="submit" class="btn-submit">
                         {% if is_editing %}
                             {% trans "Išsaugoti ir tęsti" %}
