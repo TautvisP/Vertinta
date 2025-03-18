@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import LandingView, OrderCreationStepView, ObjectCommonInfoStepView, OrderDecorationStepView, ObjectUtilityStepView, ObjectUtilityStepView, AdditionalBuildingsView, OrderListView, EvaluatorOrderListView, AgencySelectionView, EditAdditionalBuildingsView, OrderDeleteView, ViewObjectDataView, EditOrderStatusPriorityView
+from .views import LandingView, OrderCreationStepView, EditObjectStepView, EditObjectCommonInfoStepView, EditObjectUtilityStepView, EditObjectDecorationStepView, ObjectCommonInfoStepView, OrderDecorationStepView, ObjectUtilityStepView, ObjectUtilityStepView, AdditionalBuildingsView, OrderListView, EvaluatorOrderListView, AgencySelectionView, EditAdditionalBuildingsView, OrderDeleteView, ViewObjectDataView, EditOrderStatusPriorityView
 
 app_name = 'modules.orders'
 
@@ -8,12 +8,18 @@ urlpatterns = [
     path('', views.index, name='orders_index'),
     path('select/', LandingView.as_view(), name='selection'),
 
-    path('order/create/', OrderCreationStepView.as_view(), name='order_creation_step'), #location and additional forms
-    path('order/decoration/', OrderDecorationStepView.as_view(), name='order_decoration_step'), #decoration form
-
-
+    #object creation
+    path('order/create/', OrderCreationStepView.as_view(), name='order_creation_step'),
+    path('order/decoration/', OrderDecorationStepView.as_view(), name='order_decoration_step'),
     path('order/common_info/', ObjectCommonInfoStepView.as_view(), name='order_common_info_step'),
     path('order/utility/', ObjectUtilityStepView.as_view(), name='order_utility_step'),
+
+    #object editing
+    path('object/<int:pk>/edit/', EditObjectStepView.as_view(), name='edit_object_step'),
+    path('object/<int:pk>/edit/decoration/', EditObjectDecorationStepView.as_view(), name='edit_decoration_step'),
+    path('object/<int:pk>/edit/common_info/', EditObjectCommonInfoStepView.as_view(), name='edit_common_info_step'),
+    path('object/<int:pk>/edit/utility/', EditObjectUtilityStepView.as_view(), name='edit_utility_step'),
+
 
     path('additional_buildings/<int:object_id>/', AdditionalBuildingsView.as_view(), name='additional_buildings'),
 
@@ -32,5 +38,7 @@ urlpatterns = [
     path('object/<int:pk>/edit_additional_buildings/', EditAdditionalBuildingsView.as_view(), name='edit_additional_buildings'),
     path('order/<int:pk>/delete/', OrderDeleteView.as_view(), name='delete_order'),
 
-    path('select_agency/<int:order_id>', AgencySelectionView.as_view(), name='select_agency'),
+    path('select_agency/<int:object_id>/', AgencySelectionView.as_view(), name='select_agency'),
+    path('select_agency/<int:order_id>/', AgencySelectionView.as_view(), name='select_agency_order'),
+    path('select_agency/object/<int:object_id>/', AgencySelectionView.as_view(), name='select_agency_object'),
 ]

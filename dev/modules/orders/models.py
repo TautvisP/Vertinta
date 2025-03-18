@@ -259,7 +259,7 @@ class ImageAnnotation(models.Model):
 
 class Order(models.Model):
     client = models.ForeignKey(User, on_delete=models.CASCADE, related_name='order_client')
-    agency = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    agency = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders', null=True, blank=True)
     evaluator = models.ForeignKey(User, related_name='evaluator_orders', on_delete=models.SET_NULL, null=True, blank=True)
     object = models.ForeignKey(Object, on_delete=models.CASCADE, null=True, blank=True)
     created = models.DateTimeField(default=timezone.now)

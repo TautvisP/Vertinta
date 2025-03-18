@@ -4,9 +4,9 @@
 
 {% block title %}
 {% if is_editing %}
-    {% trans "Redaguoti apdailos duomenis" %}
+    {% trans "Redaguoti bendrą informaciją" %}
 {% else %}
-    {% trans "Apdailos duomenys" %}
+    {% trans "Bendra informacija" %}
 {% endif %}
 {% endblock %}
 
@@ -18,27 +18,27 @@
         <div class="container-fluid col-10">
             <h2>
                 {% if is_editing %}
-                    {% trans '2. Redaguoti apdailos duomenis' %}
+                    {% trans '3. Redaguoti bendrą informaciją' %}
                 {% else %}
-                    {% trans '2. Apdailos duomenys' %}
+                    {% trans '3. Bendra informacija' %}
                 {% endif %}
             </h2>
             
             <!-- Form action changes based on mode -->
             <form action="
             {% if is_editing %}
-                {% url 'modules.orders:edit_decoration_step' pk=pk %}
+                {% url 'modules.orders:edit_common_info_step' pk=pk %}
             {% else %}
-                {% url 'modules.orders:order_decoration_step' %}
+                {% url 'modules.orders:order_common_info_step' %}
             {% endif %}" method="POST" class="formal">
                 {% csrf_token %}
                 
-                <div class="form-section">
+                <div class="form-section-large">
                     <div class="col-sm-12">
-                        <h3 class="header-title">{% trans "Apdailos informacija" %}</h3>
+                        <h3 class="header-title">{% trans "Bendra informacija" %}</h3>
                         <div class="col-lg-12">
                             <div class="grid-form">
-                                {% for field in decoration_form %}
+                                {% for field in common_info_form %}
                                 <div class="form-group">
                                     {{ field.label_tag }}
                                     {{ field }}
@@ -52,9 +52,9 @@
                 <div class="navigation-buttons">
                     <!-- Back button changes based on mode -->
                     {% if is_editing %}
-                        <a href="{% url 'modules.orders:edit_object_step' pk=pk %}" class="btn-back">{% trans "Atgal" %}</a>
+                        <a href="{% url 'modules.orders:edit_decoration_step' pk=pk %}" class="btn-back">{% trans "Atgal" %}</a>
                     {% else %}
-                        <a href="{% url 'modules.orders:order_creation_step' %}" class="btn-back">{% trans "Atgal" %}</a>
+                        <a href="{% url 'modules.orders:order_decoration_step' %}" class="btn-back">{% trans "Atgal" %}</a>
                     {% endif %}
                     
                     <!-- Button text changes based on mode -->

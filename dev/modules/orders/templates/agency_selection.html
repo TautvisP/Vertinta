@@ -4,45 +4,72 @@
 
 {% block title %}{% trans 'Agentūros pasirinkimas' %}{% endblock %}
 
-{% block bootstrap_css %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-{% endblock %}
-
 {% block content %}
+<div class="progress-bar-placeholder-larger"></div>
 <div class="content-page">
     <div class="content">
         <div class="container-fluid col-10">
             <h2>{% trans '3. Agentūros pasirinkimas' %}</h2>
-            <form method="POST" action="{% url 'modules.orders:select_agency' order_id=order_id %}">
+            
+            <form method="POST" action="
+            {% if order_id %}
+                {% url 'modules.orders:select_agency_order' order_id=order_id %}
+            {% elif object_id %}
+                {% url 'modules.orders:select_agency_object' object_id=object_id %}
+            {% else %}
+                {% url 'modules.orders:select_agency' %}
+            {% endif %}">
                 {% csrf_token %}
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>{% trans 'Pavadinimas' %}</th>
-                            <th>{% trans 'Agentūris įkurimo data' %}</th>
-                            <th>{% trans 'Vertintojų skaičius' %}</th>
-                            <th>{% trans 'Vykdomi užsakymai' %}</th>
-                            <th>{% trans 'Užbaigti užsakymai' %}</th>
-                            <th>{% trans 'Vertinimo pradinė kaina' %}</th>
-                            <th>{% trans 'Veiksmai' %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for agency in agency_data %}
-                        <tr>
-                            <td>{{ agency.name }}</td>
-                            <td>{{ agency.date_joined|date:"Y-m-d" }}</td>
-                            <td>{{ agency.evaluator_count }}</td>
-                            <td>{{ agency.ongoing_orders }}</td>
-                            <td>{{ agency.completed_orders }}</td>
-                            <td>{{ agency.evaluation_starting_price }}</td>
-                            <td>
-                                <button type="submit" name="selected_agency_id" value="{{ agency.id }}" class="btn btn-primary">{% trans 'Pasirinkti' %}</button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                
+                <div class="form-section">
+                    <div class="col-sm-12">
+                        <h3 class="header-title">{% trans "Pasirinkite agentūrą" %}</h3>
+                        <div class="col-lg-12">
+                            <div class="agency-table-container">
+                                <table class="modern-table">
+                                    <thead>
+                                        <tr>
+                                            <th>{% trans 'Pavadinimas' %}</th>
+                                            <th>{% trans 'Agentūros įkurimo data' %}</th>
+                                            <th>{% trans 'Vertintojų skaičius' %}</th>
+                                            <th>{% trans 'Vykdomi užsakymai' %}</th>
+                                            <th>{% trans 'Užbaigti užsakymai' %}</th>
+                                            <th>{% trans 'Vertinimo pradinė kaina' %}</th>
+                                            <th>{% trans 'Veiksmai' %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for agency in agency_data %}
+                                        <tr>
+                                            <td>{{ agency.name }}</td>
+                                            <td>{{ agency.date_joined|date:"Y-m-d" }}</td>
+                                            <td>{{ agency.evaluator_count }}</td>
+                                            <td>{{ agency.ongoing_orders }}</td>
+                                            <td>{{ agency.completed_orders }}</td>
+                                            <td>{{ agency.evaluation_starting_price }} €</td>
+                                            <td>
+                                                <button type="submit" name="selected_agency_id" value="{{ agency.id }}" class="btn-evaluate">
+                                                    {% trans 'Pasirinkti' %}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="7" class="text-center">{% trans 'Nerasta agentūrų' %}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="navigation-buttons">
+                    {% if object_id %}
+                        <a href="{% url 'modules.orders:order_utility_step' %}" class="btn-back">{% trans "Atgal" %}</a>
+                    {% endif %}
+                </div>
             </form>
         </div>
     </div>

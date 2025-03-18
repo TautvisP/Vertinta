@@ -14,6 +14,8 @@ from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from shared.mixins.mixins import UserRoleContextMixin
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+import datetime
+
 
 # Global message variables
 SUCCESS_MESSAGE = _("Profilis sėkmingai atnaujintas!")
@@ -203,41 +205,6 @@ class OrderCreationStepView(LoginRequiredMixin, UserRoleContextMixin, View):
         return render(request, self.template_name, context)
 
 
-#possibly not needed
-class ObjectFirstStepView(LoginRequiredMixin, UserRoleContextMixin, View):
-    """
-    First step of creating an order. This view displays the object type selection
-    and location form.
-    """
-    template_name = 'order_location_step.html'
-    form_location = ObjectLocationForm
-    
-    def get(self, request):
-        context = {
-            'location_form': self.form_location(),
-            'selected_obj_type': request.session.get('selected_obj_type', ''),
-        }
-        return render(request, self.template_name, context)
-    
-    def post(self, request):
-        location_form = self.form_location(request.POST)
-        
-        if location_form.is_valid():
-            # Store form data in session
-            request.session['location_data'] = location_form.cleaned_data
-            # Save the object type
-            selected_obj_type = request.POST.get('object_type')
-            request.session['selected_obj_type'] = selected_obj_type
-            
-            # Redirect to the next step
-            return redirect('modules.orders:order_additional_step')
-        
-        context = {
-            'location_form': location_form,
-            'selected_obj_type': request.POST.get('object_type', ''),
-        }
-        return render(request, self.template_name, context)
-
 
 
 
@@ -272,14 +239,17 @@ class OrderDecorationStepView(LoginRequiredMixin, UserRoleContextMixin, View):
     def post(self, request):
         # Process the form
         form = self.form_class(request.POST)
-        
+
         if form.is_valid():
-            # Store form data in session
-            request.session['decoration_data'] = form.cleaned_data
-            
+            # Store form data in session with proper conversion
+            decoration_data = form.cleaned_data.copy()
+            # Since DecorationForm doesn't have dates, we can use the existing function
+            decoration_data = self.convert_serializable_in_dict(decoration_data)
+            request.session['decoration_data'] = decoration_data
+
             # Redirect to the next step - common information
             return redirect('modules.orders:order_common_info_step')
-        
+
         # If form is not valid, show errors
         context = {
             'decoration_form': form,
@@ -289,6 +259,18 @@ class OrderDecorationStepView(LoginRequiredMixin, UserRoleContextMixin, View):
             'total_steps': 5
         }
         return render(request, self.template_name, context)
+    
+    @staticmethod
+    def convert_serializable_in_dict(data_dict):
+        """Convert non-JSON-serializable objects (Decimal, date) to strings in a dictionary."""
+        import datetime
+        result = data_dict.copy()
+        for key, value in result.items():
+            if isinstance(value, decimal.Decimal):
+                result[key] = str(value)
+            elif isinstance(value, datetime.date):
+                result[key] = value.isoformat()  # Convert date to ISO format string
+        return result
 
 
 
@@ -296,15 +278,37 @@ class ObjectCommonInfoStepView(LoginRequiredMixin, UserRoleContextMixin, View):
     """
     Third step of creating an order. This view displays the common information form.
     """
-    template_name = 'edit_common_info.html'  # Reuse the evaluator template
+    template_name = 'order_common_info_step.html'  # Use the new template
     form_class = CommonInformationForm
     
+    @staticmethod
+    def convert_serializable_in_dict(data_dict):
+        """Convert non-JSON-serializable objects (Decimal, date) to strings in a dictionary."""
+        import datetime
+        result = data_dict.copy()
+        for key, value in result.items():
+            if isinstance(value, decimal.Decimal):
+                result[key] = str(value)
+            elif isinstance(value, datetime.date):
+                result[key] = value.isoformat()  # Convert date to ISO format string
+        return result
+    
     def get(self, request):
-        if not request.session.get('selected_obj_type'):
-            return redirect('modules.orders:order_location_step')
+        # Check if we have the necessary session data from previous steps
+        if not request.session.get('selected_obj_type') or not request.session.get('location_data') or not request.session.get('decoration_data'):
+            # If essential data is missing, redirect back to the appropriate step
+            if not request.session.get('decoration_data'):
+                return redirect('modules.orders:order_decoration_step')
+            return redirect('modules.orders:order_creation_step')
+        
+        # Get common info data from session if it exists
+        common_info_data = request.session.get('common_info_data', {})
+        
+        # Create the form with initial data
+        common_info_form = self.form_class(initial=common_info_data)
         
         context = {
-            'common_info_form': self.form_class(),
+            'common_info_form': common_info_form,
             'is_creation': True,
             'show_progress_bar': True,
             'current_step': 3,
@@ -314,14 +318,17 @@ class ObjectCommonInfoStepView(LoginRequiredMixin, UserRoleContextMixin, View):
     
     def post(self, request):
         form = self.form_class(request.POST)
-        
+
         if form.is_valid():
-            # Store form data in session
-            request.session['common_info_data'] = form.cleaned_data
-            
-            # Redirect to the next step
+            # Store form data in session with proper conversion for dates and decimals
+            common_info_data = form.cleaned_data.copy()
+            common_info_data = self.convert_serializable_in_dict(common_info_data)
+            request.session['common_info_data'] = common_info_data
+
+            # Redirect to the next step - utility
             return redirect('modules.orders:order_utility_step')
-        
+
+        # If form is not valid, show errors
         context = {
             'common_info_form': form,
             'is_creation': True,
@@ -337,15 +344,37 @@ class ObjectUtilityStepView(LoginRequiredMixin, UserRoleContextMixin, View):
     """
     Fourth step of creating an order. This view displays the utility form.
     """
-    template_name = 'edit_utility_info.html'  # Reuse the evaluator template
+    template_name = 'order_utility_step.html'  # Use our new template
     form_class = UtilityForm
     
+    @staticmethod
+    def convert_decimals_in_dict(data_dict):
+        """Convert Decimal objects to strings in a dictionary."""
+        result = data_dict.copy()
+        for key, value in result.items():
+            if isinstance(value, decimal.Decimal):
+                result[key] = str(value)
+        return result
+    
     def get(self, request):
-        if not request.session.get('selected_obj_type'):
-            return redirect('modules.orders:order_location_step')
+        # Check if we have the necessary session data from previous steps
+        if not request.session.get('selected_obj_type') or not request.session.get('location_data') or \
+           not request.session.get('decoration_data') or not request.session.get('common_info_data'):
+            # If essential data is missing, redirect back to the appropriate step
+            if not request.session.get('common_info_data'):
+                return redirect('modules.orders:order_common_info_step')
+            elif not request.session.get('decoration_data'):
+                return redirect('modules.orders:order_decoration_step')
+            return redirect('modules.orders:order_creation_step')
+        
+        # Get utility data from session if it exists
+        utility_data = request.session.get('utility_data', {})
+        
+        # Create the form with initial data
+        utility_form = self.form_class(initial=utility_data)
         
         context = {
-            'utility_form': self.form_class(),
+            'utility_form': utility_form,
             'is_creation': True,
             'show_progress_bar': True,
             'current_step': 4,
@@ -355,25 +384,30 @@ class ObjectUtilityStepView(LoginRequiredMixin, UserRoleContextMixin, View):
     
     def post(self, request):
         form = self.form_class(request.POST)
-        
+
         if form.is_valid():
             # Store form data in session
-            request.session['utility_data'] = form.cleaned_data
-            
+            utility_data = form.cleaned_data.copy()
+            utility_data = self.convert_decimals_in_dict(utility_data)
+            request.session['utility_data'] = utility_data
+
             # For object type Namas/Kotedžas, redirect to additional buildings
             selected_obj_type = request.session.get('selected_obj_type')
             if selected_obj_type in ['Namas', 'Kotedžas']:
-                return redirect('modules.orders:order_additional_buildings_step')
-                
-            # Otherwise, create the object and order
-            obj = self.create_order_and_object(request)
-            
-            # Clear session data
-            self.clear_session_data(request)
-            
+                # Create the object first and pass its ID to the additional buildings step
+                obj = self.create_object(request)
+                return redirect('modules.orders:additional_buildings', object_id=obj.id)
+
+            # Otherwise, create just the object (not the order)
+            obj = self.create_object(request)
+
+            # Don't clear session data yet
+            # We'll need it for the agency selection
+
             # Redirect to agency selection
-            return redirect('modules.orders:select_agency', order_id=obj.id)
-        
+            return redirect('modules.orders:select_agency', object_id=obj.id)
+
+        # If form is not valid, show errors
         context = {
             'utility_form': form,
             'is_creation': True,
@@ -383,39 +417,53 @@ class ObjectUtilityStepView(LoginRequiredMixin, UserRoleContextMixin, View):
         }
         return render(request, self.template_name, context)
     
-    def create_order_and_object(self, request):
-        # Create the object using data from all steps
+    def create_object(self, request):
+        # Get all the data from session
+        location_data = request.session.get('location_data', {})
+        decoration_data = request.session.get('decoration_data', {})
+        common_info_data = request.session.get('common_info_data', {})
+        utility_data = request.session.get('utility_data', {})
+        selected_obj_type = request.session.get('selected_obj_type', '')
+        additional_data = request.session.get('additional_data', {})
+
+        # Create the object
         obj = Object.objects.create(
-            object_type=request.session.get('selected_obj_type'),
-            # Other fields from location_data
+            object_type=selected_obj_type,
+            latitude=location_data.get('latitude'),
+            longitude=location_data.get('longitude')
         )
-        
-        # Save all form data as object metadata
-        for data_dict in ['location_data', 'decoration_data', 'common_info_data', 'utility_data']:
-            if data_dict in request.session:
-                for key, value in request.session[data_dict].items():
-                    # Skip fields already stored in object model
-                    if key not in ['object_type']:
-                        ObjectMeta.objects.create(ev_object=obj, meta_key=key, meta_value=value)
-        
-        # Create order
-        order = Order.objects.create(
-            client=request.user,
-            object=obj,
-            status='Nebaigtas',  # Or whatever default status you use
-        )
-        
-        return order
+
+        # Save all other data as ObjectMeta
+        all_metadata = {}
+        all_metadata.update(location_data)
+        all_metadata.update(decoration_data)
+        all_metadata.update(common_info_data)
+        all_metadata.update(utility_data)
+        all_metadata.update(additional_data)
+
+        # Remove fields already stored directly on the Object model
+        for field in ['object_type', 'latitude', 'longitude']:
+            if field in all_metadata:
+                del all_metadata[field]
+
+        # Save all metadata
+        for key, value in all_metadata.items():
+            if value is not None:  # Only save non-null values
+                ObjectMeta.objects.create(ev_object=obj, meta_key=key, meta_value=str(value))
+
+        # Store the object ID in the session for the agency selection view
+        request.session['pending_object_id'] = obj.id
+
+        return obj
     
     def clear_session_data(self, request):
         # Clear all session data related to order creation
         keys_to_clear = ['selected_obj_type', 'location_data', 'decoration_data', 
-                         'common_info_data', 'utility_data']
+                         'common_info_data', 'utility_data', 'additional_data']
         
         for key in keys_to_clear:
             if key in request.session:
                 del request.session[key]
-
 
 
 
@@ -491,12 +539,21 @@ class AdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, UserPass
         context['show_progress_bar'] = False
         object_id = self.kwargs.get('object_id')
         obj = get_object_or_404(Object, id=object_id)
-        order = Order.objects.filter(object=obj).first()
-        context['order'] = order
-        context['order_id'] = order.id
         context['object'] = obj
         context['object_id'] = object_id
+
+        # Try to get the order, but don't fail if it doesn't exist yet
+        order = Order.objects.filter(object=obj).first()
+        if order:
+            context['order'] = order
+            context['order_id'] = order.id
+        else:
+            # No order yet, this is part of the creation flow
+            context['order'] = None
+            context['order_id'] = None
+
         context['is_evaluator'] = self.request.user.groups.filter(name='Evaluator').exists()
+        context['has_additional_buildings'] = obj.has_additional_buildings
         return context
 
 
@@ -537,9 +594,15 @@ class AdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, UserPass
         if all_valid:
             object_id = self.kwargs.get('object_id')
             obj = get_object_or_404(Object, id=object_id)
+            # Check if there's an order, if not, this is part of creation flow
             order = Order.objects.filter(object=obj).first()
-            return redirect('modules.orders:select_agency', order_id=order.id)
-        
+            if not order:
+                # We're in the creation flow, go to agency selection
+                return redirect('modules.orders:select_agency', object_id=object_id)
+            else:
+                # We have an order, go to edit order
+                return redirect('modules.orders:select_agency', order_id=order.id)
+
         return self.form_invalid(forms)
 
 
@@ -1037,58 +1100,86 @@ class AgencySelectionView(LoginRequiredMixin, UserPassesTestMixin, UserRoleConte
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['order_id'] = self.kwargs.get('order_id')
+        
+        # Check if we have an order_id or object_id in the URL
+        order_id = self.kwargs.get('order_id')
+        object_id = self.kwargs.get('object_id')
+        
+        # Handle both possible URL parameter scenarios
+        if order_id:
+            context['order_id'] = order_id
+        elif object_id:
+            # If we only have object_id but no order_id, pass the object_id
+            context['object_id'] = object_id
+        
         agencies = self.get_queryset()
         agency_data = []
-
-        ongoing_status = STATUS_CHOICES[2][0]  # 'Vykdomas'
-        completed_status = STATUS_CHOICES[3][0]  # 'Įvykdytas'
-
+        ongoing_status = STATUS_CHOICES[2][0]
+        completed_status = STATUS_CHOICES[3][0]
         for agency in agencies:
             evaluators = agency.evaluators.all()
             ongoing_orders_count = sum(evaluator.evaluator_orders.filter(status=ongoing_status).count() for evaluator in evaluators)
             completed_orders_count = sum(evaluator.evaluator_orders.filter(status=completed_status).count() for evaluator in evaluators)
-
             agency_data.append({
                 'id': agency.id,
                 'name': self.model_user_meta.get_meta(agency, 'agency_name'),
                 'date_joined': agency.date_joined,
-                'evaluator_count': agency.evaluator_count,
+                'evaluator_count': evaluators.count(),  # Use actual count instead of agency.evaluator_count
                 'ongoing_orders': ongoing_orders_count,
                 'completed_orders': completed_orders_count,
                 'evaluation_starting_price': self.model_user_meta.get_meta(agency, 'evaluation_starting_price'),
             })
-
         context['agency_data'] = agency_data
-        context['title'] = 'Select an Agency'
+        context['title'] = _('Select an Agency')
         return context
 
     def post(self, request, *args, **kwargs):
         selected_agency_id = request.POST.get('selected_agency_id')
-
         if selected_agency_id:
             try:
                 selected_agency = self.model.objects.get(id=selected_agency_id, groups__name='Agency')
-                order_id = request.session.get('main_object_id')
-                order = self.model_order.objects.get(object_id=order_id)
-                order.agency = selected_agency
-
-                # Select the appraiser with the least amount of orders
-                appraisers = self.model.objects.filter(groups__name='Evaluator', agency=selected_agency)
-                appraiser_with_least_orders = min(appraisers, key=lambda appraiser: appraiser.evaluator_orders.count())
-
-                # Associate the order with the selected appraiser
-                order.evaluator = appraiser_with_least_orders
-                order.status = STATUS_CHOICES[1][0]  # 'Naujas'
-                order.save()
-
+                
+                # Check if we have an order_id or object_id
+                order_id = self.kwargs.get('order_id')
+                object_id = self.kwargs.get('object_id')
+                
+                if order_id:
+                    # Update an existing order
+                    order = get_object_or_404(Order, id=order_id)
+                    order.agency = selected_agency
+                    order.save()
+                    
+                elif object_id:
+                    # Create a new order for this object
+                    obj = get_object_or_404(Object, id=object_id)
+                    order = Order.objects.create(
+                        client=request.user,
+                        object=obj,
+                        agency=selected_agency,
+                        status='Naujas'  # Default status for new orders
+                    )
+                    
+                    # Select the appraiser with the least amount of orders
+                    appraisers = self.model.objects.filter(groups__name='Evaluator', agency=selected_agency)
+                    if appraisers.exists():
+                        appraiser_with_least_orders = min(appraisers, key=lambda appraiser: appraiser.evaluator_orders.count())
+                        # Associate the order with the selected appraiser
+                        order.evaluator = appraiser_with_least_orders
+                        order.save()
+                
+                # Clear session data
+                for key in ['selected_obj_type', 'location_data', 'decoration_data', 
+                            'common_info_data', 'utility_data', 'additional_data', 'pending_object_id']:
+                    if key in request.session:
+                        del request.session[key]
+                
+                messages.success(request, _("Order created successfully!"))
                 return redirect('modules.orders:order_list')
-            except self.model.DoesNotExist:
-                return redirect('modules.orders:select_agency')
-            except self.model.DoesNotExist:
-                return redirect('modules.orders:order_first_step')
             
-        return redirect('modules.orders:select_agency')
+            except Exception as e:
+                messages.error(request, _("Error creating order: ") + str(e))
+                
+        return self.get(request, *args, **kwargs)
     
 
 
@@ -1164,3 +1255,425 @@ class EditOrderStatusPriorityView(LoginRequiredMixin, UserRoleContextMixin, User
 
     def get_success_url(self):
         return reverse_lazy('modules.orders:evaluator_order_list')
+    
+
+
+
+class EditObjectStepView(LoginRequiredMixin, UserRoleContextMixin, View):
+    """
+    Edit step view for existing objects. This view reuses the order creation templates
+    but populates them with existing object data for editing.
+    """
+    template_name = 'order_creation_step.html'
+    form_location = ObjectLocationForm
+    form_house = HouseForm
+    form_land = LandForm
+    form_apartament = ApartamentForm
+    form_cottage = CottageForm
+    
+    def get(self, request, *args, **kwargs):
+        # Get the object being edited
+        pk = kwargs.get('pk')
+        order_id = kwargs.get('order_id')
+        
+        obj = get_object_or_404(Object, pk=pk)
+        
+        # Prepare context with object data
+        context = {
+            'is_editing': True,
+            'pk': pk,
+            'object': obj,
+            'selected_obj_type': obj.object_type,
+            'show_progress_bar': True,
+            'current_step': 1,
+            'total_steps': 5
+        }
+        
+        # Add order to context if provided
+        if order_id:
+            order = get_object_or_404(Order, id=order_id)
+            context['order'] = order
+            context['order_id'] = order_id
+        
+        # Get initial data from object metadata
+        initial_data = {}
+        
+        # Add direct fields
+        if hasattr(obj, 'latitude') and obj.latitude:
+            initial_data['latitude'] = obj.latitude
+        if hasattr(obj, 'longitude') and obj.longitude:
+            initial_data['longitude'] = obj.longitude
+        
+        # Add metadata fields
+        meta_data = ObjectMeta.objects.filter(ev_object=obj)
+        for meta in meta_data:
+            initial_data[meta.meta_key] = meta.meta_value
+        
+        # Initialize location form with object data
+        context['location_form'] = self.form_location(initial=initial_data)
+        
+        # Initialize additional form based on object type
+        match obj.object_type:
+            case 'Namas':
+                context['additional_form'] = self.form_house(initial=initial_data)
+            case 'Sklypas':
+                context['additional_form'] = self.form_land(initial=initial_data)
+            case 'Butas':
+                context['additional_form'] = self.form_apartament(initial=initial_data)
+            case 'Kotedžas':
+                context['additional_form'] = self.form_cottage(initial=initial_data)
+            case 'Sodas':
+                context['additional_form'] = self.form_house(initial=initial_data)
+        
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        # Get the object being edited
+        print("editing")
+        pk = kwargs.get('pk')
+        order_id = kwargs.get('order_id')
+        
+        obj = get_object_or_404(Object, pk=pk)
+        
+        # Process submitted forms
+        location_form = self.form_location(request.POST)
+        
+        # Initialize additional form based on object type
+        additional_form = None
+        match obj.object_type:
+            case 'Namas':
+                additional_form = self.form_house(request.POST)
+            case 'Sklypas':
+                additional_form = self.form_land(request.POST)
+            case 'Butas':
+                additional_form = self.form_apartament(request.POST)
+            case 'Kotedžas':
+                additional_form = self.form_cottage(request.POST)
+            case 'Sodas':
+                additional_form = self.form_house(request.POST)
+        
+        # Validate both forms
+        location_valid = location_form.is_valid()
+        additional_valid = additional_form and additional_form.is_valid()
+        
+        if location_valid and additional_valid:
+            # Save location form data to object
+            # Handle direct fields first
+            if hasattr(obj, 'latitude') and 'latitude' in location_form.cleaned_data:
+                obj.latitude = location_form.cleaned_data['latitude']
+            if hasattr(obj, 'longitude') and 'longitude' in location_form.cleaned_data:
+                obj.longitude = location_form.cleaned_data['longitude']
+            obj.save()
+            
+            # Handle all other location fields as metadata
+            location_data = location_form.cleaned_data.copy()
+            
+            # Remove direct fields from metadata
+            if 'latitude' in location_data:
+                del location_data['latitude']
+            if 'longitude' in location_data:
+                del location_data['longitude']
+                
+            # Save location metadata
+            for key, value in location_data.items():
+                ObjectMeta.objects.update_or_create(
+                    ev_object=obj,
+                    meta_key=key,
+                    defaults={'meta_value': str(value) if value is not None else ''}
+                )
+                
+            # Save additional form data as metadata
+            if additional_form:
+                for key, value in additional_form.cleaned_data.items():
+                    ObjectMeta.objects.update_or_create(
+                        ev_object=obj,
+                        meta_key=key,
+                        defaults={'meta_value': str(value) if value is not None else ''}
+                    )
+            
+            # Redirect to next step in editing flow
+            return redirect('modules.orders:edit_decoration_step', pk=pk)
+        
+        # If forms are not valid, redisplay with errors
+        context = {
+            'is_editing': True,
+            'pk': pk,
+            'object': obj,
+            'location_form': location_form,
+            'selected_obj_type': obj.object_type,
+            'show_progress_bar': True,
+            'current_step': 1,
+            'total_steps': 5
+        }
+        
+        if order_id:
+            order = get_object_or_404(Order, id=order_id)
+            context['order'] = order
+            context['order_id'] = order_id
+            
+        if additional_form:
+            context['additional_form'] = additional_form
+            
+        return render(request, self.template_name, context)
+
+
+
+
+class EditObjectDecorationStepView(LoginRequiredMixin, UserRoleContextMixin, View):
+    """
+    Second step for editing an object: Decoration information.
+    """
+    template_name = 'order_decoration_step.html'
+    form_class = DecorationForm
+    
+    def get(self, request, *args, **kwargs):
+        # Get object being edited
+        pk = kwargs.get('pk')
+        order_id = kwargs.get('order_id')
+        
+        obj = get_object_or_404(Object, pk=pk)
+        
+        # Prepare context
+        context = {
+            'is_editing': True,
+            'pk': pk,
+            'object': obj,
+            'show_progress_bar': True,
+            'current_step': 2,
+            'total_steps': 5
+        }
+        
+        # Add order to context if provided
+        if order_id:
+            order = get_object_or_404(Order, id=order_id)
+            context['order'] = order
+            context['order_id'] = order_id
+            
+        # Get initial data from object metadata
+        initial_data = {}
+        meta_data = ObjectMeta.objects.filter(ev_object=obj)
+        for meta in meta_data:
+            initial_data[meta.meta_key] = meta.meta_value
+            
+        # Initialize form with object data
+        context['decoration_form'] = self.form_class(initial=initial_data)
+        
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        # Get object being edited
+        pk = kwargs.get('pk')
+        order_id = kwargs.get('order_id')
+        
+        obj = get_object_or_404(Object, pk=pk)
+        
+        # Process the form
+        form = self.form_class(request.POST)
+        
+        if form.is_valid():
+            # Save form data as metadata
+            for key, value in form.cleaned_data.items():
+                ObjectMeta.objects.update_or_create(
+                    ev_object=obj,
+                    meta_key=key,
+                    defaults={'meta_value': str(value) if value is not None else ''}
+                )
+                
+            # Redirect to the next step
+            return redirect('modules.orders:edit_common_info_step', pk=pk)
+                
+        # If form is not valid, redisplay with errors
+        context = {
+            'is_editing': True,
+            'pk': pk,
+            'object': obj,
+            'decoration_form': form,
+            'show_progress_bar': True,
+            'current_step': 2,
+            'total_steps': 5
+        }
+        
+        if order_id:
+            order = get_object_or_404(Order, id=order_id)
+            context['order'] = order
+            context['order_id'] = order_id
+            
+        return render(request, self.template_name, context)
+    
+
+class EditObjectCommonInfoStepView(LoginRequiredMixin, UserRoleContextMixin, View):
+    """
+    Third step for editing an object: Common information.
+    This view populates and processes the common information form for an existing object.
+    """
+    template_name = 'order_common_info_step.html'
+    form_class = CommonInformationForm
+    
+    def get(self, request, *args, **kwargs):
+        # Get object being edited
+        pk = kwargs.get('pk')
+        order_id = kwargs.get('order_id')
+        
+        obj = get_object_or_404(Object, pk=pk)
+        
+        # Prepare context
+        context = {
+            'is_editing': True,
+            'pk': pk,
+            'object': obj,
+            'show_progress_bar': True,
+            'current_step': 3,
+            'total_steps': 5
+        }
+        
+        # Add order to context if provided
+        if order_id:
+            order = get_object_or_404(Order, id=order_id)
+            context['order'] = order
+            context['order_id'] = order_id
+            
+        # Get initial data from object metadata
+        initial_data = {}
+        meta_data = ObjectMeta.objects.filter(ev_object=obj)
+        for meta in meta_data:
+            initial_data[meta.meta_key] = meta.meta_value
+            
+        # Initialize form with object data
+        context['common_info_form'] = self.form_class(initial=initial_data)
+        
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        # Get object being edited
+        pk = kwargs.get('pk')
+        order_id = kwargs.get('order_id')
+        
+        obj = get_object_or_404(Object, pk=pk)
+        
+        # Process the form
+        form = self.form_class(request.POST)
+        
+        if form.is_valid():
+            # Save form data as metadata
+            for key, value in form.cleaned_data.items():
+                # Convert date objects to ISO format strings
+                if isinstance(value, datetime.date):
+                    value = value.isoformat()
+                
+                ObjectMeta.objects.update_or_create(
+                    ev_object=obj,
+                    meta_key=key,
+                    defaults={'meta_value': str(value) if value is not None else ''}
+                )
+                
+            # Redirect to the next step
+            return redirect('modules.orders:edit_utility_step', pk=pk)
+                
+        # If form is not valid, redisplay with errors
+        context = {
+            'is_editing': True,
+            'pk': pk,
+            'object': obj,
+            'common_info_form': form,
+            'show_progress_bar': True,
+            'current_step': 3,
+            'total_steps': 5
+        }
+        
+        if order_id:
+            order = get_object_or_404(Order, id=order_id)
+            context['order'] = order
+            context['order_id'] = order_id
+            
+        return render(request, self.template_name, context)
+    
+
+
+class EditObjectUtilityStepView(LoginRequiredMixin, UserRoleContextMixin, View):
+    """
+    Fourth step for editing an object: Utility information.
+    This view populates and processes the utility form for an existing object.
+    """
+    template_name = 'order_utility_step.html'
+    form_class = UtilityForm
+    
+    def get(self, request, *args, **kwargs):
+        # Get object being edited
+        pk = kwargs.get('pk')
+        order_id = kwargs.get('order_id')
+        
+        obj = get_object_or_404(Object, pk=pk)
+        
+        # Prepare context
+        context = {
+            'is_editing': True,
+            'pk': pk,
+            'object': obj,
+            'show_progress_bar': True,
+            'current_step': 4,
+            'total_steps': 5
+        }
+        
+        # Add order to context if provided
+        if order_id:
+            order = get_object_or_404(Order, id=order_id)
+            context['order'] = order
+            context['order_id'] = order_id
+            
+        # Get initial data from object metadata
+        initial_data = {}
+        meta_data = ObjectMeta.objects.filter(ev_object=obj)
+        for meta in meta_data:
+            initial_data[meta.meta_key] = meta.meta_value
+            
+        # Initialize form with object data
+        context['utility_form'] = self.form_class(initial=initial_data)
+        
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        # Get object being edited
+        pk = kwargs.get('pk')
+        order_id = kwargs.get('order_id')
+        
+        obj = get_object_or_404(Object, pk=pk)
+        
+        # Process the form
+        form = self.form_class(request.POST)
+        
+        if form.is_valid():
+            # Save form data as metadata
+            for key, value in form.cleaned_data.items():
+                # Convert non-serializable values to strings
+                if isinstance(value, decimal.Decimal):
+                    value = str(value)
+                elif isinstance(value, datetime.date):
+                    value = value.isoformat()
+                
+                ObjectMeta.objects.update_or_create(
+                    ev_object=obj,
+                    meta_key=key,
+                    defaults={'meta_value': str(value) if value is not None else ''}
+                )
+            
+            # Redirect to the next step or final page
+            messages.success(request, _("Object updated successfully!"))
+            return redirect('modules.orders:order_list')
+                
+        # If form is not valid, redisplay with errors
+        context = {
+            'is_editing': True,
+            'pk': pk,
+            'object': obj,
+            'utility_form': form,
+            'show_progress_bar': True,
+            'current_step': 4,
+            'total_steps': 5
+        }
+        
+        if order_id:
+            order = get_object_or_404(Order, id=order_id)
+            context['order'] = order
+            context['order_id'] = order_id
+            
+        return render(request, self.template_name, context)

@@ -2,7 +2,13 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{% trans "Objekto duomenys" %}{% endblock %}
+{% block title %}
+{% if is_editing %}
+    {% trans "Redaguoti Objektą" %}
+{% else %}
+    {% trans "Objekto duomenys" %}
+{% endif %}
+{% endblock %}
 
 {% block content %}
 <div class="progress-bar-placeholder-larger"></div>
@@ -10,8 +16,21 @@
 <div class="content-page">
     <div class="content">
         <div class="container-fluid col-10">
-            <h2>{% trans '1. Objekto duomenys' %}</h2>
-            <form action="{% url 'modules.orders:order_creation_step' %}" method="POST" class="formal">
+            <h2>
+                {% if is_editing %}
+                    {% trans '1. Redaguoti objekto duomenis' %}
+                {% else %}
+                    {% trans '1. Objekto duomenys' %}
+                {% endif %}
+            </h2>
+            
+            <!-- Form action changes based on mode -->
+            <form action="
+            {% if is_editing %}
+                {% url 'modules.orders:edit_object_step' pk=pk %}
+            {% else %}
+                {% url 'modules.orders:order_creation_step' %}
+            {% endif %}" method="POST" class="formal">
                 {% csrf_token %}
                 
                 <!-- First form section: Location data -->
@@ -62,7 +81,20 @@
                 </div>
                 {% endif %}
                 
-                <button type="submit" class="btn-form">{% trans "Tęsti" %}</button>
+                <!-- Navigation buttons and form submission -->
+                <div class="navigation-buttons">
+                    {% if is_editing %}
+                        <a href="{% url 'modules.orders:order_list' %}" class="btn-back">{% trans "Atgal" %}</a>
+                    {% endif %}
+                    
+                    <button type="submit" class="btn-submit">
+                        {% if is_editing %}
+                            {% trans "Išsaugoti ir tęsti" %}
+                        {% else %}
+                            {% trans "Tęsti" %}
+                        {% endif %}
+                    </button>
+                </div>
             </form>
         </div>
     </div>

@@ -1036,6 +1036,11 @@ input[type="file"].form-control {
     background-color: transparent;
 }
 
+.agency-table-container {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
 .modern-table {
     width: 100%;
     border-collapse: collapse;
