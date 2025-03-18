@@ -5,6 +5,8 @@
 {% block title %}{% trans 'Priskirti Kitą Vertintoją' %}{% endblock %}
 
 {% block content %}
+<div class="progress-bar-placeholder-larger"></div>
+
 <div class="content-page">
     <div class="container">
         <h2 class="title">{% trans 'Priskirti Kitą Vertintoją' %}</h2>
@@ -30,7 +32,7 @@
                     <td>
                         <form method="post" action="{% url 'modules.agency:assign_evaluator' order_id evaluator.id %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-primary">{% trans 'Priskirti' %}</button>
+                            <button type="submit" class="btn-evaluate">{% trans 'Priskirti' %}</button>
                         </form>
                     </td>
                 </tr>

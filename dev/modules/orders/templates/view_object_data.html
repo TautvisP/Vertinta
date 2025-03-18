@@ -109,97 +109,10 @@
                 </div>
             </div>
             
-            <!-- Navigation buttons -->
             <div class="navigation-buttons">
-                <a href="{% url 'modules.orders:order_list' %}" class="btn-back">{% trans "Grįžti" %}</a>
-                <a href="{% url 'modules.orders:edit_object_step' pk=object.id %}" class="btn-evaluate">{% trans "Redaguoti objektą" %}</a>
+                <a href="{% if is_evaluator %}{% url 'modules.orders:evaluator_order_list' %}{% else %}{% url 'modules.orders:order_list' %}{% endif %}" class="btn-back">{% trans "Atgal" %}</a>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .object-data-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 30px;
-        margin-bottom: 30px;
-    }
-    
-    .data-card {
-        background-color: #F8F8F8;
-        border-radius: 8px;
-        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
-        margin-bottom: 20px;
-        overflow: hidden;
-    }
-    
-    .card-header {
-        background-color: #4E78D2;
-        color: white;
-        padding: 15px 20px;
-        font-size: 18px;
-        font-weight: bold;
-        margin: 0;
-    }
-    
-    .card-content {
-        padding: 20px;
-    }
-    
-    .card-content p {
-        border-bottom: 1px solid #e0e0e0;
-        padding: 10px 0;
-        margin: 0;
-        font-size: 16px;
-        display: flex;
-        justify-content: space-between;
-    }
-    
-    .card-content p:last-child {
-        border-bottom: none;
-    }
-    
-    .card-content p strong {
-        font-weight: 600;
-        color: #333;
-        margin-right: 10px;
-    }
-    
-    .additional-building {
-        background-color: #f0f4ff;
-        border-radius: 6px;
-        padding: 15px;
-        margin-top: 15px;
-    }
-    
-    .additional-building h4 {
-        font-size: 16px;
-        font-weight: bold;
-        color: #4E78D2;
-        margin-top: 0;
-        margin-bottom: 10px;
-        border-bottom: 1px solid #d0d8f0;
-        padding-bottom: 5px;
-    }
-    
-    .additional-building p {
-        border-bottom: none !important;
-        padding: 5px 0 !important;
-    }
-    
-    @media (max-width: 768px) {
-        .object-data-grid {
-            grid-template-columns: 1fr;
-        }
-        
-        .card-content p {
-            flex-direction: column;
-        }
-        
-        .card-content p strong {
-            margin-bottom: 5px;
-        }
-    }
-</style>
 {% endblock %}

@@ -78,23 +78,27 @@
                                 </a>
                             {% endif %}
                             
-                            {% if order.status == 'Nebaigtas' %}
-                            <a href="{% url 'modules.orders:select_agency' order.id %}" class="btn-evaluate">{% trans 'Tęsti' %}</a>
-                            {% else %}
-                            <a href="{% url 'modules.orders:edit_object_step' order.object.id %}" class="btn-evaluate">{% trans 'Redaguoti Objektą' %}</a>
+                            {% if not user_is_agency %}
+                                {% if order.status == 'Nebaigtas' %}
+                                <a href="{% url 'modules.orders:select_agency' order.id %}" class="btn-evaluate">{% trans 'Tęsti' %}</a>
+                                {% else %}
+                                <a href="{% url 'modules.orders:edit_object_step' order.object.id %}" class="btn-evaluate">{% trans 'Redaguoti Objektą' %}</a>
+                                {% endif %}
                             {% endif %}
                             
                             <a href="{% url 'modules.orders:view_object_data' order.id order.object.id %}" class="icon-button" title="{% trans 'Peržiūrėti objektą' %}">
                                 <img src="{% static 'icons/eye.svg' %}" alt="Image Icon">
                             </a>
-                            
-                            {% if order.object.object_type|in_list:"Namas,Kotedžas" %}
-                                {% if order.object.has_additional_buildings %}
-                                    <a href="{% url 'modules.orders:edit_additional_buildings' order.object.id %}" class="btn-evaluate">{% trans 'Redaguoti Statinius' %}</a>
-                                {% else %}
-                                <a href="{% url 'modules.orders:additional_buildings' object_id=order.object.id %}" class="icon-button" title="{% trans 'Pridėti papildomą statinį' %}">
-                                    <img src="{% static 'icons/plus-circle.svg' %}" alt="Add Building Icon">
-                                </a>
+
+                            {% if not user_is_agency %}
+                                {% if order.object.object_type|in_list:"Namas,Kotedžas" %}
+                                    {% if order.object.has_additional_buildings %}
+                                        <a href="{% url 'modules.orders:edit_additional_buildings' order.object.id %}" class="btn-evaluate">{% trans 'Redaguoti Statinius' %}</a>
+                                    {% else %}
+                                    <a href="{% url 'modules.orders:additional_buildings' object_id=order.object.id %}" class="icon-button" title="{% trans 'Pridėti papildomą statinį' %}">
+                                        <img src="{% static 'icons/plus-circle.svg' %}" alt="Add Building Icon">
+                                    </a>
+                                    {% endif %}
                                 {% endif %}
                             {% endif %}
                             

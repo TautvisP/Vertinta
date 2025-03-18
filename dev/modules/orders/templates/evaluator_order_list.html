@@ -80,7 +80,7 @@
                     </div>
                     {% endif %}
                     {% if is_agency %}
-                        <a href="{% url 'modules.agency:reassign_evaluator' order.id %}" class="btn btn-primary">{% trans 'Priskirti kitą vertintoją' %}</a>
+                        <a href="{% url 'modules.agency:reassign_evaluator' order.id %}" class="btn-evaluate">{% trans 'Priskirti kitą vertintoją' %}</a>
                     {% endif %}
                     <a href="{% url 'modules.orders:edit_order_status_priority' order.id %}" class="btn-evaluate">
                         {% trans 'Keisti Būseną ir Prioritetą' %}
