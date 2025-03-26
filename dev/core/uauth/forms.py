@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm, PasswordChangeForm
 from django.contrib.auth import authenticate
-from core.uauth.models import User, UserMeta
+from core.uauth.models import User, UserMeta, AgencyInvitation
 from django.utils.translation import gettext as _
 
 class LoginForm(AuthenticationForm):
@@ -192,3 +192,16 @@ class UserPasswordChangeForm(PasswordChangeForm):
         label=_('Pakartokite slaptažodį'), 
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
+
+
+
+
+class AgencyInvitationForm(forms.ModelForm):
+    email = forms.EmailField(
+        label=_('El. paštas'), 
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
+    )
+    
+    class Meta:
+        model = AgencyInvitation
+        fields = ('email',)

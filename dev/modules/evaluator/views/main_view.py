@@ -117,7 +117,7 @@ class EditEvaluatorAccountView(LoginRequiredMixin, UserPassesTestMixin, UserRole
 
 
 
-class EvaluationStepsView(LoginRequiredMixin, EvaluatorAccessMixin, TemplateView):
+class EvaluationStepsView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, TemplateView):
     """
     Acts as a hub for the multi-step evaluation process. 
     This view provides the evaluator with the ability to see and navigate through the evaluation steps

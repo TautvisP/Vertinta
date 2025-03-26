@@ -5,6 +5,10 @@ from django.contrib.auth.models import Group, Permission
 from django.core.exceptions import MultipleObjectsReturned
 from django.utils.translation import gettext as _
 from modules.orders.enums import STATUS_CHOICES
+import uuid
+from django.db import models
+from django.utils import timezone
+from datetime import timedelta
 
 USER_GROUPS = [
     'Client',
@@ -177,3 +181,30 @@ class UserMeta(models.Model):
         
         except (cls.DoesNotExist, MultipleObjectsReturned):
             return ''
+        
+
+
+
+class AgencyInvitation(models.Model):
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    email = models.EmailField(unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f"Invitation for {self.email}"
+    
+    def save(self, *args, **kwargs):
+        # Set expiration date to 7 days from creation if not set
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timedelta(days=7)
+        super().save(*args, **kwargs)
+    
+    @property
+    def is_expired(self):
+        return timezone.now() > self.expires_at
+    
+    @property
+    def is_valid(self):
+        return not self.is_used and not self.is_expired

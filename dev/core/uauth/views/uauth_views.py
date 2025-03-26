@@ -11,6 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.translation import gettext as _
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from shared.mixins.mixins import UserRoleContextMixin
+from django.shortcuts import get_object_or_404
 
 # Global message variables
 MISTAKE_MESSAGE = _("Pataisykite klaidas.")
@@ -71,46 +72,51 @@ class RegisterView(CreateView):
 
 
 
-class AgencyRegisterView(CreateView):
+class AgencyRegisterWithTokenView(CreateView):
     model = User
     form_class = AgencyRegisterForm
     template_name = 'uauth/agency_register.html'
     success_url = reverse_lazy('core.uauth:login')
-
-
+    
+    def dispatch(self, request, *args, **kwargs):
+        # Get and validate the token
+        token = self.kwargs.get('token')
+        try:
+            self.invitation = AgencyInvitation.objects.get(token=token)
+            
+            if self.invitation.is_used:
+                messages.error(request, _("Šis kvietimas jau buvo panaudotas."))
+                return redirect('core.uauth:login')
+                
+            if self.invitation.is_expired:
+                messages.error(request, _("Šis kvietimas nebegalioja."))
+                return redirect('core.uauth:login')
+                
+        except AgencyInvitation.DoesNotExist:
+            messages.error(request, _("Neteisingas kvietimo kodas."))
+            return redirect('core.uauth:login')
+            
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_initial(self):
+        # Pre-fill the email field with the invited email
+        return {'email': self.invitation.email}
+    
     def form_valid(self, form):
-        user = form.save()
+        user = form.save(commit=False)
+        user.is_active = True  # Automatically activate agency users
+        user.save()
+        
+        # Add to agency group
         agency_group = Group.objects.get(name='Agency')
         user.groups.add(agency_group)
+        
+        # Mark the invitation as used
+        self.invitation.is_used = True
+        self.invitation.save()
+        
         messages.success(self.request, _("Agentūros registracija sėkminga! Prisijunkite."))
         return super().form_valid(form)
-
-
-    def form_invalid(self, form):
-        messages.error(self.request, FAILED_REGISTRATION_MESSAGE)
-        return super().form_invalid(form)
-    
-
-
-
-class EvaluatorRegisterView(CreateView):
-    model = User
-    form_class = EvaluatorRegisterForm
-    template_name = 'uauth/evaluator_register.html'
-    success_url = reverse_lazy('core.uauth:login')
-
-
-    def form_valid(self, form):
-        user = form.save()
-        evaluator_group = Group.objects.get(name='Evaluator')
-        user.groups.add(evaluator_group)
-        messages.success(self.request, _("Vertintojo registracija sėkminga! Prisijunkite."))
-        return super().form_valid(form)
-
-
-    def form_invalid(self, form):
-        messages.error(self.request, FAILED_REGISTRATION_MESSAGE)
-        return super().form_invalid(form)
 
 
 
