@@ -583,3 +583,10 @@ CATEGORY_CHOICES = {
     'post_office': _('Paštas'),
     'other': _('Kita')
 }
+
+
+REPORT_STATUS_CHOICES = [
+    ('pending', _('Laukiama patvirtinimo')),
+    ('approved', _('Patvirtinta')),
+    ('rejected', _('Atmesta')),
+]

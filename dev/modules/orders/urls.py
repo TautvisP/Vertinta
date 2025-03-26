@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import LandingView, OrderCreationStepView, EditObjectStepView, EditObjectCommonInfoStepView, EditObjectUtilityStepView, EditObjectDecorationStepView, ObjectCommonInfoStepView, OrderDecorationStepView, ObjectUtilityStepView, ObjectUtilityStepView, AdditionalBuildingsView, OrderListView, EvaluatorOrderListView, AgencySelectionView, EditAdditionalBuildingsView, OrderDeleteView, ViewObjectDataView, EditOrderStatusPriorityView
+from .views import LandingView, OrderCreationStepView, ReportAccessView, EditObjectStepView, EditObjectCommonInfoStepView, EditObjectUtilityStepView, EditObjectDecorationStepView, ObjectCommonInfoStepView, OrderDecorationStepView, ObjectUtilityStepView, ObjectUtilityStepView, AdditionalBuildingsView, OrderListView, EvaluatorOrderListView, AgencySelectionView, EditAdditionalBuildingsView, OrderDeleteView, ViewObjectDataView, EditOrderStatusPriorityView
 
 app_name = 'modules.orders'
 
@@ -40,4 +40,8 @@ urlpatterns = [
     path('select_agency/<int:object_id>/', AgencySelectionView.as_view(), name='select_agency'),
     path('select_agency/<int:order_id>/', AgencySelectionView.as_view(), name='select_agency_order'),
     path('select_agency/object/<int:object_id>/', AgencySelectionView.as_view(), name='select_agency_object'),
+
+
+    # Add to your existing urlpatterns
+    path('report/access/<int:order_id>/', ReportAccessView.as_view(), name='view_report'),
 ]

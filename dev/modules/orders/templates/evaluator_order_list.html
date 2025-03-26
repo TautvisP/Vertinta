@@ -8,6 +8,15 @@
 {% block content %}
 <div class="progress-bar-placeholder-larger"></div>
 <div class="content-page">
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% elif message.tags == 'warning' %}alert-warning{% else %}alert-info{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
     <div class="content">
         <div class="container-fluid col-10">
         <h2 class="title">{% trans 'Vertintojo užsakymai' %}</h2>
@@ -58,9 +67,17 @@
                     {% if is_evaluator %}
                     <div class="order-actions">
                         {% if order.report and order.report.report_file %}
-                            <a href="{{ order.report.report_file.url }}" class="icon-button" download title="{% trans 'Atsisiųsti Ataskaitą' %}">
-                                <img src="{% static 'icons/report.svg' %}" alt="Document Icon">
-                            </a>
+                            {% if order.report.status == 'rejected' %}
+                                <!-- Show rejected status to evaluator -->
+                                <span class="report-status rejected" title="Ataskaita atmesta, nes: {{ order.report.rejection_reason }}">
+                                    {% trans 'Ataskaita atmesta' %}
+                                </span>
+                            {% else %}
+                                <!-- Evaluator can always download their reports -->
+                                <a href="{{ order.report.report_file.url }}" class="icon-button" download title="{% trans 'Atsisiųsti Ataskaitą' %}">
+                                    <img src="{% static 'icons/report.svg' %}" alt="Document Icon">
+                                </a>
+                            {% endif %}
                         {% endif %}
                         <a href="{% url 'modules.evaluator:evaluation_steps' order.id %}" class="btn-evaluate">{% trans 'Vertinti' %}</a>
                         

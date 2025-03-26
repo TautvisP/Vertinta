@@ -93,6 +93,7 @@ STATIC_URL = '/shared/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'shared'),
     os.path.join(BASE_DIR, 'modules/evaluator/js'),
+    os.path.join(BASE_DIR, 'modules/agency/js'),
     os.path.join(BASE_DIR, '../lib/indeform_p2024_osomjs.git/build'),  # Corrected path to the lib directory
 ]
 

@@ -1,0 +1,97 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans 'Ataskaitos peržiūra' %}{% endblock %}
+
+{% block content %}
+<div class="progress-bar-placeholder-larger"></div>
+
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid col-10">
+            <h2>{% trans 'Ataskaitos peržiūra' %}</h2>
+            
+            <div class="card-box">
+                <h3>{% trans 'Užsakymo informacija' %}</h3>
+                <div class="info-grid">
+                    <div>
+                        <p><strong>{% trans 'Užsakymo ID:' %}</strong> {{ order.id }}</p>
+                        <p><strong>{% trans 'Klientas:' %}</strong> {{ order.client.get_full_name }}</p>
+                        <p><strong>{% trans 'Vertintojas:' %}</strong> {{ order.evaluator.get_full_name }}</p>
+                    </div>
+                    <div>
+                        <p><strong>{% trans 'Objekto tipas:' %}</strong> {{ order.object.object_type }}</p>
+                        <p><strong>{% trans 'Adresas:' %}</strong> {{ order.object.street }} {{ order.object.house_no }}</p>
+                        <p><strong>{% trans 'Ataskaitos data:' %}</strong> {{ report.report_date }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            {% if report.report_file %}
+            <div class="card-box">
+                <h3>{% trans 'Ataskaita' %}</h3>
+                <div class="report-actions">
+                    <a href="{{ report.report_file.url }}" class="btn-forward" download>
+                        {% trans 'Atsisiųsti ataskaitą' %}
+                    </a>
+                </div>
+                
+                {% if report.status == 'pending' %}
+                <div class="action-section">
+                    <div class="approval-actions">
+                        <form method="post" action="{% url 'modules.agency:approve_report' order.id %}" class="inline-form">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-approve">{% trans 'Patvirtinti ataskaitą' %}</button>
+                        </form>
+                        
+                        <button type="button" class="btn-reject" onclick="showRejectForm()">{% trans 'Atmesti ataskaitą' %}</button>
+                    </div>
+
+
+
+                    <div id="reject-form" class="form-section" style="display: none;">
+                        <h3 class="header-title">{% trans "Atmetimo priežastis:" %}</h3>
+                        <form method="post" action="{% url 'modules.agency:reject_report' order.id %}" class="formal">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <textarea name="rejection_reason" id="rejection_reason" rows="4" class="form-control" required></textarea>
+                            </div>
+                            <div class="approval-actions">
+                                <button type="button" class="btn-back" onclick="hideRejectForm()">{% trans 'Atšaukti' %}</button>
+                                <button type="submit" class="btn-evaluate">{% trans 'Atmesti' %}</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+                {% elif report.status == 'approved' %}
+                <div class="status-box status-approved">
+                    <p>{% trans 'Ši ataskaita jau patvirtinta.' %}</p>
+                </div>
+                {% elif report.status == 'rejected' %}
+                <div class="status-box status-rejected">
+                    <p>{% trans 'Ši ataskaita atmesta.' %}</p>
+                    <p><strong>{% trans 'Priežastis:' %}</strong> {{ report.rejection_reason }}</p>
+                </div>
+                {% endif %}
+            </div>
+            {% else %}
+            <div class="card-box">
+                <div class="alert alert-warning">
+                    {% trans 'Ataskaitos failas nerastas.' %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="navigation-buttons">
+                <a href="{% url 'modules.orders:order_list' %}" class="btn-back">{% trans "Atgal" %}</a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script type="module" src="{% static 'report_review.js' %}"></script>
+{% endblock %}

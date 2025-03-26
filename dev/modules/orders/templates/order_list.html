@@ -73,9 +73,29 @@
                         </div>
                         <div class="order-actions">
                             {% if order.report and order.report.report_file %}
-                                <a href="{{ order.report.report_file.url }}" class="icon-button" download title="{% trans 'Atsisiųsti Ataskaitą' %}">
-                                    <img src="{% static 'icons/report.svg' %}" alt="Document Icon">
-                                </a>
+                                {% if user_is_agency and order.report.status == 'pending' %}
+                                    <!-- Agency sees pending report action -->
+                                    <a href="{% url 'modules.agency:review_report' order.id %}" class="btn-evaluate" title="{% trans 'Peržiūrėti ataskaitą' %}">
+                                        {% trans 'Peržiūrėti ataskaitą' %}
+                                    </a>
+                                {% elif order.report.status == 'approved' or user_is_agency or is_evaluator %}
+                                    <!-- Show download button for approved reports (to clients) or any reports to agencies/evaluators -->
+                                    <a href="{% url 'modules.orders:view_report' order.id %}" class="icon-button" download title="{% trans 'Atsisiųsti Ataskaitą' %}">
+                                        <img src="{% static 'icons/report.svg' %}" alt="Document Icon">
+                                    </a>
+
+                                {% elif order.report.status == 'pending' %}
+                                    <!-- Client sees pending status -->
+                                    <span class="report-status pending">{% trans 'Ataskaita ruošiama' %}</span>
+                                    {% elif order.report.status == 'rejected' %}
+                                    <!-- Evaluator sees rejected status with rejection reason -->
+                                    <div class="rejection-container">
+                                        <span class="report-status rejected" title="Ataskaita atmesta, nes: {{ order.report.rejection_reason }}">
+                                            {% trans 'Ataskaita atmesta' %}
+                                        </span>
+                                    </div>
+                                {% endif %}
+
                             {% endif %}
                             
                             {% if not user_is_agency %}

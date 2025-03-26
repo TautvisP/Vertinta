@@ -30,7 +30,7 @@
                 </div>
             </div>
 
-            <form action="{% url 'modules.evaluator:generate_latex_report' order_id pk %}" method="POST" class="formal">
+            <form action="{% url 'modules.evaluator:final_report_engineering' order_id pk %}" method="POST" class="formal">
                 {% csrf_token %}
                 <div class="form-section">
                     <div class="col-sm-12">
@@ -48,8 +48,7 @@
                     </div>
                 </div>
                 <div class="button-group">
-                    <button type="submit" class="btn-form" name="save">{% trans 'Išsaugoti' %}</button>
-                    <button type="submit" class="btn-form" name="generate">{% trans 'Generuoti Ataskaitą' %}</button>
+                    <button type="submit" class="btn-form" name="generate_and_submit">{% trans 'Generuoti ataskaitą ir siųsti tvirtinimui' %}</button>
                 </div>
             </form>
             

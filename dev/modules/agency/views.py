@@ -5,9 +5,9 @@ from django.contrib import messages
 from shared.mixins.mixins import UserRoleContextMixin
 from modules.agency.forms import AgencyEditForm, AgencyPasswordChangeForm, EvaluatorCreationForm
 from core.uauth.models import User, UserMeta, Group
-from modules.orders.models import Order
+from modules.orders.models import Order, Report
 from django.urls import reverse_lazy
-from django.views.generic import ListView, View
+from django.views.generic import ListView, View, DetailView
 from django.views.generic.edit import UpdateView, CreateView
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.utils.translation import gettext as _
@@ -307,3 +307,199 @@ class AssignEvaluatorView(LoginRequiredMixin, UserRoleContextMixin, View):
 
         messages.success(request, _("Vertintojas sėkmingai priskirtas!"))
         return redirect('modules.orders:specific_evaluator_order_list', id=evaluator_id)
+
+
+
+
+
+class ReportReviewView(LoginRequiredMixin, UserPassesTestMixin, UserRoleContextMixin, DetailView):
+    """
+    View for agencies to review reports.
+    """
+    model = Order
+    template_name = 'report_review.html'
+    context_object_name = 'order'
+    pk_url_kwarg = 'order_id'
+    
+    def test_func(self):
+        # Only agencies can review reports
+        return self.request.user.groups.filter(name='Agency').exists()
+    
+    def handle_no_permission(self):
+        messages.error(self.request, NO_PERMISSION_MESSAGE)
+        return redirect('core.uauth:login')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        order = self.get_object()
+        
+        # Check if report exists
+        if not hasattr(order, 'report') or not order.report:
+            messages.error(self.request, _("Ši ataskaita neegzistuoja."))
+            return redirect('modules.orders:order_list')
+            
+        context['report'] = order.report
+        
+        # Check if this agency is associated with this order
+        if order.agency != self.request.user:
+            messages.error(self.request, _("Jūs neturite teisės peržiūrėti šios ataskaitos."))
+            return redirect('modules.orders:order_list')
+            
+        return context
+
+
+
+
+class ApproveReportView(LoginRequiredMixin, UserPassesTestMixin, View):
+    """
+    View for agencies to approve reports.
+    """
+    def test_func(self):
+        return self.request.user.groups.filter(name='Agency').exists()
+    
+    def handle_no_permission(self):
+        messages.error(self.request, NO_PERMISSION_MESSAGE)
+        return redirect('core.uauth:login')
+    
+    def post(self, request, order_id):
+        order = get_object_or_404(Order, id=order_id)
+        
+        # Check if this agency is associated with this order
+        if order.agency != request.user:
+            messages.error(request, _("Jūs neturite teisės patvirtinti šios ataskaitos."))
+            return redirect('modules.orders:order_list')
+        
+        # Check if report exists
+        if not hasattr(order, 'report') or not order.report:
+            messages.error(request, _("Ši ataskaita neegzistuoja."))
+            return redirect('modules.orders:order_list')
+        
+        # Approve report
+        order.report.status = 'approved'
+        order.report.save()
+        
+        # Notify client
+        self.notify_client(order)
+        
+        messages.success(request, _("Ataskaita sėkmingai patvirtinta ir išsiųsta klientui."))
+        return redirect('modules.orders:order_list')
+    
+    def notify_client(self, order):
+        """Send notification to client about approved report."""
+        client = order.client
+        
+        subject = _("Jūsų užsakymo ataskaita patvirtinta")
+        message = f"""
+Sveiki, {client.get_full_name()},
+
+Jūsų turto vertinimo užsakymo #{order.id} ataskaita buvo patvirtinta ir dabar yra prieinama jums.
+Galite peržiūrėti ataskaitą prisijungę prie sistemos ir pasirinkę savo užsakymą.
+
+Ačiū, kad naudojatės mūsų paslaugomis,
+Sistema
+        """
+        
+        try:
+            # Print to console for development
+            print("\n" + "="*80)
+            print("CLIENT NOTIFICATION EMAIL")
+            print("="*80)
+            print(f"To: {client.email}")
+            print(f"Subject: {subject}")
+            print(f"Message: {message}")
+            print("="*80 + "\n")
+            
+            # In production you would send the actual email
+            # email = EmailMessage(
+            #     subject=subject,
+            #     body=message,
+            #     from_email=settings.DEFAULT_FROM_EMAIL,
+            #     to=[client.email],
+            # )
+            # email.send()
+        except Exception as e:
+            print(f"Failed to send client notification: {e}")
+
+
+
+
+class RejectReportView(LoginRequiredMixin, UserPassesTestMixin, View):
+    """
+    View for agencies to reject reports with a reason.
+    """
+    def test_func(self):
+        return self.request.user.groups.filter(name='Agency').exists()
+    
+    def handle_no_permission(self):
+        messages.error(self.request, NO_PERMISSION_MESSAGE)
+        return redirect('core.uauth:login')
+    
+    def post(self, request, order_id):
+        order = get_object_or_404(Order, id=order_id)
+        
+        # Check if this agency is associated with this order
+        if order.agency != request.user:
+            messages.error(request, _("Jūs neturite teisės atmesti šios ataskaitos."))
+            return redirect('modules.orders:order_list')
+        
+        # Check if report exists
+        if not hasattr(order, 'report') or not order.report:
+            messages.error(request, _("Ši ataskaita neegzistuoja."))
+            return redirect('modules.orders:order_list')
+        
+        # Get rejection reason
+        rejection_reason = request.POST.get('rejection_reason', '')
+        if not rejection_reason:
+            messages.error(request, _("Prašome nurodyti atmetimo priežastį."))
+            return redirect('modules.agency:review_report', order_id=order_id)
+        
+        # Reject report
+        order.report.status = 'rejected'
+        order.report.rejection_reason = rejection_reason
+        order.report.save()
+        
+        # Notify evaluator
+        self.notify_evaluator(order, rejection_reason)
+        
+        messages.success(request, _("Ataskaita atmesta. Vertintojui bus pranešta."))
+        return redirect('modules.orders:order_list')
+    
+    def notify_evaluator(self, order, rejection_reason):
+        """Send notification to evaluator about rejected report."""
+        evaluator = order.evaluator
+        
+        subject = _("Ataskaita atmesta")
+        message = f"""
+Sveiki, {evaluator.get_full_name()},
+
+Jūsų sugeneruota ataskaita užsakymui #{order.id} buvo atmesta agentūros.
+
+Atmetimo priežastis:
+{rejection_reason}
+
+Prašome ištaisyti nurodytus trūkumus ir sugeneruoti naują ataskaitą.
+
+Ačiū,
+Sistema
+        """
+        
+        try:
+            # Print to console for development
+            print("\n" + "="*80)
+            print("EVALUATOR NOTIFICATION EMAIL")
+            print("="*80)
+            print(f"To: {evaluator.email}")
+            print(f"Subject: {subject}")
+            print(f"Message: {message}")
+            print("="*80 + "\n")
+            
+            # In production you would send the actual email
+            # email = EmailMessage(
+            #     subject=subject,
+            #     body=message,
+            #     from_email=settings.DEFAULT_FROM_EMAIL,
+            #     to=[evaluator.email],
+            # )
+            # email.send()
+        except Exception as e:
+            print(f"Failed to send evaluator notification: {e}")

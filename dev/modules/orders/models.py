@@ -1,8 +1,10 @@
 from django.db import models
-from .enums import OBJECT_TYPE_CHOICES, IMAGE_CHOICES, STATUS_CHOICES, PRIORITY_CHOICES
+from .enums import OBJECT_TYPE_CHOICES, IMAGE_CHOICES, STATUS_CHOICES, PRIORITY_CHOICES, REPORT_STATUS_CHOICES
 from django.core.exceptions import MultipleObjectsReturned
 from django.utils import timezone
 from core.uauth.models import User
+from django.utils.translation import gettext as _
+
 
 class Object(models.Model):
     #evaluation = models.ForeignKey(Evaluation, on_delete=models.CASCADE)
@@ -354,3 +356,19 @@ class Report(models.Model):
 
     def __str__(self):
         return f"Report for Order {self.order.id}"
+    
+    status = models.CharField(
+        max_length=20, 
+        choices=REPORT_STATUS_CHOICES,
+        default='pending',
+        verbose_name=_('Statusas')
+    )
+    
+    rejection_reason = models.TextField(
+        null=True, 
+        blank=True,
+        verbose_name=_('Atmetimo priežastis')
+    )
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

@@ -135,19 +135,19 @@ class OrderListView(LoginRequiredMixin, UserRoleContextMixin, UserPassesTestMixi
         context = super().get_context_data(**kwargs)
         context['title'] = _('Užsakymų sąrašas')
         context['user_is_agency'] = self.request.user.groups.filter(name='Agency').exists()
-        
+        context['is_evaluator'] = self.request.user.groups.filter(name='Evaluator').exists()
+
         context['municipality_choices'] = MUNICIPALITY_CHOICES
         context['status_choices'] = STATUS_CHOICES
         context['priority_choices'] = PRIORITY_CHOICES
-        
+
         evaluator_phones = {}
         for order in context['orders']:
             if order.evaluator and order.evaluator.id not in evaluator_phones:
                 phone = UserMeta.get_meta(order.evaluator, 'phone_num')
                 evaluator_phones[order.evaluator.id] = phone
         context['evaluator_phones'] = evaluator_phones
-    
-        
+
         return context
 
 
@@ -426,3 +426,45 @@ class ViewObjectDataView(LoginRequiredMixin, UserRoleContextMixin, DetailView):
             return reverse_lazy('modules.evaluator:evaluator_order_list')
         else:
             return reverse_lazy('modules.orders:order_list')
+
+
+
+
+class ReportAccessView(LoginRequiredMixin, UserPassesTestMixin, View):
+    """
+    View to check permissions before serving a report file.
+    """
+    def test_func(self):
+        order_id = self.kwargs.get('order_id')
+        order = get_object_or_404(Order, id=order_id)
+        user = self.request.user
+        
+        # Check if user has permission to access this report
+        # Agencies and evaluators can always access
+        if user.groups.filter(name__in=['Agency', 'Evaluator']).exists():
+            return True
+            
+        # The evaluator assigned to this order can access
+        if order.evaluator == user:
+            return True
+            
+        # If client is the owner of the order, they can access only if report is approved
+        if order.client == user:
+            return hasattr(order, 'report') and order.report and order.report.status == 'approved'
+            
+        return False
+    
+    def handle_no_permission(self):
+        messages.error(self.request, _("Ataskaita dar nėra patvirtinta arba neturite teisės ją peržiūrėti."))
+        return redirect('modules.orders:order_list')
+    
+    def get(self, request, *args, **kwargs):
+        order_id = self.kwargs.get('order_id')
+        order = get_object_or_404(Order, id=order_id)
+        
+        if not hasattr(order, 'report') or not order.report or not order.report.report_file:
+            messages.error(request, _("Ataskaita neegzistuoja."))
+            return redirect('modules.orders:order_list')
+            
+        # Serve the report file
+        return redirect(order.report.report_file.url)

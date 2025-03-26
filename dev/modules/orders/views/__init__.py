@@ -23,5 +23,6 @@ from .order_views import (
     OrderDeleteView,
     ViewObjectDataView,
     AgencySelectionView,
-    LandingView
+    LandingView,
+    ReportAccessView
 )
