@@ -9,6 +9,7 @@
                         <button type="submit">Atsijungti</button>
                     </form>
                 </li>
+
                 {% if is_agency %}
                     <li><a href="{% url 'modules.orders:order_list' %}">Užsakymai</a></li>
                     <li><a href="{% url 'modules.agency:evaluator_list' %}">Vertintojai</a></li>
@@ -31,8 +32,42 @@
             {% else %}
                 <li><a href="{% url 'core.uauth:login' %}">Prisijungti</a></li>
                 <li><a href="{% url 'core.uauth:register' %}">Registruotis</a></li>
-
             {% endif %}
+            
+            <!-- Spacer to push notification icon to the right -->
+            <li class="nav-spacer"></li>
+            
+            <!-- Notification Icon -->
+            <li class="notification">
+                <div id="notification-icon" class="notification-icon">
+                    <img src="{% static 'icons/bell.svg' %}" alt="Notifications">
+                    {% if unread_notification_count > 0 %}
+                        <span class="notification-count">{{ unread_notification_count }}</span>
+                    {% endif %}
+                </div>
+            </li>
         </ul>
     </nav>
 </header>
+
+<!-- Notification Modal -->
+{% if user.is_authenticated %}
+<div id="notification-modal" class="modal notification-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Pranešimai</h3>
+            <span class="close" id="close-notification-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div id="notification-list" class="notification-list">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="mark-all-read" class="btn-form">Pažymėti visus kaip skaitytus</button>
+        </div>
+    </div>
+</div>
+{% endif %}

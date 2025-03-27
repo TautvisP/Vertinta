@@ -26,3 +26,10 @@ from .order_views import (
     LandingView,
     ReportAccessView
 )
+
+from .notification_views import (
+    NotificationListView,
+    NotificationUnreadCountView,
+    MarkNotificationReadView,
+    MarkAllNotificationsReadView
+)

@@ -1,5 +1,5 @@
 from django.db import models
-from .enums import OBJECT_TYPE_CHOICES, IMAGE_CHOICES, STATUS_CHOICES, PRIORITY_CHOICES, REPORT_STATUS_CHOICES
+from .enums import OBJECT_TYPE_CHOICES, IMAGE_CHOICES, STATUS_CHOICES, PRIORITY_CHOICES, REPORT_STATUS_CHOICES, NOTIFICATION_TYPES
 from django.core.exceptions import MultipleObjectsReturned
 from django.utils import timezone
 from core.uauth.models import User
@@ -372,3 +372,24 @@ class Report(models.Model):
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+
+
+class Notification(models.Model):
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='sent_notifications')
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
+    title = models.CharField(max_length=255)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+    related_order = models.ForeignKey('Order', on_delete=models.CASCADE, null=True, blank=True)
+    related_report = models.ForeignKey('Report', on_delete=models.CASCADE, null=True, blank=True)
+    action_url = models.CharField(max_length=255, null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"Notification for {self.recipient.email}: {self.title}"

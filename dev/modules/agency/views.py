@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import update_session_auth_hash
+from modules.orders.utils import create_report_approval_notification, create_report_rejection_notification, create_order_assignment_notification
 from django.contrib import messages
 from shared.mixins.mixins import UserRoleContextMixin
 from modules.agency.forms import AgencyEditForm, AgencyPasswordChangeForm, EvaluatorCreationForm
@@ -305,6 +306,10 @@ class AssignEvaluatorView(LoginRequiredMixin, UserRoleContextMixin, View):
         order.evaluator = new_evaluator
         order.save()
 
+        # Notify the new evaluator
+        create_order_assignment_notification(order, order.evaluator, request.user)
+
+
         messages.success(request, _("Vertintojas sėkmingai priskirtas!"))
         return redirect('modules.orders:specific_evaluator_order_list', id=evaluator_id)
 
@@ -380,6 +385,10 @@ class ApproveReportView(LoginRequiredMixin, UserPassesTestMixin, View):
         
         # Notify client
         self.notify_client(order)
+
+        # Create notifications
+        create_report_approval_notification(order.report, request.user)
+    
         
         messages.success(request, _("Ataskaita sėkmingai patvirtinta ir išsiųsta klientui."))
         return redirect('modules.orders:order_list')
@@ -460,6 +469,9 @@ class RejectReportView(LoginRequiredMixin, UserPassesTestMixin, View):
         
         # Notify evaluator
         self.notify_evaluator(order, rejection_reason)
+
+        # Create notification
+        create_report_rejection_notification(order.report, request.user, rejection_reason)
         
         messages.success(request, _("Ataskaita atmesta. Vertintojui bus pranešta."))
         return redirect('modules.orders:order_list')

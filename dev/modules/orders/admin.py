@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Order, Object, ObjectMeta, UploadedDocument, ObjectImage, ImageAnnotation, SimilarObject, SimilarObjectMetadata, NearbyOrganization
+from .models import Order, Object, ObjectMeta, UploadedDocument, ObjectImage, Notification, ImageAnnotation, SimilarObject, SimilarObjectMetadata, NearbyOrganization
 
 
 @admin.register(Order)
@@ -55,3 +55,10 @@ class NearbyOrganizationAdmin(admin.ModelAdmin):
     list_display = ('id', 'object', 'name', 'distance', 'category', 'latitude', 'longitude')
     search_fields = ('object__id', 'name', 'category')
     list_filter = ('category',)
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ('recipient', 'notification_type', 'title', 'created_at', 'is_read')
+    list_filter = ('notification_type', 'is_read', 'created_at')
+    search_fields = ('recipient__email', 'title', 'message')
+    raw_id_fields = ('recipient', 'sender', 'related_order', 'related_report')

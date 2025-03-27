@@ -57,17 +57,17 @@
                 {% if show_gazebo_form %}
                 <div class="form-section">
                     <div class="col-sm-12">
-                            <h3 class="header-title">{% trans "Pavėsinė" %}</h3>
-                            <div class="col-lg-12">
-                                <div class="grid-form">
-                                    {% for field in gazebo_form %}
-                                    <div class="form-group">
-                                        {{ field.label_tag }}
-                                        {{ field }}
-                                    </div>
-                                    {% endfor %}
+                        <h3 class="header-title">{% trans "Pavėsinė" %}</h3>
+                        <div class="col-lg-12">
+                            <div class="grid-form">
+                                {% for field in gazebo_form %}
+                                <div class="form-group">
+                                    {{ field.label_tag }}
+                                    {{ field }}
                                 </div>
+                                {% endfor %}
                             </div>
+                        </div>
                     </div>
                 </div>
                 {% endif %}

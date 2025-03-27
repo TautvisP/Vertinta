@@ -84,6 +84,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'core.contexts.app_context.enabled_modules',
                 'modules.orders.context_processors.object_types',
+                'core.contexts.notification_context.notification_context',
+
             ],
         },
     },
@@ -94,7 +96,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'shared'),
     os.path.join(BASE_DIR, 'modules/evaluator/js'),
     os.path.join(BASE_DIR, 'modules/agency/js'),
-    os.path.join(BASE_DIR, '../lib/indeform_p2024_osomjs.git/build'),  # Corrected path to the lib directory
+    os.path.join(BASE_DIR, '../lib/indeform_p2024_osomjs.git/build'),
 ]
 
 #uncomment for rarea to have a design

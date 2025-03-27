@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import LandingView, OrderCreationStepView, ReportAccessView, EditObjectStepView, EditObjectCommonInfoStepView, EditObjectUtilityStepView, EditObjectDecorationStepView, ObjectCommonInfoStepView, OrderDecorationStepView, ObjectUtilityStepView, ObjectUtilityStepView, AdditionalBuildingsView, OrderListView, EvaluatorOrderListView, AgencySelectionView, EditAdditionalBuildingsView, OrderDeleteView, ViewObjectDataView, EditOrderStatusPriorityView
+from .views import LandingView, OrderCreationStepView, ReportAccessView, EditObjectStepView, NotificationListView, MarkAllNotificationsReadView, MarkNotificationReadView, NotificationUnreadCountView, EditObjectCommonInfoStepView, EditObjectUtilityStepView, EditObjectDecorationStepView, ObjectCommonInfoStepView, OrderDecorationStepView, ObjectUtilityStepView, ObjectUtilityStepView, AdditionalBuildingsView, OrderListView, EvaluatorOrderListView, AgencySelectionView, EditAdditionalBuildingsView, OrderDeleteView, ViewObjectDataView, EditOrderStatusPriorityView
 
 app_name = 'modules.orders'
 
@@ -42,6 +42,11 @@ urlpatterns = [
     path('select_agency/object/<int:object_id>/', AgencySelectionView.as_view(), name='select_agency_object'),
 
 
-    # Add to your existing urlpatterns
     path('report/access/<int:order_id>/', ReportAccessView.as_view(), name='view_report'),
+
+    # API endpoints for notifications
+    path('api/notifications/', NotificationListView.as_view(), name='notification_list'),
+    path('api/notifications/unread-count/', NotificationUnreadCountView.as_view(), name='notification_unread_count'),
+    path('api/notifications/<int:notification_id>/mark-read/', MarkNotificationReadView.as_view(), name='mark_notification_read'),
+    path('api/notifications/mark-all-read/', MarkAllNotificationsReadView.as_view(), name='mark_all_notifications_read'),
 ]

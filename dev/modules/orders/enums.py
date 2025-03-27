@@ -590,3 +590,11 @@ REPORT_STATUS_CHOICES = [
     ('approved', _('Patvirtinta')),
     ('rejected', _('Atmesta')),
 ]
+
+NOTIFICATION_TYPES = [
+    ('report_submission', _('Ataskaitos Pateikimas')),
+    ('report_approval', _('Ataskaitos Patvirtinimas')),
+    ('report_rejection', _('Ataskaitos Atmetimas')),
+    ('order_assignment', _('Užsakymo pavedimas')),
+    ('system', _('Sistemos pranešimas')),
+]

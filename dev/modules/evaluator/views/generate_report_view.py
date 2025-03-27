@@ -22,6 +22,8 @@ import subprocess
 from datetime import datetime
 from django.contrib import messages
 from shared.mixins.evaluator_access_mixin import EvaluatorAccessMixin
+from modules.orders.utils import create_report_submission_notification
+
 
 # Global context variables
 TOTAL_STEPS = 8
@@ -365,6 +367,9 @@ class LaTeXReportGenerator:
                 
                 # Notify agency
                 LaTeXReportGenerator.notify_agency(order, request)
+
+                # Create notification for agency
+                create_report_submission_notification(report, request.user)
                 
                 return True, _("Ataskaita sėkmingai sugeneruota ir išsiųsta agentūrai patvirtinimui.")
             else:
