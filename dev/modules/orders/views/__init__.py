@@ -33,3 +33,12 @@ from .notification_views import (
     MarkNotificationReadView,
     MarkAllNotificationsReadView
 )
+
+from .calendar_view import (
+    CalendarView,
+    EventCreateView,
+    EventUpdateView,
+    EventDeleteView,
+    EventDetailView,
+    ConfirmEventView
+)

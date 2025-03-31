@@ -1,0 +1,33 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans 'Ištrinti įvykį' %}{% endblock %}
+
+{% block content %}
+<div class="progress-bar-placeholder-larger"></div>
+    <div class="content-page">
+    <div class="content">
+        <div class="container-fluid col-10">
+            <h2>{% trans 'Ištrinti įvykį' %}</h2>
+            
+            <div class="card-box">
+                <div class="confirm-delete">
+                    <h3>{% trans 'Ar tikrai norite ištrinti šį įvykį?' %}</h3>
+                    <p><strong>{% trans 'Pavadinimas' %}:</strong> {{ event.title }}</p>
+                    <p><strong>{% trans 'Data' %}:</strong> {{ event.start_time|date:"Y-m-d H:i" }} - {{ event.end_time|date:"H:i" }}</p>
+                    <p><strong>{% trans 'Tipas' %}:</strong> {{ event.get_event_type_display }}</p>
+                    
+                    <form method="post" action="{% url 'modules.orders:delete_event' event.id %}">
+                        {% csrf_token %}
+                        <div class="navigation-buttons">
+                            <a href="{% url 'modules.orders:event_detail' event.id %}" class="btn-back">{% trans 'Atšaukti' %}</a>
+                            <button type="submit" class="btn-delete">{% trans 'Ištrinti' %}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

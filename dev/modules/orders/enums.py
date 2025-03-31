@@ -596,5 +596,13 @@ NOTIFICATION_TYPES = [
     ('report_approval', _('Ataskaitos Patvirtinimas')),
     ('report_rejection', _('Ataskaitos Atmetimas')),
     ('order_assignment', _('Užsakymo pavedimas')),
+    ('event', _('Kalendoriaus pranešimas')),
     ('system', _('Sistemos pranešimas')),
+]
+
+EVENT_TYPES = [
+    ('meeting', _('Susitikimas')),
+    ('deadline', _('Terminas')),
+    ('site_visit', _('Objekto apžiūra')),
+    ('other', _('Kita')),
 ]

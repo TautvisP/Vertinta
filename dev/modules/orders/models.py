@@ -1,5 +1,5 @@
 from django.db import models
-from .enums import OBJECT_TYPE_CHOICES, IMAGE_CHOICES, STATUS_CHOICES, PRIORITY_CHOICES, REPORT_STATUS_CHOICES, NOTIFICATION_TYPES
+from .enums import OBJECT_TYPE_CHOICES, IMAGE_CHOICES, STATUS_CHOICES, PRIORITY_CHOICES, EVENT_TYPES, REPORT_STATUS_CHOICES, NOTIFICATION_TYPES
 from django.core.exceptions import MultipleObjectsReturned
 from django.utils import timezone
 from core.uauth.models import User
@@ -393,3 +393,27 @@ class Notification(models.Model):
     
     def __str__(self):
         return f"Notification for {self.recipient.email}: {self.title}"
+    
+
+
+class Event(models.Model):
+    """
+    Model for calendar events (meetings, deadlines, etc.)
+    """
+    order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name='events')
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    event_type = models.CharField(max_length=20, choices=EVENT_TYPES, default='meeting')
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    location = models.CharField(max_length=255, blank=True, null=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_events')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_confirmed = models.BooleanField(default=False)
+    
+    class Meta:
+        ordering = ['start_time']
+    
+    def __str__(self):
+        return f"{self.title} - {self.start_time.strftime('%Y-%m-%d %H:%M')}"

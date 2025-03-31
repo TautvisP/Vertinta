@@ -26,8 +26,6 @@
     margin-top: 20px;
 }
 
-
-/* Container */
 .gallery-container {
     width: 100%;
     background-color: #fff;
@@ -37,15 +35,12 @@
 
 }
 
-/* Header */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
-
-
 
 .add-btn {
     background-color: #3b82f6;
@@ -76,7 +71,6 @@
     overflow: hidden;
 }
 
-/* Gallery Image Card */
 .image-card {
     width: 400px;
     height: 425px;
@@ -95,6 +89,7 @@
     object-fit: cover;
     border-radius: 8px;
 }
+
 .image-title {
     display: flex;
     justify-content: space-between;
@@ -167,7 +162,6 @@
     align-items: center;
 }
 
-/* Tabs */
 .tabs {
     display: flex;
     background: #f7f7f7;
@@ -222,8 +216,6 @@
     padding-right: 5%;
 }
 
-
-/* Media Queries for Tablet Devices */
 @media (max-width: 1024px) {
 
     .object-data p {

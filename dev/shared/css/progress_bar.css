@@ -52,7 +52,6 @@
     outline-style: solid;
 }
 
-/* Media Queries for Tablet Devices */
 @media (max-width: 1024px) {
     .progress-container {
         margin-top: 6%;

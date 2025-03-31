@@ -1,7 +1,7 @@
 from django import forms
-from modules.orders.models import Order
+from modules.orders.models import Order, Event
 from django.utils.translation import gettext as _
-from .enums import FOUNDATION_CHOICES, WALLS_CHOICES, PARTITION_CHOICES, OVERLAY_CHOICES, PRIORITY_CHOICES, ROOF_CHOICES, WINDOW_CHOICES, INNER_DOOR_CHOICES, OUTER_DOOR_CHOICES, STATUS_CHOICES, DECO_CHOICES, FLOOR_CHOICES, ELECTRICITY_GAS_CHOICES, HEATING_CHOICES, WATER_SUPPLY_CHOICES, WASTEWATER_CHOICES, SECURITY_CHOICES, BOOL_CHOICES, OUTDOOR_DECO_CHOICES, ENERGY__EFFICIENCY_CHOICES, COOLING_CHOICES, LAND_PURPOSE_CHOICES, SHED_CHOICES, GAZEBO_CHOICES, EXIST_CHOICES, MUNICIPALITY_CHOICES
+from .enums import FOUNDATION_CHOICES, WALLS_CHOICES, PARTITION_CHOICES, OVERLAY_CHOICES, EVENT_TYPES, PRIORITY_CHOICES, ROOF_CHOICES, WINDOW_CHOICES, INNER_DOOR_CHOICES, OUTER_DOOR_CHOICES, STATUS_CHOICES, DECO_CHOICES, FLOOR_CHOICES, ELECTRICITY_GAS_CHOICES, HEATING_CHOICES, WATER_SUPPLY_CHOICES, WASTEWATER_CHOICES, SECURITY_CHOICES, BOOL_CHOICES, OUTDOOR_DECO_CHOICES, ENERGY__EFFICIENCY_CHOICES, COOLING_CHOICES, LAND_PURPOSE_CHOICES, SHED_CHOICES, GAZEBO_CHOICES, EXIST_CHOICES, MUNICIPALITY_CHOICES
 
 default_errors = {
     'invalid': _("Įveskite skaičių."),
@@ -389,3 +389,60 @@ class OrderStatusForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = ['status', 'priority']
+
+    
+class EventForm(forms.ModelForm):
+    """Form for creating and editing calendar events."""
+    
+    start_time = forms.DateTimeField(
+        label=_('Pradžios laikas'),
+        widget=forms.DateTimeInput(
+            attrs={'type': 'datetime-local', 'class': 'form-control'},
+            format='%Y-%m-%dT%H:%M'
+        ),
+    )
+    
+    end_time = forms.DateTimeField(
+        label=_('Pabaigos laikas'),
+        widget=forms.DateTimeInput(
+            attrs={'type': 'datetime-local', 'class': 'form-control'},
+            format='%Y-%m-%dT%H:%M'
+        ),
+    )
+    
+    title = forms.CharField(
+        label=_('Pavadinimas'),
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    
+    description = forms.CharField(
+        label=_('Aprašymas'),
+        required=False,
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3})
+    )
+    
+    event_type = forms.ChoiceField(
+        label=_('Tipas'),
+        choices=EVENT_TYPES,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    
+    location = forms.CharField(
+        label=_('Vieta'),
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    
+    class Meta:
+        model = Event
+        fields = ['title', 'description', 'event_type', 'start_time', 'end_time', 'location']
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        start_time = cleaned_data.get('start_time')
+        end_time = cleaned_data.get('end_time')
+        
+        if start_time and end_time and start_time >= end_time:
+            raise forms.ValidationError(_("End time must be after start time"))
+        
+        return cleaned_data

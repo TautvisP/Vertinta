@@ -1,0 +1,56 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans 'Kalendorius' %}{% endblock %}
+{% block content %}
+<div class="progress-bar-placeholder-larger"></div>
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid col-10">
+            <h2 class="header-title">{% trans 'Kalendorius' %}</h2>
+            
+            <div class="legend-container">
+                <h3 class="legend-title">{% trans 'Įvykių tipai' %}</h3>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <span class="color-box meeting"></span>
+                        <span>{% trans 'Susitikimas' %}</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="color-box deadline"></span>
+                        <span>{% trans 'Terminas' %}</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="color-box site-visit"></span>
+                        <span>{% trans 'Objekto apžiūra' %}</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="color-box other"></span>
+                        <span>{% trans 'Kita' %}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-box calendar-card">
+                <div id="calendar"></div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css">
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@5.10.1/locales/lt.js'></script>
+
+<!-- Pass calendar events data to JavaScript -->
+<script type="text/javascript">
+    window.calendarEvents = {{ calendar_events_json|safe }};
+</script>
+
+<script src="{% static 'js/calendar.js' %}"></script>
+{% endblock %}

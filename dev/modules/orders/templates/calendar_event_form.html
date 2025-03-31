@@ -1,0 +1,58 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+    {% if form.instance.pk %}
+        {% trans 'Redaguoti įvykį' %}
+    {% else %}
+        {% trans 'Sukurti įvykį' %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="progress-bar-placeholder-larger"></div>
+
+<div class="content-page">
+    <div class="content">
+        <div class="container-fluid col-10">
+            <h2>
+                {% if form.instance.pk %}
+                    {% trans 'Redaguoti įvykį' %}
+                {% else %}
+                    {% trans 'Sukurti įvykį' %}
+                {% endif %}
+            </h2>
+            
+            <div class="form-section">
+                <form method="post" class="formal">
+                    {% csrf_token %}
+                    <div class="grid-form">
+                        {% for field in form %}
+                        <div class="form-group">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+            </div>
+            <div class="navigation-buttons">
+                <a href="{% url 'modules.orders:calendar' %}" class="btn-back">{% trans 'Atgal' %}</a>
+                <button type="submit" class="btn-submit">
+                    {% if form.instance.pk %}
+                        {% trans 'Redaguoti įvykį' %}
+                    {% else %}
+                        {% trans 'Sukurti įvykį' %}
+                    {% endif %}
+                </button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

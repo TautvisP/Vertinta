@@ -36,7 +36,7 @@
             
             <!-- Spacer to push notification icon to the right -->
             <li class="nav-spacer"></li>
-            
+        
             <!-- Notification Icon -->
             <li class="notification">
                 <div id="notification-icon" class="notification-icon">
@@ -45,6 +45,13 @@
                         <span class="notification-count">{{ unread_notification_count }}</span>
                     {% endif %}
                 </div>
+            </li>
+
+            <!-- Calendar Icon -->
+            <li class="calendar-icon-container">
+                <a href="{% url 'modules.orders:calendar' %}" class="icon-button" title="Kalendorius">
+                    <img src="{% static 'icons/calendar.svg' %}" alt="Calendar" class="nav-icon">
+                </a>
             </li>
         </ul>
     </nav>

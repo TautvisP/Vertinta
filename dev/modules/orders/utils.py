@@ -97,3 +97,35 @@ def create_order_assignment_notification(order, evaluator, sender):
         related_order=order,
         action_url=reverse('modules.evaluator:evaluation_steps', args=[order.id])
     )
+
+
+def create_event_notification(event, recipient, sender, is_update=False, is_deleted=False, is_confirmed=False):
+    """Create notification for event creation, updates, or deletion."""
+    order = event.order
+    
+    if is_deleted:
+        title = 'Event Cancelled'
+        message = f'Event "{event.title}" for order #{order.id} has been cancelled.'
+    elif is_update:
+        title = 'Event Updated'
+        message = f'Event "{event.title}" for order #{order.id} has been updated.'
+    elif is_confirmed:
+        title = 'Event Confirmed'
+        message = f'Event "{event.title}" for order #{order.id} has been confirmed by the client.'
+    else:
+        title = 'New Event'
+        message = f'New event "{event.title}" has been scheduled for order #{order.id}.'
+    
+    action_url = reverse('modules.orders:event_detail', args=[event.id])
+    if is_deleted:
+        action_url = reverse('modules.orders:calendar')
+    
+    Notification.objects.create(
+        recipient=recipient,
+        sender=sender,
+        notification_type='event',
+        title=title,
+        message=message,
+        related_order=order,
+        action_url=action_url
+    )

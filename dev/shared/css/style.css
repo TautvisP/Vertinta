@@ -64,7 +64,6 @@ h2 {
     color: #343434;
 }
 
-
 .form-section-large {
     margin-bottom: 20px;
     padding: 15px;
@@ -184,6 +183,7 @@ h2 {
         margin-bottom: 5px;
     }
 }
+
 .btn-primary {
     background-color: #3b82f6;
     color: #fff;
@@ -210,16 +210,18 @@ h2 {
 }
 
 .btn-delete {
-    background-color: #db0000;
-    color: #fff;
-    font-size: 14px;
-    border: none;
-    border-radius: 3px;
-    padding: 3px;
+    font-weight: bold;
+    font-size: 16px;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
     cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    background-color: #db0000;
+    color: white;
+    border: 2px solid #db0000;
 }
-
-
 
 .btn-forward {
     font-weight: bold;
@@ -291,7 +293,6 @@ h2 {
     box-sizing: border-box;
 }
 
-
 .btn-back {
     font-weight: bold;
     text-decoration: none;
@@ -308,7 +309,6 @@ h2 {
 .btn-back:hover {
     background-color: #E2E8F0;
 }
-
 
 .add-button {
     display: inline-block;
@@ -405,7 +405,6 @@ h2 {
     outline: none;
     color: #767676;
     background-color: #F8F8F8;
-    /* border-color: #B3B3B3; */
     margin-bottom: 10px;
 }
 
@@ -414,14 +413,13 @@ h2 {
     box-shadow: 0 0 5px rgba(108, 99, 255, 0.5);
 }
 
-
 .form-control,
 .form-group input,
 .form-group select,
 .form-group textarea {
-    border: 2px solid #76767698 !important; /* Solid gray border */
-    outline: none !important; /* Remove default outline */
-    box-shadow: none !important; /* Remove any box shadow */
+    border: 2px solid #76767698 !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .form-control:focus,
@@ -431,7 +429,6 @@ h2 {
     border-color: #76767698 !important;
     box-shadow: none !important;
 }
-
 
 .btn-submit {
     background-color: #3b82f6;
@@ -489,7 +486,6 @@ header {
     z-index: 1000;
     height: var(--header-height);
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-
 }
 
 .navbar {
@@ -540,7 +536,6 @@ header {
     padding-right: 8%;
 }
 
-
 .container {
     max-width: 900px;
     margin: 0 auto;
@@ -566,9 +561,6 @@ header {
     min-width: 200px;
 }
 
-
-
-
 .clear-button {
     background: none;
     border: none;
@@ -586,8 +578,6 @@ header {
     text-decoration: underline;
 }
 
-
-/* Requests List */
 .requests-list {
     display: flex;
     flex-direction: column;
@@ -595,7 +585,6 @@ header {
     padding-bottom: 20px;
 }
 
-/* Request Item */
 .request-item {
     display: flex;
     justify-content: space-between;
@@ -626,7 +615,7 @@ header {
 }
 
 .request-price {
-    flex: 0 0 150px; /* Fixed width for the price */
+    flex: 0 0 150px;
     text-align: left;
     display: flex;
     align-items: left;
@@ -650,6 +639,7 @@ header {
     display: block;
     margin-bottom: 10px;
 }
+
 .step-button {
     font-size: 18px;
     font-weight: 500;
@@ -663,14 +653,13 @@ header {
     width: 100%;
     display: block;
 }
+
 .step-button:hover {
     background-color: #eaeaea;
     border-color: #bbb;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-
-/* Annotation styles */
 .marker {
     width: 20px;
     height: 20px;
@@ -731,10 +720,10 @@ header {
     background-color: #2563eb;
 }
 
-
 .existing-marker {
     background-color: red;
 }
+
 .new-marker {
     background-color: blue;
 }
@@ -778,12 +767,14 @@ header {
     border: 1px solid #888;
     width: 30%;
 }
+
 .close {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
+
 .close:hover,
 .close:focus {
     color: black;
@@ -865,20 +856,18 @@ header {
     gap: 8px;
 }
 
-
 .form-container {
     display: flex;
     justify-content: space-between;
     gap: 20px;
 }
 
-
-
 .grid-form {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 10%;
 }
+
 .grid-footer {
     padding-bottom: 25px;
 }
@@ -888,20 +877,19 @@ header {
     flex-direction: column;
 }
 
-
 .grid-form .form-group label {
     color: #343434;
     margin-bottom: 5px;
 
 }
 
-/* for input fields */
 .grid-form .form-group input,
 .grid-form .form-group select {
     padding: 8px;
     border-radius: 6px;
     background-color: #F8F8F8;
 }
+
 .form-group textarea {
     resize: none;
     padding: 8px;
@@ -911,7 +899,6 @@ header {
     font-size: 17px;
 }
 
-/* Message Styles */
 .messages {
     list-style-type: none;
     padding: 0;
@@ -937,7 +924,6 @@ header {
     border: 1px solid #f5c6cb;
 }
 
-/* Error Message Styles */
 .error-message {
     color: #ff0000;
     font-size: 0.9rem;
@@ -954,8 +940,6 @@ header {
     margin-bottom: 10px;
 }
 
-
-/* Meant for forms to be in a single line with a button under them. 3x2? */
 .single-line-form {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -998,8 +982,6 @@ input[type="file"].form-control {
     display: none;
 }
 
-
-
 .drop {
     border-radius: 10px;
     border: 2px dashed #ccc;
@@ -1041,10 +1023,12 @@ input[type="file"].form-control {
     border-radius: 4px;
     font-size: 16px;
 }
+
 .progress-bar-placeholder {
     height: 85px;
     background-color: transparent;
 }
+
 .progress-bar-placeholder-larger {
     height: 7rem;
     background-color: transparent;
@@ -1084,7 +1068,6 @@ input[type="file"].form-control {
     background-color: #f1f1f1;
 }
 
-
 .single-row-form {
     display: flex;
     flex-wrap: wrap;
@@ -1113,7 +1096,7 @@ input[type="file"].form-control {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%; /* Adjust this value as needed */
+    height: 100%;
 }
 
 .filter-form-horizontal {
@@ -1158,8 +1141,6 @@ input[type="file"].form-control {
     background-color: #2563eb;
 }
 
-
-
 .report-form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -1187,13 +1168,11 @@ input[type="file"].form-control {
     background-color: #F8F8F8;
 }
 
-/* Make sure textarea doesn't resize */
 .report-form-grid .form-group textarea {
     resize: none;
     font-size: 17px;
 }
 
-/* Center the buttons better */
 .button-group {
     text-align: center;
     margin-top: 30px;
@@ -1204,7 +1183,6 @@ input[type="file"].form-control {
     margin: 0 10px;
 }
 
-/* Order list styling */
 .order-list {
     margin-top: 20px;
 }
@@ -1240,7 +1218,7 @@ input[type="file"].form-control {
 }
 
 .order-price {
-    flex: 0 0 150px; /* Fixed width for the price */
+    flex: 0 0 150px;
     text-align: left;
     display: flex;
     align-items: left;
@@ -1482,6 +1460,7 @@ input[type="file"].form-control {
 .btn-reject:hover {
     background-color: #f01e0f;
 }
+
 .status-approved {
     background-color: #e8f5e9;
     border: 1px solid #c8e6c9;
@@ -1572,8 +1551,6 @@ input[type="file"].form-control {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234caf50'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
 }
 
-
-/* Notification Styles */
 .notification-icon {
     position: relative;
     cursor: pointer;
@@ -1605,7 +1582,6 @@ input[type="file"].form-control {
     justify-content: center;
 }
 
-/* Notification Modal Styles */
 .notification-modal .modal-content {
     max-width: 600px;
     width: 90%;

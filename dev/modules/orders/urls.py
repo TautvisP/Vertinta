@@ -49,4 +49,13 @@ urlpatterns = [
     path('api/notifications/unread-count/', NotificationUnreadCountView.as_view(), name='notification_unread_count'),
     path('api/notifications/<int:notification_id>/mark-read/', MarkNotificationReadView.as_view(), name='mark_notification_read'),
     path('api/notifications/mark-all-read/', MarkAllNotificationsReadView.as_view(), name='mark_all_notifications_read'),
+
+
+    # Calendar urls
+    path('calendar/', views.CalendarView.as_view(), name='calendar'),
+    path('calendar/event/create/<int:order_id>/', views.EventCreateView.as_view(), name='create_event'),
+    path('calendar/event/<int:pk>/', views.EventDetailView.as_view(), name='event_detail'),
+    path('calendar/event/<int:pk>/update/', views.EventUpdateView.as_view(), name='update_event'),
+    path('calendar/event/<int:pk>/delete/', views.EventDeleteView.as_view(), name='delete_event'),
+    path('calendar/event/<int:pk>/confirm/', views.ConfirmEventView.as_view(), name='confirm_event'),
 ]
