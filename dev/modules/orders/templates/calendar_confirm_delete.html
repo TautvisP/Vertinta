@@ -15,7 +15,7 @@
                 <div class="confirm-delete">
                     <h3>{% trans 'Ar tikrai norite ištrinti šį įvykį?' %}</h3>
                     <p><strong>{% trans 'Pavadinimas' %}:</strong> {{ event.title }}</p>
-                    <p><strong>{% trans 'Data' %}:</strong> {{ event.start_time|date:"Y-m-d H:i" }} - {{ event.end_time|date:"H:i" }}</p>
+                    <p><strong>{% trans 'Data' %}:</strong> {{ event.start_time|date:"Y-m-d H:i" }}</p>
                     <p><strong>{% trans 'Tipas' %}:</strong> {{ event.get_event_type_display }}</p>
                     
                     <form method="post" action="{% url 'modules.orders:delete_event' event.id %}">

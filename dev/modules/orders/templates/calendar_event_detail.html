@@ -8,13 +8,23 @@
     <div class="content">
         <div class="container-fluid col-10">
             <h2 class="header-title">{% trans "Įvykio detalės" %}</h2>
-            
+
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
             <!-- Event data content -->
             <div class="object-data-grid">
                 <div class="column">
                     <div class="data-card">
                         <h3 class="card-header">
-                            {{ event.title }}
+                            {{ event.title }},
                             {% if event.is_confirmed %}
                                 <span class="status-badge confirmed">{% trans 'Patvirtintas' %}</span>
                             {% else %}
@@ -34,19 +44,13 @@
                             </div>
                             <p></p>
                             
-                            <div class="data-row">
-                                <div class="data-label">{% trans 'Pabaigos laikas' %}:</div>
-                                <div class="data-value">{{ event.end_time|date:"Y-m-d H:i" }}</div>
-                            </div>
-                            <p></p>
-                            
                             {% if event.location %}
                             <div class="data-row">
                                 <div class="data-label">{% trans 'Vieta' %}:</div>
                                 <div class="data-value">{{ event.location }}</div>
                             </div>
-                            {% endif %}
                             <p></p>
+                            {% endif %}
                             
                             <div class="data-row">
                                 <div class="data-label">{% trans 'Susijęs užsakymas' %}:</div>
@@ -61,6 +65,20 @@
                             <div class="data-row">
                                 <div class="data-label">{% trans 'Sukurė' %}:</div>
                                 <div class="data-value">{{ event.created_by.get_full_name }}</div>
+                                <div class="data-value">{{ event.created_by.email }}</div>
+                                {% if creator_phone %}
+                                    <div class="data-value">{% trans 'Tel:' %} {{ creator_phone }}</div>
+                                {% endif %}
+                            </div>
+                            <p></p>
+
+                            <div class="data-row">
+                                <div class="data-label">{% trans 'Adresatas' %}:</div>
+                                <div class="data-value">{{ event.order.client.get_full_name }}</div>
+                                <div class="data-value">{{ event.order.client.email }}</div>
+                                {% if client_phone %}
+                                    <div class="data-value">{% trans 'Tel:' %} {{ client_phone }}</div>
+                                {% endif %}
                             </div>
                             <p></p>
                             
@@ -84,8 +102,13 @@
                 {% endif %}
                 
                 {% if request.user == event.created_by or request.user == event.order.evaluator or request.user == event.order.agency %}
-                    <a href="{% url 'modules.orders:update_event' event.id %}" class="btn-evaluate">{% trans 'Redaguoti įvykį' %}</a>
-                    <a href="{% url 'modules.orders:delete_event' event.id %}" class="btn-danger">{% trans 'Ištrinti įvykį' %}</a>
+                    <a href="{% url 'modules.orders:update_event' event.id %}" class="icon-button" title="{% trans 'Redaguoti įvykį' %}">
+                        <img src="{% static 'icons/edit-pencil.svg' %}" alt="{% trans 'Redaguoti' %}">
+                    </a>
+
+                    <a href="{% url 'modules.orders:delete_event' event.id %}" class="icon-button" title="{% trans 'Ištrinti įvykį' %}">
+                        <img src="{% static 'icons/trash.svg' %}" alt="{% trans 'Ištrinti' %}">
+                    </a>
                 {% endif %}
             </div>
             

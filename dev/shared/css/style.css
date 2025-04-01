@@ -1712,3 +1712,32 @@ input[type="file"].form-control {
 .notification {
     margin-left: auto;
 }
+
+.nav-separator {
+    width: 1px;
+    height: 24px;
+    background-color: #e0e0e0;
+    margin: 0 5px;
+    align-self: center;
+}
+
+.nav-list li {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.nav-list a, 
+.nav-list button,
+.nav-list .notification-icon,
+.nav-list .icon-button {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.nav-icon {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+}

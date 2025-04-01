@@ -3,30 +3,44 @@
     <nav class="navbar">
         <ul class="nav-list">
             {% if user.is_authenticated %}
+                <li class="nav-separator"></li>
                 <li>
                     <form method="post" action="{% url 'core.uauth:logout' %}">
                         {% csrf_token %}
                         <button type="submit">Atsijungti</button>
                     </form>
                 </li>
+                <li class="nav-separator"></li>
 
                 {% if is_agency %}
                     <li><a href="{% url 'modules.orders:order_list' %}">Užsakymai</a></li>
+                    <li class="nav-separator"></li>
+
                     <li><a href="{% url 'modules.agency:evaluator_list' %}">Vertintojai</a></li>
+                    <li class="nav-separator"></li>
+
                 {% elif is_evaluator %}
                     <li><a href="{% url 'modules.orders:evaluator_order_list' %}">Vertintojo Užsakymai</a></li>
+                    <li class="nav-separator"></li>
                 {% else %}
                     <li><a href="{% url 'modules.orders:order_list' %}">Užsakymai</a></li>
+                    <li class="nav-separator"></li>
+                    
                     <li><a href="{% url 'modules.orders:selection' %}">Sukurti Naują Užsakymą</a></li>
+                    <li class="nav-separator"></li>
+                
                 {% endif %}
 
                 <li>
                     {% if is_agency %}
                         <a href="{% url 'modules.agency:edit_agency_account' %}">Redaguoti Agentūros Paskyrą</a>
+                        <li class="nav-separator"></li>
                     {% elif is_evaluator %}
                         <a href="{% url 'modules.evaluator:edit_own_evaluator_account' %}">Redaguoti Vertintojo Paskyrą</a>
+                        <li class="nav-separator"></li>
                     {% else %}
                         <a href="{% url 'core.uauth:edit_profile' %}">Redaguoti Profilį</a>
+                        <li class="nav-separator"></li>
                     {% endif %}
                 </li>
             {% else %}

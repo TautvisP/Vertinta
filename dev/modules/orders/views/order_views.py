@@ -11,6 +11,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from shared.mixins.mixins import UserRoleContextMixin
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 
 # Global message variables
@@ -232,6 +233,7 @@ class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, UserPasse
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['now'] = timezone.now()
         context['municipality_choices'] = MUNICIPALITY_CHOICES
         context['status_choices'] = STATUS_CHOICES
         context['priority_choices'] = PRIORITY_CHOICES

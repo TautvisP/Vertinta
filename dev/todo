@@ -131,7 +131,7 @@ Similar object form is now meant for houses, not for apartaments?
 
 + maybe refactor order first step to use evaluator multi step process.
 
-The final report should only be sent to the user if agency has received payment.
++ The final report should only be sent to the user if agency has received payment.
 
 when an order is created, the priority and status needs to be fixed
 
@@ -139,6 +139,6 @@ need to once again fix orders creation as a draft, so the user would be able to 
 
 when adding a nearby organization, a status message should pop up
 
-add seperation bars in header
++ add seperation bars in header
 
-Sekantis įvykis: Meet - 2025-03-28 06:03, if the time has passed, this shouldnt be visible
++ Sekantis įvykis: Meet - 2025-03-28 06:03, if the time has passed, this shouldnt be visible

@@ -1,5 +1,5 @@
 import json
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView, View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
@@ -10,6 +10,8 @@ from modules.orders.models import Order, Event
 from modules.orders.forms import EventForm
 from shared.mixins.mixins import UserRoleContextMixin
 from modules.orders.utils import create_event_notification
+from django.db import connection
+from core.uauth.models import UserMeta
 
 
 class CalendarView(LoginRequiredMixin, UserRoleContextMixin, ListView):
@@ -47,7 +49,6 @@ class CalendarView(LoginRequiredMixin, UserRoleContextMixin, ListView):
                 'id': event.id,
                 'title': event.title,
                 'start': event.start_time.isoformat(),
-                'end': event.end_time.isoformat(),
                 'url': reverse('modules.orders:event_detail', args=[event.id]),
                 'backgroundColor': self.get_event_color(event),
                 'borderColor': self.get_event_color(event),
@@ -91,7 +92,6 @@ class EventCreateView(LoginRequiredMixin, UserPassesTestMixin, UserRoleContextMi
             now = timezone.now()
             next_hour = now.replace(minute=0, second=0, microsecond=0) + timezone.timedelta(hours=1)
             form.initial['start_time'] = next_hour
-            form.initial['end_time'] = next_hour + timezone.timedelta(hours=1)
             
         return form
     
@@ -236,37 +236,62 @@ class EventDetailView(LoginRequiredMixin, UserPassesTestMixin, UserRoleContextMi
             return True
         
         return False
-
-
-
-
-class ConfirmEventView(LoginRequiredMixin, UserPassesTestMixin, UserRoleContextMixin, UpdateView):
-    """View for confirming an event."""
-    model = Event
-    fields = []
-    http_method_names = ['post']
     
-    def test_func(self):
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         event = self.get_object()
 
+        try:
+            creator_phone = UserMeta.get_meta(event.created_by, 'phone_num')
+            context['creator_phone'] = creator_phone if creator_phone else None
+
+        except Exception as e:
+            print(f"Error getting creator phone: {str(e)}")
+            context['creator_phone'] = None
+
+        try:
+            client_phone = UserMeta.get_meta(event.order.client, 'phone_num')
+            context['client_phone'] = client_phone if client_phone else None
+
+        except Exception as e:
+            print(f"Error getting client phone: {str(e)}")
+            context['client_phone'] = None
+
+        return context
+
+
+
+
+class ConfirmEventView(LoginRequiredMixin, UserPassesTestMixin, View):
+    """View for confirming an event."""
+    http_method_names = ['post']
+    
+
+    def test_func(self):
+        event_id = self.kwargs.get('pk')
+        event = get_object_or_404(Event, id=event_id)
         return self.request.user == event.order.client
     
 
-    def form_valid(self, form):
-        event = self.get_object()
-        event.is_confirmed = True
-        event.save()
-        create_event_notification(
-            event, 
-            event.created_by, 
-            self.request.user, 
-            is_confirmed=True
-        )
+    def post(self, request, *args, **kwargs):
+        event_id = self.kwargs.get('pk')
         
-        messages.success(self.request, _("Įvykis sėkmingai patvirtintas"))
-        return super().form_valid(form)
-    
-    
-    def get_success_url(self):
-        return reverse('modules.orders'
-        ':event_detail', args=[self.object.id])
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE orders_event SET is_confirmed = 1 WHERE id = %s", [event_id])
+        
+        event = get_object_or_404(Event, id=event_id)
+
+        try:
+            create_event_notification(
+                event, 
+                event.created_by, 
+                self.request.user, 
+                is_confirmed=True
+            )
+        except Exception as e:
+            print(f"Error sending notification: {str(e)}")
+        
+        messages.success(request, _("Įvykis sėkmingai patvirtintas"))
+        
+        return redirect('modules.orders:event_detail', event_id)

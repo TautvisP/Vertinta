@@ -402,14 +402,6 @@ class EventForm(forms.ModelForm):
         ),
     )
     
-    end_time = forms.DateTimeField(
-        label=_('Pabaigos laikas'),
-        widget=forms.DateTimeInput(
-            attrs={'type': 'datetime-local', 'class': 'form-control'},
-            format='%Y-%m-%dT%H:%M'
-        ),
-    )
-    
     title = forms.CharField(
         label=_('Pavadinimas'),
         widget=forms.TextInput(attrs={'class': 'form-control'})
@@ -435,14 +427,10 @@ class EventForm(forms.ModelForm):
     
     class Meta:
         model = Event
-        fields = ['title', 'description', 'event_type', 'start_time', 'end_time', 'location']
+        fields = ['title', 'description', 'event_type', 'start_time', 'location']
     
     def clean(self):
         cleaned_data = super().clean()
         start_time = cleaned_data.get('start_time')
-        end_time = cleaned_data.get('end_time')
-        
-        if start_time and end_time and start_time >= end_time:
-            raise forms.ValidationError(_("End time must be after start time"))
         
         return cleaned_data

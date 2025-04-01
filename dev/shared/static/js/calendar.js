@@ -21,11 +21,29 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         firstDay: 1,
         navLinks: true,
-        dayMaxEvents: 3,
+        
+        // Important event display settings
+        dayMaxEvents: 1,             // Only show 3 events per day
+        dayMaxEventRows: 1,          // Same as dayMaxEvents but for rows
+        fixedWeekCount: true,        // Forces calendar to always display 6 weeks
+        handleWindowResize: true,    // Redraw on window resize
+        height: 'auto',              // Auto height based on content
+        eventDisplay: 'block',       // Block-style events
+        
+        // Ensure month views never expand past their container
+        views: {
+            dayGridMonth: {
+                dayMaxEventRows: 3,
+                dayMaxEvents: 3
+            }
+        },
+        
         buttonText: {
             month: 'Mėnuo',
             list: 'Sąrašas',
         },
+        moreLinkClick: 'popover',
+
         eventClassNames: function(arg) {
             return [arg.event.extendedProps.eventType || 'other'];
         },
@@ -65,13 +83,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     headerElement.textContent.charAt(0).toUpperCase() +
                     headerElement.textContent.slice(1);
             }
+        },
+        moreLinkText: function(n) {
+            return '+ ' + n + ' ' + (n === 1 ? 'daugiau' : 'daugiau');
+        },
+        
+        views: {
+            dayGridMonth: {
+                dayMaxEventRows: 1,
+                dayMaxEvents: 1
+            }
         }
     });
     
     calendar.render();
-    
-    // Add resize listener to rerender calendar when window is resized
-    window.addEventListener('resize', function() {
-        calendar.render();
-    });
 });

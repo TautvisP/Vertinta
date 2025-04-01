@@ -405,7 +405,6 @@ class Event(models.Model):
     description = models.TextField(blank=True, null=True)
     event_type = models.CharField(max_length=20, choices=EVENT_TYPES, default='meeting')
     start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
     location = models.CharField(max_length=255, blank=True, null=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_events')
     created_at = models.DateTimeField(auto_now_add=True)

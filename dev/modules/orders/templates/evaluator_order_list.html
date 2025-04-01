@@ -63,13 +63,19 @@
                             {{ order.priority }} · {{ order.status }}
                             · {{ order.client.get_full_name }} · {{ order.created|date:"Y-m-d" }}
                         </p>
-                        {% with upcoming_events=order.events.all|dictsortreversed:"start_time"|slice:":1" %}
-                        {% if upcoming_events %}
-                            <div class="upcoming-event">
-                                <span>{% trans 'Sekantis įvykis:' %} {{ upcoming_events.0.title }} - {{ upcoming_events.0.start_time|date:"Y-m-d H:i" }}</span>
-                            </div>
-                        {% endif %}
+                        
+                        {% with future_events=order.events.all|dictsort:"start_time" %}
+                        {% with first_future_event=None %}
+                            {% for event in future_events %}
+                                {% if event.start_time > now and not first_future_event %}
+                                    <div class="upcoming-event">
+                                        <span>{% trans 'Sekantis įvykis:' %} {{ event.title }} - {{ event.start_time|date:"Y-m-d H:i" }}</span>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
                     {% endwith %}
+
                     </div>
                     {% if is_evaluator %}
                     <div class="order-actions">
