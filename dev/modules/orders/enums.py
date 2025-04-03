@@ -598,6 +598,7 @@ NOTIFICATION_TYPES = [
     ('order_assignment', _('Užsakymo pavedimas')),
     ('event', _('Kalendoriaus pranešimas')),
     ('system', _('Sistemos pranešimas')),
+    ('event_transfer', _('Calendar Event Transfer')),
 ]
 
 EVENT_TYPES = [

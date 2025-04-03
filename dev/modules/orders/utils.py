@@ -104,17 +104,17 @@ def create_event_notification(event, recipient, sender, is_update=False, is_dele
     order = event.order
     
     if is_deleted:
-        title = 'Event Cancelled'
-        message = f'Event "{event.title}" for order #{order.id} has been cancelled.'
+        title = 'Įvykis atšauktas'
+        message = f'Įvykis "{event.title}" užsakymui #{order.id} buvo atšauktas.'
     elif is_update:
-        title = 'Event Updated'
-        message = f'Event "{event.title}" for order #{order.id} has been updated.'
+        title = 'Įvykis atnaujintas'
+        message = f'Įvykis "{event.title}" užsakymui #{order.id} buvo atnaujintas.'
     elif is_confirmed:
-        title = 'Event Confirmed'
-        message = f'Event "{event.title}" for order #{order.id} has been confirmed by the client.'
+        title = 'Įvykis patvirtintas'
+        message = f'Įvykis "{event.title}" užsakymui #{order.id} buvo patvirtintas kliento.'
     else:
-        title = 'New Event'
-        message = f'New event "{event.title}" has been scheduled for order #{order.id}.'
+        title = 'Naujas įvykis'
+        message = f'Naujas įvykis"{event.title}" buvo suplanuotas užsakymui #{order.id}.'
     
     action_url = reverse('modules.orders:event_detail', args=[event.id])
     if is_deleted:
@@ -129,3 +129,39 @@ def create_event_notification(event, recipient, sender, is_update=False, is_dele
         related_order=order,
         action_url=action_url
     )
+
+def create_event_transfer_notification(order, new_evaluator, event_count, sender):
+    """Create notification for an evaluator when calendar events are transferred."""
+    try:
+        Notification.objects.create(
+            recipient=new_evaluator,
+            sender=sender,
+            notification_type='event',
+            title='Kalendoriaus įvykiai perkelti',
+            message=f'Jums buvo perkelti {event_count} kalendoriaus įvykiai, susiję su užsakymu #{order.id}.',
+            related_order=order,
+            action_url=reverse('modules.orders:calendar')
+        )
+    except Exception as e:
+        print(f"Error sending event transfer notification: {str(e)}")
+
+
+def create_order_reassignment_notification(order, old_evaluator, new_evaluator, sender, events_transferred=0):
+    """Create notification for previous evaluator when order is reassigned."""
+    try:
+        message = f'Užsakymas #{order.id} buvo perduotas vertintojui {new_evaluator.get_full_name()}.'
+        
+        if events_transferred > 0:
+            message += f' {events_transferred} kalendoriaus įvykiai buvo perkelti.'
+            
+        Notification.objects.create(
+            recipient=old_evaluator,
+            sender=sender,
+            notification_type='order_assignment',
+            title='Užsakymas perduotas kitam vertintojui',
+            message=message,
+            related_order=order,
+            action_url=reverse('modules.orders:evaluator_order_list')
+        )
+    except Exception as e:
+        print(f"Error sending reassignment notification: {str(e)}")

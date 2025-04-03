@@ -1,18 +1,19 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import update_session_auth_hash
-from modules.orders.utils import create_report_approval_notification, create_report_rejection_notification, create_order_assignment_notification
+from modules.orders.utils import create_report_approval_notification, create_order_reassignment_notification, create_event_transfer_notification, create_report_rejection_notification, create_order_assignment_notification
 from django.contrib import messages
 from shared.mixins.mixins import UserRoleContextMixin
 from modules.agency.forms import AgencyEditForm, AgencyPasswordChangeForm, EvaluatorCreationForm
 from core.uauth.models import User, UserMeta, Group
-from modules.orders.models import Order, Report
-from django.urls import reverse_lazy
+from modules.orders.models import Order, Report, Event
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, View, DetailView
 from django.views.generic.edit import UpdateView, CreateView
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.utils.translation import gettext as _
 from modules.orders.enums import STATUS_CHOICES
+
 
 # Global message variables
 SUCCESS_MESSAGE = _("Profilis sėkmingai atnaujintas!")
@@ -301,18 +302,56 @@ class AssignEvaluatorView(LoginRequiredMixin, UserRoleContextMixin, View):
         evaluator_id = self.kwargs.get('evaluator_id')
         order = get_object_or_404(Order, id=order_id)
         new_evaluator = get_object_or_404(User, id=evaluator_id)
+        old_evaluator = order.evaluator
 
-        # Assign the new evaluator to the order
         order.evaluator = new_evaluator
         order.save()
 
-        # Notify the new evaluator
-        create_order_assignment_notification(order, order.evaluator, request.user)
+        events_transferred = self.transfer_calendar_events(order, old_evaluator, new_evaluator)
 
+        create_order_assignment_notification(order, new_evaluator, request.user)
 
+        event_count = Event.objects.filter(order=order).count()
+        if event_count > 0:
+            create_event_transfer_notification(order, new_evaluator, event_count, request.user)
+
+        if old_evaluator:
+            create_order_reassignment_notification(
+                order, 
+                old_evaluator, 
+                new_evaluator, 
+                request.user, 
+                events_transferred
+            )
         messages.success(request, _("Vertintojas sėkmingai priskirtas!"))
         return redirect('modules.orders:specific_evaluator_order_list', id=evaluator_id)
 
+
+    def transfer_calendar_events(self, order, old_evaluator, new_evaluator):
+        """
+        Transfer calendar events associated with this order to the new evaluator.
+        
+        Calendar events created by the old evaluator will now show as created by the new evaluator.
+        This ensures all calendar events for the order remain associated with the current evaluator.
+        """
+        # Import Event model here to avoid circular imports
+        from modules.orders.models import Event
+        
+        if not old_evaluator:
+            return 0
+        
+        # Get all events for this order
+        events = Event.objects.filter(order=order)
+        
+        transfer_count = 0
+        # For events created by the old evaluator, update to new evaluator
+        for event in events:
+            if event.created_by == old_evaluator:
+                event.created_by = new_evaluator
+                event.save(update_fields=['created_by', 'updated_at'])
+                transfer_count += 1
+                
+        return transfer_count
 
 
 

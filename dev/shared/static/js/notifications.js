@@ -219,11 +219,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (diffMins < 1) {
             return 'Ką tik';
         } else if (diffMins < 60) {
-            return `${diffMins} min. ago`;
+            return `prieš ${diffMins} min.`;
         } else if (diffHours < 24) {
-            return `${diffHours} val. ago`;
+            return `prieš ${diffHours} val.`;
         } else if (diffDays < 7) {
-            return `${diffDays} d. ago`;
+            return `prieš ${diffDays} d.`;
         } else {
             return date.toLocaleDateString('lt-LT');
         }
