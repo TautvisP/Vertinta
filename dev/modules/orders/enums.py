@@ -101,10 +101,10 @@ MUNICIPALITY_CHOICES = [
     (15, TELŠIAI_CITY),
 ]
 
-DECO_TYPE_1 = _('tinko paviršius tapetuotas')
-DECO_TYPE_2 = _('tinko paviršius tapetuotas/dažytas')
-DECO_TYPE_3 = _('tinko paviršius dažytas')
-DECO_TYPE_4 = _('nėra')
+DECO_TYPE_1 = _('Tinko paviršius tapetuotas')
+DECO_TYPE_2 = _('Tinko paviršius tapetuotas/dažytas')
+DECO_TYPE_3 = _('Tinko paviršius dažytas')
+DECO_TYPE_4 = _('Nėra')
 DECO_CHOICES = [
     (DECO_TYPE_1, DECO_TYPE_1),
     (DECO_TYPE_2, DECO_TYPE_2),
@@ -112,15 +112,15 @@ DECO_CHOICES = [
     (DECO_TYPE_4, DECO_TYPE_4),
 ]
 
-FLOOR_CHOICE1 = _('betonas')
-FLOOR_CHOICE2 = _('parketas')
-FLOOR_CHOICE3 = _('laminatas')
-FLOOR_CHOICE4 = _('linoleumas')
-FLOOR_CHOICE5 = _('keraminės plytelės')
-FLOOR_CHOICE6 = _('akmens masės plytelės')
-FLOOR_CHOICE7 = _('kiliminė danga')
-FLOOR_CHOICE8 = _('medinės lentos')
-FLOOR_CHOICE9 = _('vinilinė danga')
+FLOOR_CHOICE1 = _('Betonas')
+FLOOR_CHOICE2 = _('Parketas')
+FLOOR_CHOICE3 = _('Laminatas')
+FLOOR_CHOICE4 = _('Linoleumas')
+FLOOR_CHOICE5 = _('Keraminės plytelės')
+FLOOR_CHOICE6 = _('Akmens masės plytelės')
+FLOOR_CHOICE7 = _('Kiliminė danga')
+FLOOR_CHOICE8 = _('Medinės lentos')
+FLOOR_CHOICE9 = _('Vinilinė danga')
 
 FLOOR_CHOICES = [
     (FLOOR_CHOICE1, FLOOR_CHOICE1),
@@ -293,10 +293,10 @@ GAZEBO_CHOICES = [
 ]
 
 
-ELECTRICITY_TYPE_1 = _('nėra')
+ELECTRICITY_TYPE_1 = _('Nėra')
 ELECTRICITY_TYPE_2 = _('ESO')
 ELECTRICITY_GAS_CHOICES = [
-    (ELECTRICITY_TYPE_1, _('nėra')),
+    (ELECTRICITY_TYPE_1, _('Nėra')),
     (ELECTRICITY_TYPE_2, _('ESO')),
 ]
 
@@ -391,42 +391,42 @@ COOLING_CHOICES = [
 ]
 
 
-WINDOW_TYPE_1 = _('plastikiniai')
-WINDOW_TYPE_2 = _('aliuminio')
-WINDOW_TYPE_3 = _('mediniai')
-WINDOW_TYPE_4 = _('aliuminio-medienios')
+WINDOW_TYPE_1 = _('Plastikiniai')
+WINDOW_TYPE_2 = _('Aliuminio')
+WINDOW_TYPE_3 = _('Mediniai')
+WINDOW_TYPE_4 = _('Aliuminio-medienios')
 
 WINDOW_CHOICES = [
-    (WINDOW_TYPE_1, _('plastikiniai')),
-    (WINDOW_TYPE_2, _('aliuminio')),
-    (WINDOW_TYPE_3, _('mediniai')),
-    (WINDOW_TYPE_4, _('aliuminio-medienios')),
+    (WINDOW_TYPE_1, _('Plastikiniai')),
+    (WINDOW_TYPE_2, _('Aliuminio')),
+    (WINDOW_TYPE_3, _('Mediniai')),
+    (WINDOW_TYPE_4, _('Aliuminio-medienios')),
 ]
 
 
-INNER_DOOR_TYPE_1 = _('laminuotos')
-INNER_DOOR_TYPE_2 = _('medinės')
-INNER_DOOR_TYPE_3 = _('faneruotos')
-INNER_DOOR_TYPE_4 = _('plastikinės')
+INNER_DOOR_TYPE_1 = _('Laminuotos')
+INNER_DOOR_TYPE_2 = _('Medinės')
+INNER_DOOR_TYPE_3 = _('Faneruotos')
+INNER_DOOR_TYPE_4 = _('Plastikinės')
 
 INNER_DOOR_CHOICES = [
-    (INNER_DOOR_TYPE_1, _('laminuotos')),
-    (INNER_DOOR_TYPE_2, _('medinės')),
-    (INNER_DOOR_TYPE_3, _('faneruotos')),
-    (INNER_DOOR_TYPE_4, _('plastikinės')),
+    (INNER_DOOR_TYPE_1, _('Laminuotos')),
+    (INNER_DOOR_TYPE_2, _('Medinės')),
+    (INNER_DOOR_TYPE_3, _('Faneruotos')),
+    (INNER_DOOR_TYPE_4, _('Plastikinės')),
 ]
 
 
-OUTER_DOOR_TYPE_1 = _('medinės')
-OUTER_DOOR_TYPE_2 = _('šarvo')
-OUTER_DOOR_TYPE_3 = _('plastikinės')
-OUTER_DOOR_TYPE_4 = _('aliuminio')
+OUTER_DOOR_TYPE_1 = _('Medinės')
+OUTER_DOOR_TYPE_2 = _('Šarvo')
+OUTER_DOOR_TYPE_3 = _('Plastikinės')
+OUTER_DOOR_TYPE_4 = _('Aliuminio')
 
 OUTER_DOOR_CHOICES = [
-    (OUTER_DOOR_TYPE_1, _('medinės')),
-    (OUTER_DOOR_TYPE_2, _('šarvo')),
-    (OUTER_DOOR_TYPE_3, _('plastikinės')),
-    (OUTER_DOOR_TYPE_4, _('aliuminio')),
+    (OUTER_DOOR_TYPE_1, _('Medinės')),
+    (OUTER_DOOR_TYPE_2, _('Šarvo')),
+    (OUTER_DOOR_TYPE_3, _('Plastikinės')),
+    (OUTER_DOOR_TYPE_4, _('Aliuminio')),
 ]
 
 COMERCIAL_TYPE_1 = _('Administracinė')
@@ -606,4 +606,35 @@ EVENT_TYPES = [
     ('deadline', _('Terminas')),
     ('site_visit', _('Objekto apžiūra')),
     ('other', _('Kita')),
+]
+
+
+
+RC_BUILDING_TYPE_CHOICES = [
+    ('', _('Pasirinkite pastato tipą')),
+    ('residential', _('Gyvenamasis')),
+    ('commercial', _('Komercinis')),
+    ('industrial', _('Pramoninis')),
+    ('agricultural', _('Žemės ūkio')),
+    ('public', _('Visuomeninės paskirties')),
+    ('recreational', _('Rekreacinės paskirties')),
+    ('other', _('Kita')),
+]
+
+RC_RIGHTS_TYPE_CHOICES = [
+    ('', _('Pasirinkite teisių tipą')),
+    ('ownership', _('Nuosavybės teisė')),
+    ('lease', _('Nuoma')),
+    ('usufruct', _('Uzufruktas')),
+    ('easement', _('Servitutas')),
+    ('mortgage', _('Hipoteka')),
+    ('other', _('Kita')),
+]
+
+RC_LEGAL_STATUS_CHOICES = [
+    ('', _('Pasirinkite juridinį statusą')),
+    ('registered', _('Įregistruotas')),
+    ('registration_in_progress', _('Registracija vykdoma')),
+    ('unregistered', _('Neįregistruotas')),
+    ('disputed', _('Ginčijamas')),
 ]

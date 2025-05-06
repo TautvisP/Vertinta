@@ -77,7 +77,21 @@ h2 {
     overflow: visible;
 }
 
-.form-section-large h3 {
+.form-section-largest {
+    margin-bottom: 20px;
+    padding: 15px;
+    padding-bottom: 230px;
+    border: 1px solid #F8F8F8;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    background-color: #F8F8F8;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    overflow: visible;
+}
+
+.form-section-large h3,
+.form-section-largest h3 {
     margin-top: 0;
     color: #343434;
 }
@@ -392,7 +406,13 @@ h2 {
     position: relative;
 }
 
-.card-box {
+.card-box-white{
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.card-box, .card-box-white {
     margin-bottom: 40px;
 }
 
@@ -556,7 +576,7 @@ header {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 16px;
     background-color: #fff;
     min-width: 200px;
 }
@@ -1208,12 +1228,12 @@ input[type="file"].form-control {
 .order-title {
     font-weight: bold;
     margin: 0;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .order-info {
     margin: 5px 0 0;
-    font-size: 14px;
+    font-size: 16px;
     color: #555;
 }
 
@@ -1288,7 +1308,7 @@ input[type="file"].form-control {
     border-bottom: 1px solid #e0e0e0;
     padding: 10px 0;
     margin: 0;
-    font-size: 16px;
+    font-size: 17px;
     display: flex;
     justify-content: space-between;
 }

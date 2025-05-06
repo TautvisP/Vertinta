@@ -11,28 +11,62 @@
 {% endif %}
 <div class="content-page">
     <div class="content">
-<div class="form-container">
         <div class="container-fluid col-10">
-            <h2 class="header-title">{% trans "3. Gauti duomenys iš Registrų Centro" %}</h3>
+            <div class="form-container">
+                <div class="rc-data">
+                    <div class="container-fluid col-10">
+                        <h2 class="header-title">{% trans "3. Duomenys iš Registrų Centro" %}</h2>
+                    </div>
+                </div>
+                <div class="container-fluid col-10">
+                    <h3>{% trans "Vertinamas turtas" %}</h3>
+                    <div class="order-data">
+                        <p> {{ object.object_type }} {{ object.street }} {{ object.house_no }}, {{ object.municipality|get_municipality_name }}</p>
+                        <p><strong>{% trans "Klientas:" %}</strong> {{ client.first_name }} {{ client.last_name }}</p>
+                        <p>{{ phone_number }}</p>
+                    </div>
+                </div>
+            </div>
 
-        </div>
-    <div class="container-fluid col-10">
-        <h3>{% trans "Vertinamas turtas" %}</h3>
-        <div class="order-data">
-            <p> {{ object.object_type }} {{ object.street }} {{ object.house_no }}, {{ object.municipality|get_municipality_name }}</p>
-            <p><strong>{% trans "Klientas:" %}</strong> {{ client.first_name }} {{ client.last_name }}</p>
-            <p>{{ phone_number }}</p>
+            {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <form method="post" class="formal">
+                {% csrf_token %}
+                <div class="form-section-largest">
+                    <div class="col-sm-12">
+                        <h3 class="header-title">{% trans "Registrų centro duomenys" %}</h3>
+                        <div class="col-lg-12">
+                            <div class="grid-form">
+                                {% for field in form %}
+                                <div class="form-group">
+                                    {{ field.label_tag }}
+                                    {{ field }}
+                                    {% if field.errors %}
+                                        <div class="error-message">{{ field.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                    <button type="submit" class="btn-form">{% trans 'Patvirtinti duomenis' %}</button>
+            </form>
+            
+            <div class="navigation-buttons">
+                <a href="{% url 'modules.evaluator:edit_additional_buildings' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
+                <a href="{% url 'modules.evaluator:edit_gallery' order_id pk %}" class="btn-forward">{% trans "Pirmyn" %}</a>
+            </div>
         </div>
     </div>
-</div>
-<form>
-    {% csrf_token %}
-    <div class="form-section">
-        <h3>{% trans 'Šiuo metu duomenų neturime' %}</h3>
-    </div>
-</form>
-<div class="navigation-buttons">
-    <a href="{% url 'modules.evaluator:edit_additional_buildings' order_id pk %}" class="btn-back">{% trans "Atgal" %}</a>
-    <a href="{% url 'modules.evaluator:edit_gallery' order_id pk %}" class="btn-forward">{% trans "Pirmyn" %}</a>
 </div>
 {% endblock %}

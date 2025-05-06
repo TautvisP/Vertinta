@@ -1,8 +1,10 @@
+import datetime
+from decimal import Decimal
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 from core.uauth.models import User, UserMeta
-from ..orders.enums import (HOUSE_TYPE_CHOICES, FLOOR_COUNT_CHOICES, STATUS_CHOICES, HEATING_CHOICES,COMERCIAL_CHOICES, BUILDING_CHOICES, EQUIPMENT_CHOICES, SIMILAR_OBJECT_CHOICES, SIMILAR_ACTION_CHOICES, MUNICIPALITY_CHOICES, LAND_PURPOSE_CHOICES, EVALUATION_PURPOSE_CHOICES, EVALUATION_CASE_CHOICES, IMAGE_CHOICES, CATEGORY_CHOICES, OBJECT_TYPE_CHOICES )
-from ..orders.models import ObjectImage, ImageAnnotation, Report
+from ..orders.enums import (HOUSE_TYPE_CHOICES, FLOOR_COUNT_CHOICES, RC_RIGHTS_TYPE_CHOICES, STATUS_CHOICES, RC_LEGAL_STATUS_CHOICES, RC_BUILDING_TYPE_CHOICES, HEATING_CHOICES,COMERCIAL_CHOICES, BUILDING_CHOICES, EQUIPMENT_CHOICES, SIMILAR_OBJECT_CHOICES, SIMILAR_ACTION_CHOICES, MUNICIPALITY_CHOICES, LAND_PURPOSE_CHOICES, EVALUATION_PURPOSE_CHOICES, EVALUATION_CASE_CHOICES, IMAGE_CHOICES, CATEGORY_CHOICES, OBJECT_TYPE_CHOICES )
+from ..orders.models import ObjectImage, ImageAnnotation, Report, ObjectMeta
 from django.utils.translation import gettext as _
 
 class EvaluatorEditForm(UserChangeForm):
@@ -460,3 +462,189 @@ class FinalReportEngineeringForm(forms.ModelForm):
             'conclusion': forms.Textarea(attrs={'class': 'form-control', 'placeholder': _('Išvada')}),
             'valuation_methodology': forms.Textarea(attrs={'class': 'form-control', 'placeholder': _('Pritaikyta vertinimo metodika')}),
         }
+
+
+
+class RCForm(forms.ModelForm):
+    property_code = forms.CharField(
+        label=_('Unikalus numeris'),
+        max_length=100,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('Įveskite unikalų objekto numerį')
+        })
+    )
+    
+    cadastral_code = forms.CharField(
+        label=_('Kadastro numeris'),
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('Įveskite kadastro numerį')
+        })
+    )
+    
+    building_type = forms.ChoiceField(
+        label=_('Pastato tipas'),
+        choices=RC_BUILDING_TYPE_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'form-control'
+        })
+    )
+    
+    property_value = forms.DecimalField(
+        label=_('Vidutinė rinkos vertė (EUR)'),
+        max_digits=12,
+        decimal_places=2,
+        required=False,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('Įveskite vertę')
+        })
+    )
+    
+    value_determination_date = forms.DateField(
+        label=_('Vertės nustatymo data'),
+        required=False,
+        widget=forms.DateInput(attrs={
+            'class': 'form-control',
+            'type': 'date'
+        })
+    )
+    
+    cadastral_value = forms.DecimalField(
+        label=_('Kadastrinė vertė (EUR)'),
+        max_digits=12,
+        decimal_places=2,
+        required=False,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('Įveskite kadastrinę vertę')
+        })
+    )
+    
+    total_area = forms.DecimalField(
+        label=_('Bendras plotas (m²)'),
+        max_digits=8,
+        decimal_places=2,
+        required=False,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('Įveskite bendrą plotą')
+        })
+    )
+    
+    useful_area = forms.DecimalField(
+        label=_('Naudingas plotas (m²)'),
+        max_digits=8,
+        decimal_places=2,
+        required=False,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('Įveskite naudingą plotą')
+        })
+    )
+    
+    legal_registration_date = forms.DateField(
+        label=_('Teisinės registracijos data'),
+        required=False,
+        widget=forms.DateInput(attrs={
+            'class': 'form-control',
+            'type': 'date'
+        })
+    )
+    
+    rights_type = forms.ChoiceField(
+        label=_('Teisių tipas'),
+        choices=RC_RIGHTS_TYPE_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'form-control'
+        })
+    )
+    
+    legal_status = forms.ChoiceField(
+        label=_('Juridinis statusas'),
+        choices=RC_LEGAL_STATUS_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={
+            'class': 'form-control'
+        })
+    )
+    
+    physical_wear_percentage = forms.DecimalField(
+        label=_('Fizinis nusidėvėjimas (%)'),
+        max_digits=5,
+        decimal_places=2,
+        required=False,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': _('Įveskite fizinį nusidėvėjimą')
+        })
+    )
+    
+    notes = forms.CharField(
+        label=_('Papildoma informacija'),
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': _('Papildoma informacija iš Registrų Centro'),
+            'rows': 4
+        })
+    )
+    
+    class Meta:
+        model = ObjectMeta
+        fields = [
+            'property_code', 'cadastral_code', 'building_type', 
+            'property_value', 'value_determination_date', 'cadastral_value',
+            'total_area', 'useful_area', 'legal_registration_date', 'rights_type',
+            'legal_status', 'physical_wear_percentage', 'notes'
+        ]
+    
+    def __init__(self, *args, **kwargs):
+        obj = kwargs.pop('obj', None)
+        super().__init__(*args, **kwargs)
+        
+        #Populate the data if the object already exists
+        if obj:
+            meta_data = ObjectMeta.objects.filter(ev_object=obj)
+            for meta in meta_data:
+                key = meta.meta_key
+                if key.startswith('rc_'):
+                    key = key[3:]
+                
+                if key in self.fields:
+                    self.fields[key].initial = meta.meta_value
+    
+
+    def save(self, obj=None, commit=True):
+        """
+        Custom save method to save RC data as ObjectMeta entries
+        """
+        if not obj:
+            raise ValueError("Object instance must be provided to save RC data")
+        
+        instance = super().save(commit=False)
+        
+        # Save each field as a separate ObjectMeta record with rc_ prefix
+        if commit:
+            for field_name, value in self.cleaned_data.items():
+                if value is not None:
+                    if isinstance(value, (datetime.date, datetime.datetime)):
+                        value = value.isoformat()
+                    elif isinstance(value, (Decimal, int, float)):
+                        value = str(value)
+                    
+                    meta_key = f"rc_{field_name}"
+                    
+                    ObjectMeta.objects.update_or_create(
+                        ev_object=obj,
+                        meta_key=meta_key,
+                        defaults={'meta_value': value}
+                    )
+        
+        return instance

@@ -19,14 +19,16 @@ from django.urls import path
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.utils.translation import gettext_lazy as _
+from django.shortcuts import redirect
 
-
-
+def redirect_to_login(request):
+    return redirect('core.uauth:login')
 
 urlpatterns = [
     # general
     path('admin/', admin.site.urls),
-    path('', include('rarea.urls', namespace='rarea')),
+    #path('', include('rarea.urls', namespace='rarea')),
+    path('', redirect_to_login, name='root'),
 
     # core
     path('auth/', include('core.uauth.urls', namespace='core/uauth')),

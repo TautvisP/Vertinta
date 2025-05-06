@@ -11,9 +11,9 @@ from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from core.uauth.models import UserMeta
 from shared.mixins.mixins import UserRoleContextMixin
 from core.uauth.models import User
-from modules.orders.models import Object, Order
+from modules.orders.models import Object, Order, ObjectMeta
 from django.views.generic import TemplateView
-from modules.evaluator.forms import EvaluatorEditForm, EvaluatorPasswordChangeForm
+from modules.evaluator.forms import EvaluatorEditForm, EvaluatorPasswordChangeForm, RCForm
 from django.utils.translation import gettext as _
 from shared.mixins.evaluator_access_mixin import EvaluatorAccessMixin
 
@@ -139,29 +139,43 @@ class EvaluationStepsView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleCont
 
 
 
-class RCDataEditView(LoginRequiredMixin, EvaluatorAccessMixin, TemplateView):
+class RCDataEditView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMixin, UpdateView):
     """
-    Third step of the evaluation process. This view should be responsible for getting and displaying data from "Registru Centras".
-    For now it is just a placeholder
+    Third step of the evaluation process. This view handles data from "Registru Centras".
     """
-
     model = Object
-    user_meta = UserMeta
+    form_class = RCForm
     template_name = "edit_RC_data.html"
     login_url = 'core.uauth:login'
     redirect_field_name = 'next'
-
+    user_meta = UserMeta
+    
+    def get_object(self, queryset=None):
+        return get_object_or_404(self.model, pk=self.kwargs['pk'])
+    
     def get_success_url(self):
         return reverse_lazy('modules.evaluator:edit_gallery', kwargs={'order_id': self.kwargs['order_id'], 'pk': self.kwargs['pk']})
-
-
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['obj'] = self.get_object()  # Pass object to form
+        return kwargs
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         order_id = self.kwargs.get('order_id')
         order = get_object_or_404(Order, id=order_id)
-        obj = order.object
+        obj = self.get_object()
         client = order.client
         phone_number = self.user_meta.get_meta(client, 'phone_num')
+        
+        # Get RC data
+        rc_data = {}
+        meta_data = ObjectMeta.objects.filter(ev_object=obj, meta_key__startswith='rc_')
+        for meta in meta_data:
+            key = meta.meta_key[3:]  # Remove rc_ prefix
+            rc_data[key] = meta.meta_value
+        
         context['order'] = order
         context['object'] = obj
         context['client'] = client
@@ -172,5 +186,16 @@ class RCDataEditView(LoginRequiredMixin, EvaluatorAccessMixin, TemplateView):
         context['is_evaluator'] = True
         context['current_step'] = 3
         context['total_steps'] = TOTAL_STEPS
-
+        context['rc_data'] = rc_data
+        
         return context
+    
+    def form_valid(self, form):
+        obj = self.get_object()
+        form.save(obj=obj)
+        messages.success(self.request, _('Registrų centro duomenys sėkmingai išsaugoti.'))
+        return redirect(self.get_success_url())
+    
+    def form_invalid(self, form):
+        messages.error(self.request, _('Prašome pataisyti formoje esančias klaidas.'))
+        return super().form_invalid(form)

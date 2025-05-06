@@ -144,3 +144,7 @@ when adding a nearby organization, a status message should pop up
 + Sekantis įvykis: Meet - 2025-03-28 06:03, if the time has passed, this shouldnt be visible
 
 Dokobit
+
+Dropdown pasirinkimas vertinimo metodui (Palyginamosios vertės metodas, Atkuriamosios (kainos) vertės metodas, Pajamų (diskontuotų pinigų srautų) metodas )
+
++ http://127.0.0.1:8000/orders/order/utility/, MUST FIX CSS

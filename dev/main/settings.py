@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'django_admin_logs',
-
+    
+    'django_extensions',
 
     'core.uauth',
     'parea',
