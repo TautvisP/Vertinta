@@ -107,8 +107,8 @@ class AgencyRegisterWithTokenView(CreateView):
         user.is_active = True  # Automatically activate agency users
         user.save()
         
-        # Add to agency group
-        agency_group = Group.objects.get(name='Agency')
+        # Get or create the agency group
+        agency_group, created = Group.objects.get_or_create(name='Agency')
         user.groups.add(agency_group)
         
         # Mark the invitation as used

@@ -26,8 +26,9 @@ SECRET_KEY = '0b6#8bvn=jt__=2q7ebp!oj86!%al%^o8f6yv)!4#jk775%8g#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = ['vertinta', '127.0.0.1', 'localhost']
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 INSTALLED_APPS = [

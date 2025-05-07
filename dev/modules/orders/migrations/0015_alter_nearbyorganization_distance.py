@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='nearbyorganization',
             name='distance',
-            field=models.DecimalField(max_digits=8),
+            field=models.DecimalField(max_digits=8, decimal_places=2),
         ),
     ]

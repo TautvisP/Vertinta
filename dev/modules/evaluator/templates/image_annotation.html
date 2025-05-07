@@ -16,8 +16,8 @@
         <h2>{% trans "Nuotraukos Anotavimas" %}</h2>
         <div id="notification-container" class="notification-container"></div>
         <div class="content">
-            <div class="annotation-container" id="annotation-container" style="position: relative;">
-                <img id="annotatable-image" src="{{ image.image.url }}" alt="Object Image" class="annotatable-image">
+            <div class="annotation-container" id="annotation-container" style="position: relative; max-width: 800px; max-height: 600px; margin: 0 auto;">
+                <img id="annotatable-image" src="{{ image.image.url }}" alt="Object Image" class="annotatable-image fixed-size-image">
                 {% for annotation in annotations %}
                 <div class="marker existing-marker" data-id="{{ annotation.id }}" style="left: {{ annotation.x_coordinate }}%; top: {{ annotation.y_coordinate }}%;">
                     <span class="marker-number">{{ forloop.counter }}</span>

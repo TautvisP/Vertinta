@@ -16,13 +16,24 @@ export default class ObjectGallery extends Component {
     init() {
         this.attach(this.elm);
 
-        document.getElementById('openModal').addEventListener('click', () => {
-            this.openModal();
-        });
+        const openModalBtn = document.getElementById('openModal');
+        if (openModalBtn) {
+            const newOpenBtn = openModalBtn.cloneNode(true);
+            openModalBtn.parentNode.replaceChild(newOpenBtn, openModalBtn);
+            newOpenBtn.addEventListener('click', () => {
+                this.openModal();
+            });
+        }
 
-        document.querySelector('.close').addEventListener('click', () => {
-            this.closeModal();
-        });
+        const closeBtn = document.querySelector('#myModal .close');
+        if (closeBtn) {
+            // Remove any existing listeners to prevent duplicates
+            const newCloseBtn = closeBtn.cloneNode(true);
+            closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+            newCloseBtn.addEventListener('click', () => {
+                this.closeModal();
+            });
+        }
 
         window.addEventListener('click', (event) => {
             this.onWindowClick(event);
@@ -54,32 +65,43 @@ export default class ObjectGallery extends Component {
         const dropAreas = document.querySelectorAll('.drop');
         dropAreas.forEach(dropArea => {
             const fileInput = dropArea.querySelector('input[type="file"]');
-
-            dropArea.addEventListener('dragover', (event) => {
+            
+            const newDropArea = dropArea.cloneNode(true);
+            dropArea.parentNode.replaceChild(newDropArea, dropArea);
+            const newFileInput = newDropArea.querySelector('input[type="file"]');
+            
+            newDropArea.addEventListener('dragover', (event) => {
                 event.preventDefault();
-                dropArea.classList.add('dragover');
+                newDropArea.classList.add('dragover');
             });
 
-            dropArea.addEventListener('dragleave', () => {
-                dropArea.classList.remove('dragover');
+            newDropArea.addEventListener('dragleave', () => {
+                newDropArea.classList.remove('dragover');
             });
 
-            dropArea.addEventListener('drop', (event) => {
+            newDropArea.addEventListener('drop', (event) => {
                 event.preventDefault();
-                dropArea.classList.remove('dragover');
+                newDropArea.classList.remove('dragover');
                 const files = event.dataTransfer.files;
-                fileInput.files = files;
-                dropArea.querySelector('p').textContent = files[0].name;
-            });
-
-            dropArea.addEventListener('click', () => {
-                fileInput.click();
-            });
-
-            fileInput.addEventListener('change', () => {
-                const files = fileInput.files;
+                newFileInput.files = files;
                 if (files.length > 0) {
-                    dropArea.querySelector('p').textContent = files[0].name;
+                    newDropArea.querySelector('p').textContent = files[0].name;
+                }
+            });
+
+            newDropArea.addEventListener('click', (event) => {
+                newFileInput.click();
+                event.stopPropagation();
+            });
+
+            newFileInput.addEventListener('click', (event) => {
+                event.stopPropagation();
+            });
+
+            newFileInput.addEventListener('change', () => {
+                const files = newFileInput.files;
+                if (files.length > 0) {
+                    newDropArea.querySelector('p').textContent = files[0].name;
                 }
             });
         });

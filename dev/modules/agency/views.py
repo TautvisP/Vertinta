@@ -196,7 +196,7 @@ class CreateEvaluatorAccountView(LoginRequiredMixin, UserPassesTestMixin, Create
         user = form.save(commit=False)
         user.agency = self.request.user
         user.save()
-        evaluator_group = Group.objects.get(name='Evaluator')
+        evaluator_group, created = Group.objects.get_or_create(name='Evaluator')
         user.groups.add(evaluator_group)
         messages.success(self.request, _("Vertintojo paskyra sėkmingai sukurta!"))
         return super().form_valid(form)

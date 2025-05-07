@@ -11,5 +11,5 @@ class MainObjectGallery {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    new MainObjectGallery();
+    window.objectGallery = new ObjectGallery('gallery-container', {}, ['click']);
 });

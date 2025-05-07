@@ -254,9 +254,9 @@ h2 {
     background-color: #2563EB;
 }
 
-
 .order-data {
     padding-bottom: 10%;
+    font-size: 18px;
 }
 
 .btn-form {
@@ -926,9 +926,8 @@ header {
 }
 
 .messages li {
-    padding: 10px;
+    padding: 5px;
     border-radius: 5px;
-    margin-bottom: 10px;
     font-size: 14px;
 }
 
@@ -1246,7 +1245,7 @@ input[type="file"].form-control {
 
 .order-evaluator {
     color: #555;
-    font-size: 14px;
+    font-size: 16px;
     margin-top: 5px;
 }
 
@@ -1658,17 +1657,18 @@ input[type="file"].form-control {
 
 .notification-title {
     font-weight: bold;
+    font-size: 19px;
     margin-bottom: 4px;
 }
 
 .notification-message {
     color: #555;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .notification-time {
     color: #999;
-    font-size: 12px;
+    font-size: 16px;
     margin-top: 4px;
 }
 
@@ -1681,7 +1681,7 @@ input[type="file"].form-control {
     color: #4E78D2;
     text-decoration: none;
     margin-right: 15px;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .notification-status {

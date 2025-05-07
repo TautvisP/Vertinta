@@ -12,7 +12,14 @@ from django.apps import AppConfig
 User = get_user_model()
 
 def create_user_groups_and_permissions(sender, **kwargs):
-    order_content_type = ContentType.objects.get(app_label='orders', model='order')
+    
+    try:
+        order_content_type = ContentType.objects.get(app_label='orders', model='order')
+    except ContentType.DoesNotExist:
+        # ContentType doesn't exist yet, so we can't create the permissions
+        # This will happen during initial migrations
+        print("Warning: ContentType for orders.order not found. Skipping permission creation.")
+        return
 
     groups_permissions = {
         'Regular': [
