@@ -32,6 +32,9 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
 from django.http import JsonResponse
+import tempfile
+from docx2pdf import convert
+import pythoncom
 
 
 # Global context variables
@@ -192,33 +195,34 @@ class DocumentImportView(LoginRequiredMixin, EvaluatorAccessMixin, TemplateView)
         
         elif file_extension == '.docx':
             # Handle .docx file conversion
-            temp_file_path = os.path.join(settings.MEDIA_ROOT, 'uploaded_documents', f"{file_name}{file_extension}")
-            
-            with open(temp_file_path, 'wb') as temp_file:
-
-                for chunk in file.chunks():
-                    temp_file.write(chunk)
-
-            pypandoc.download_pandoc()
-
-            # Convert the file to PDF using pypandoc with pdflatex as the PDF engine
-            pdf_path = os.path.join(settings.MEDIA_ROOT, 'uploaded_documents', f"{file_name}.pdf")
+            pythoncom.CoInitialize()
 
             try:
-                pypandoc.convert_file(temp_file_path, 'pdf', outputfile=pdf_path, extra_args=['--pdf-engine=pdflatex'])
-                print(f"Converted {temp_file_path} to {pdf_path}")
+                with tempfile.NamedTemporaryFile(suffix=file_extension, delete=False) as temp_input:
 
-            except Exception as e:
-                print(f"Conversion failed: {e}")
-                raise
+                    for chunk in file.chunks():
+                        temp_input.write(chunk)
 
-            with open(pdf_path, 'rb') as pdf_file:
-                pdf_content = pdf_file.read()
+                    temp_input_path = temp_input.name
+                temp_output_path = os.path.join(settings.MEDIA_ROOT, 'uploaded_documents', f"{file_name}.pdf")
 
-            pdf_file = ContentFile(pdf_content, name=f"{file_name}.pdf")
-            os.remove(temp_file_path)
+                try:
+                    convert(temp_input_path, temp_output_path)
 
-            return pdf_file
+                    with open(temp_output_path, 'rb') as pdf_file:
+                        pdf_content = pdf_file.read()
+
+                    pdf_file = ContentFile(pdf_content, name=f"{file_name}.pdf")
+                    os.remove(temp_input_path)
+                    os.remove(temp_output_path)
+
+                    return pdf_file
+
+                except Exception as e:
+                    print(f"Conversion failed with docx2pdf: {e}")
+                    raise
+            finally:
+                pythoncom.CoUninitialize()
         
         elif file_extension == '.txt':
             # Handle .txt file conversion

@@ -630,7 +630,7 @@ header {
 
 .request-info {
     margin: 5px 0 0;
-    font-size: 14px;
+    font-size: 17px;
     color: #555;
 }
 
@@ -945,7 +945,7 @@ header {
 
 .error-message {
     color: #ff0000;
-    font-size: 0.9rem;
+    font-size: 17px;
     margin-top: 5px;
 }
 
@@ -1760,4 +1760,20 @@ input[type="file"].form-control {
     width: 24px;
     height: 24px;
     vertical-align: middle;
+}
+
+.no-items-message {
+    background-color: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.no-items-message p {
+    color: #666;
+    font-size: 18px;
+    margin: 0;
 }

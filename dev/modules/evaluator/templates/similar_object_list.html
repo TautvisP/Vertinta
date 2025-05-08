@@ -36,37 +36,44 @@
         
         <div class="content">
             <div class="requests-list">
-                {% for similar_object in similar_objects %}
-                <div class="request-item">
-                    <div class="request-details">
-                        <p class="request-title">#{{ forloop.counter }} {{ similar_object.original_object.street }} {{ similar_object.original_object.house_no }}, {{ similar_object.original_object.municipality|get_municipality_name }}</p>
-                        <p class="request-info">
-                            {{ similar_object.original_object.object_type }}
-                            · {{ similar_object.living_size }} m²
-                            · {{ similar_object.room_count }} kambariai
-                        </p>
-                    </div>
-                   <p class="request-price">{{ similar_object.price }} EUR</p>
-                    <div class="request-actions">
-                        <a href="{% url 'modules.evaluator:edit_similar_object_data' order_id=order_id pk=pk %}?edit={{ similar_object.id }}" class="icon-button" title="{% trans 'Redaguoti' %}">
-                            <img src="{% static 'icons/edit-pencil.svg' %}" alt="{% trans 'Redaguoti' %}">
-                        </a>
-                        <button type="button" class="icon-button copy-link-button" data-link="{{ similar_object.link }}" title="{% trans 'Kopijuoti nuorodą' %}">
-                            <img src="{% static 'icons/link.svg' %}" alt="{% trans 'Kopijuoti nuorodą' %}">
-                        </button>
-                        <button type="button" class="icon-button open-comment-modal-button" data-comment="{{ similar_object.description }}" title="{% trans 'Peržiūrėti komentarą' %}">
-                            <img src="{% static 'icons/comment.svg' %}" alt="{% trans 'Peržiūrėti komentarą' %}">
-                        </button>
-                        <form action="{% url 'modules.evaluator:similar_object_list' order_id=order_id pk=pk %}" method="POST" style="display:inline;">
-                            {% csrf_token %}
-                            <input type="hidden" name="similar_object_id" value="{{ similar_object.id }}">
-                            <button type="submit" class="icon-button">
-                                <img src="{% static 'icons/trash.svg' %}" title="{% trans 'Ištrinti' %}">
+                {% if similar_objects %}
+                    {% for similar_object in similar_objects %}
+                    <div class="request-item">
+                        <div class="request-details">
+                            <p class="request-title">#{{ forloop.counter }} {{ similar_object.original_object.street }} {{ similar_object.original_object.house_no }}, {{ similar_object.original_object.municipality|get_municipality_name }}</p>
+                            <p class="request-info">
+                                {{ similar_object.original_object.object_type }}
+                                · {{ similar_object.living_size }} m²
+                                · {{ similar_object.room_count }} kambariai
+                            </p>
+                        </div>
+                        <p class="request-price">{{ similar_object.price }} EUR</p>
+                        <div class="request-actions">
+                            <!-- Actions remain unchanged -->
+                            <a href="{% url 'modules.evaluator:edit_similar_object_data' order_id=order_id pk=pk %}?edit={{ similar_object.id }}" class="icon-button" title="{% trans 'Redaguoti' %}">
+                                <img src="{% static 'icons/edit-pencil.svg' %}" alt="{% trans 'Redaguoti' %}">
+                            </a>
+                            <button type="button" class="icon-button copy-link-button" data-link="{{ similar_object.link }}" title="{% trans 'Kopijuoti nuorodą' %}">
+                                <img src="{% static 'icons/link.svg' %}" alt="{% trans 'Kopijuoti nuorodą' %}">
                             </button>
-                        </form>
+                            <button type="button" class="icon-button open-comment-modal-button" data-comment="{{ similar_object.description }}" title="{% trans 'Peržiūrėti komentarą' %}">
+                                <img src="{% static 'icons/comment.svg' %}" alt="{% trans 'Peržiūrėti komentarą' %}">
+                            </button>
+                            <form action="{% url 'modules.evaluator:similar_object_list' order_id=order_id pk=pk %}" method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="similar_object_id" value="{{ similar_object.id }}">
+                                <button type="submit" class="icon-button">
+                                    <img src="{% static 'icons/trash.svg' %}" title="{% trans 'Ištrinti' %}">
+                                </button>
+                            </form>
+                        </div>
                     </div>
+                    {% endfor %}
+                {% else %}
+                <div class="no-items-message">
+                    <p>{% trans 'Panašių objektų sąrašas tuščias. Norėdami pridėti panašų objektą, spauskite „Pridėti Panašų Objektą" mygtuką.' %}</p>
                 </div>
-                {% endfor %}
+                {% endif %}
             </div>
         </div>
         <a href="{% url 'modules.evaluator:edit_similar_object_data' order_id pk %}" class="btn-forward">{% trans "Pridėti Panašų Objektą" %}</a>

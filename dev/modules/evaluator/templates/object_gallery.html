@@ -34,25 +34,31 @@
         </div>
 
         <div class="gallery">
-            {% for image in images %}
-            <div class="image-card">
-                <div class="image-placeholder">
-                    <img src="{{ image.image.url }}" alt="Object Image">
+            {% if images %}
+                {% for image in images %}
+                <div class="image-card">
+                    <div class="image-placeholder">
+                        <img src="{{ image.image.url }}" alt="Object Image">
+                    </div>
+                    <div class="image-title">
+                        <p class="image-name">{{ image.comment }}</p>
+                    </div> 
+                    <div class="image-buttons">
+                        <a href="{% url 'modules.evaluator:image_annotation' order_id=order.id image_id=image.id pk=pk %}" class="btn btn-secondary">{% trans "Anotuoti" %}</a>
+                        <form method="post" action="{% url 'modules.evaluator:delete_image' order_id=order.id image_id=image.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="icon-button" title="{% trans 'Ištrinti' %}">
+                                <img src="{% static 'icons/trash.svg' %}">
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                <div class="image-title">
-                    <p class="image-name">{{ image.comment }}</p>
-                </div> 
-                <div class="image-buttons">
-                    <a href="{% url 'modules.evaluator:image_annotation' order_id=order.id image_id=image.id pk=pk %}" class="btn btn-secondary">{% trans "Anotuoti" %}</a>
-                    <form method="post" action="{% url 'modules.evaluator:delete_image' order_id=order.id image_id=image.id %}" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="icon-button" title="{% trans 'Ištrinti' %}">
-                            <img src="{% static 'icons/trash.svg' %}">
-                        </button>
-                    </form>
+                {% endfor %}
+            {% else %}
+                <div class="no-items-message">
+                    <p>{% trans 'Nuotraukų sąrašas tuščias. Norėdami pridėti nuotrauką, spauskite „Pridėti +" mygtuką.' %}</p>
                 </div>
-            </div>
-            {% endfor %}
+            {% endif %}
         </div>
     </div>
     
