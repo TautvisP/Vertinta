@@ -1,0 +1,31 @@
+<div class="report-title-section page-break">
+    <h1>{{ report_title }}</h1>
+    <img src="{{ static_url }}logo.png" alt="Įmonės logotipas" style="width: 200px; display: block; margin: 30px auto;">
+    <table style="margin: 0 auto;">
+        <tr>
+            <td><strong>Užsakovo vardas:</strong></td>
+            <td>{{ client_first_name }}</td>
+        </tr>
+        <tr>
+            <td><strong>Užsakovo pavardė:</strong></td>
+            <td>{{ client_last_name }}</td>
+        </tr>
+        <tr>
+            <td><strong>Telefono numeris:</strong></td>
+            <td>{{ customer_phone }}</td>
+        </tr>
+        <tr>
+            <td><strong>Ataskaitos data:</strong></td>
+            <td>{{ report_date }}</td>
+        </tr>
+        <tr>
+            <td><strong>Vertinamas turtas:</strong></td>
+            <td>{{ property_street }} {{ property_house_no }}, {{ property_municipality }}</td>
+        </tr>
+    </table>
+    <div style="margin-top: 60px;">
+        <strong>Vertinimo įmonė:</strong> {{ company_name }}<br>
+        <strong>Vadovas:</strong> {{ manager_first_name }} {{ manager_last_name }}<br>
+        <strong>Vertintojas:</strong> {{ evaluator_first_name }} {{ evaluator_last_name }}
+    </div>
+</div>

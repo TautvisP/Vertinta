@@ -1,0 +1,72 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    font-size: 12pt;
+}
+h1 {
+    text-align: center;
+    font-size: 24pt;
+}
+h2 {
+    font-size: 18pt;
+    border-bottom: 1px solid #ccc;
+    
+}
+h3 {
+    font-size: 14pt;
+    margin-top: 15px;
+}
+.page-break {
+    page-break-after: always;
+}
+.property-image {
+    max-width: 80%;
+    display: block;
+    margin: 10px auto;
+}
+.image-caption {
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+.annotation {
+    color: red;
+    font-weight: bold;
+    margin: 5px 0;
+}
+.report-section {
+    margin-bottom: 20px;
+}
+.source-note {
+    font-style: italic;
+    font-size: 10pt;
+    margin-top: 20px;
+}
+ol {
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+ol li {
+    margin-bottom: 5px;
+}
+ol ol {
+    list-style-type: lower-alpha;
+    margin-top: 5px;
+}
+
+.annotation-bubble {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background: #ffeb3b;
+    border: 2px solid #333;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+    z-index: 2;
+}

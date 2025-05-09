@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ report_title }}</title>
+</head>
+<body>
+    <p><strong>Kliento vardas:</strong> {{ client_first_name }}</p>
+    <p><strong>Kliento pavardė:</strong> {{ client_last_name }}</p>
+    {% if customer_phone %}
+    <p><strong>Telefono numeris:</strong> {{ customer_phone }}</p>
+    {% endif %}
+    
+    <!-- Property Information -->
+    <h2>Vertinamas turtas</h2>
+    <p><strong>Adresas:</strong> {{ property_street }} {{ property_house_no }}</p>
+    <p><strong>Savivaldybė:</strong> {{ property_municipality }}</p>
+    
+    {% include "report/report_title.html" %}
+    {% include "report/report_client.html" %}
+    {% include "report/report_company.html" %}
+    {% include "report/report_property.html" %}
+    {% include "report/report_details.html" %}
+    {% include "report/report_gallery.html" %}
+
+    <!-- Static text sections -->
+    {% include "report/static_text/term_explanation.html" %}
+    {% include "report/static_text/report_evaluation_regulation.html" %}
+    {% include "report/static_text/report_general_provisions.html" %}
+    {% include "report/static_text/report_rights.html" %}
+    
+    <!-- Valuation Methodology -->
+    <h2>Vertinimo metodika</h2>
+    {{ valuation_methodology|linebreaks }}
+
+    <!-- Conclusion Section -->
+    <h2>Išvada</h2>
+    {{ conclusion|linebreaks }}
+    
+</body>
+</html>

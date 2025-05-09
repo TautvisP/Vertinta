@@ -1,0 +1,35 @@
+<div class="report-section page-break">
+    <h2>Galerija</h2>
+    {% for image in images %}
+        <div style="margin-bottom: 40px;">
+            {% if image.comment and image.category %}
+                <div style="font-weight: bold; margin-bottom: 8px;">{{ image.comment }}. Nuotraukos kategorija: {{ image.category }}</div>
+            {% endif %}
+            <div style="position: relative; display: inline-block; width: 400px; max-width: 100%;">
+                {% if image.file_url %}
+                <img src="{{ image.file_url }}" alt="{{ image.comment }}" style="width: 100%; display: block;">
+                {% endif %}
+                {% for annotation in image.annotations %}
+                    {% if annotation.x_coordinate and annotation.y_coordinate %}
+                        <div class="annotation-bubble" style="left: {{ annotation.x_coordinate }}%; top: {{ annotation.y_coordinate }}%;">
+                        {{ forloop.counter }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div style="text-align: center; margin-top: 8px;">
+                <figcaption>{{ image.comment }}</figcaption>
+            </div>
+            {% for annotation in image.annotations %}
+                <div style="margin-left: 2em; margin-bottom: 8px;">
+                    <strong>Anotacija {{ forloop.counter }}:</strong> {{ annotation.annotation_text }}
+                    {% if annotation.annotation_image_url %}
+                        <div>
+                            <img src="{{ annotation.annotation_image_url }}" alt="Annotation Image {{ forloop.counter }}" style="max-width: 200px; margin-top: 5px;">
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</div>

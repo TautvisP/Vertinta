@@ -1,0 +1,31 @@
+<div class="report-section page-break">
+    <h2>Užsakovas</h2>
+    <p><strong>Užsakovo informacija:</strong></p>
+    <p>
+        Užsakovas {{ client_first_name }} {{ client_last_name }}.
+        Kontaktinis telefono numeris {{ customer_phone }}.
+        Užsakovas pateikė šią informaciją vertinimo ataskaitai.
+        Užsakovas yra atsakingas už pateiktų duomenų tikslumą ir išsamumą.
+    </p>
+    {% if client.email %}
+        <p>El. paštas: {{ client.email }}</p>
+    {% endif %}
+    {% if client.address %}
+        <p>Adresas: {{ client.address }}</p>
+    {% endif %}
+    {% if order.order_date %}
+        <p>Užsakymo data: {{ order.order_date }}</p>
+    {% endif %}
+    {% if client.comments %}
+        <p>Komentarai: {{ client.comments }}</p>
+    {% endif %}
+    <p>
+        Užsakovas pateikė visą reikalingą informaciją apie vertinamą turtą ir patvirtino jos tikslumą. Užsakovas įsipareigoja pranešti apie bet kokius reikšmingus pokyčius, galinčius turėti įtakos turto vertei.
+    </p>
+    <p>
+        Vertinimo ataskaita parengta remiantis užsakovo pateiktais dokumentais ir duomenimis, taip pat viešai prieinama informacija. Vertintojas neatsako už užsakovo pateiktų duomenų tikslumą, jei jie buvo pateikti netikslūs ar neišsamūs.
+    </p>
+    <p>
+        <strong>Pastaba:</strong> Užsakovas turi teisę susipažinti su ataskaitos turiniu ir, esant poreikiui, pateikti pastabas ar papildomą informaciją vertintojui iki galutinio ataskaitos patvirtinimo.
+    </p>
+</div>

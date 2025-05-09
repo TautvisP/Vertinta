@@ -1,0 +1,28 @@
+<div class="report-section page-break">
+    <h2>Vertinimo įmonė</h2>
+    <p><strong>Įmonės pavadinimas:</strong> {{ company_name }}</p>
+    <p><strong>Vadovas:</strong> {{ manager_first_name }} {{ manager_last_name }}</p>
+    <p><strong>Vertintojas:</strong> {{ evaluator_first_name }} {{ evaluator_last_name }}</p>
+    {% if company_code %}
+        <p><strong>Įmonės kodas:</strong> {{ company_code }}</p>
+    {% endif %}
+    {% if company_address %}
+        <p><strong>Adresas:</strong> {{ company_address }}</p>
+    {% endif %}
+    {% if company_phone %}
+        <p><strong>Telefonas:</strong> {{ company_phone }}</p>
+    {% endif %}
+    {% if company_email %}
+        <p><strong>El. paštas:</strong> {{ company_email }}</p>
+    {% endif %}
+
+    <p>
+        Įmonė turi visus reikiamus leidimus ir kvalifikacijas vykdyti nekilnojamojo turto vertinimo veiklą pagal Lietuvos Respublikos įstatymus ir tarptautinius standartus. Vertinimo įmonė yra apdrausta civilinės atsakomybės draudimu, užtikrinančiu užsakovo interesų apsaugą.
+    </p>
+    <p>
+        Vertinimą atliko kvalifikuotas vertintojas, turintis atitinkamą licenciją ir ilgametę patirtį nekilnojamojo turto vertinimo srityje. Vertinimo procesas atliktas laikantis profesinės etikos ir nepriklausomumo principų.
+    </p>
+    <p>
+        Vertinimo įmonė įsipareigoja saugoti užsakovo pateiktą informaciją ir naudoti ją tik ataskaitos rengimo tikslais. Visa informacija, susijusi su vertinimu, yra konfidenciali ir nebus perduota tretiesiems asmenims be užsakovo sutikimo, išskyrus įstatymų numatytus atvejus.
+    </p>
+</div>

@@ -23,7 +23,9 @@ from datetime import datetime
 from django.contrib import messages
 from shared.mixins.evaluator_access_mixin import EvaluatorAccessMixin
 from modules.orders.utils import create_report_submission_notification
-
+from weasyprint import HTML, CSS
+from io import BytesIO
+from django.core.files.base import ContentFile
 
 # Global context variables
 TOTAL_STEPS = 8
@@ -205,180 +207,145 @@ class FinalReportEngineeringView(LoginRequiredMixin, EvaluatorAccessMixin, UserR
         order_id = self.kwargs.get('order_id')
         order = get_object_or_404(Order, id=order_id)
         report, created = Report.objects.get_or_create(order=order)
-        
-        # Create the form with the POST data and the report instance
+
         final_report_text_form = FinalReportEngineeringForm(request.POST, instance=report)
-        
+
         if final_report_text_form.is_valid():
             try:
-                # Save the form data explicitly
                 report = final_report_text_form.save(commit=True)
-                print(f"Saved report data: engineering={report.engineering}, addictions={report.addictions}, floor_plan={report.floor_plan}, district={report.district}, conclusion={report.conclusion}, valuation_methodology={report.valuation_methodology}")
-                
-                # Generate report using the utility class
-                success, message = LaTeXReportGenerator.generate_report(order, report, request)
-                
+                success, message = PDFReportGenerator.generate_report(order, report, request)
+
                 if success:
                     messages.success(request, message)
-                    # Redirect to the evaluator order list on success
                     return redirect('modules.orders:evaluator_order_list')
                 else:
                     messages.error(request, message)
-                    
+
             except Exception as e:
                 print(f"Error generating report: {str(e)}")
                 messages.error(request, f"Klaida generuojant ataskaitą: {str(e)}")
         else:
-            # If the form is invalid, log the errors
             print(f"Form errors: {final_report_text_form.errors}")
+
             for field, errors in final_report_text_form.errors.items():
+
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
-        
-        # If form is invalid or there was an error, redisplay with errors
+
         context = self.get_context_data(**kwargs)
         context['final_report_text_form'] = final_report_text_form
         return self.render_to_response(context)
 
 
 
-class LaTeXReportGenerator:
-    """
-    Utility class for generating LaTeX reports.
-    This class handles the actual report generation logic,
-    separating it from the view handling.
-    """
+class PDFReportGenerator:
+
+    @staticmethod
+    def get_image_file_url(image_field):
+        if not image_field:
+            return ''
+        abs_path = os.path.abspath(os.path.join(settings.MEDIA_ROOT, image_field.name))
+        # Convert backslashes to forward slashes for file URLs
+        file_url = 'file:///' + abs_path.replace('\\', '/')
+        return file_url
+
+
     @staticmethod
     def generate_report(order, report, request):
         """
-        Generate a LaTeX report for the given order and report.
+        Generate a PDF report for the given order and report using WeasyPrint.
         Returns (success, message) tuple.
         """
         try:
             obj = order.object
             client = order.client
             user_meta = UserMeta
-            
-            # Check if report data is complete
-            if not LaTeXReportGenerator.check_report_data_complete(report):
+
+            if not PDFReportGenerator.check_report_data_complete(report):
                 return False, _("Nepavyko sugeneruoti ataskaitos - trūksta būtinų duomenų.")
-            
-            # Get metadata and prepare context
+
             phone_number = user_meta.get_meta(client, 'phone_num')
-            images = obj.images.all()
             meta_data = ObjectMeta.objects.filter(ev_object=obj)
             meta_dict = {meta.meta_key: meta.meta_value for meta in meta_data}
+            images = []
+
+            for img in obj.images.all():
+                img_dict = {
+                    'comment': img.comment,
+                    'category': img.category,
+                    'file_url': PDFReportGenerator.get_image_file_url(img.image),
+                    'annotations': []
+                }
+
+                for annotation in img.annotations.all():
+                    annotation_dict = {
+                        'annotation_text': annotation.annotation_text,
+                        'annotation_image_url': PDFReportGenerator.get_image_file_url(annotation.annotation_image) if annotation.annotation_image else '',
+                        'x_coordinate': annotation.x_coordinate,
+                        'y_coordinate': annotation.y_coordinate,
+                    }
+                    img_dict['annotations'].append(annotation_dict)
+
+                images.append(img_dict)
             
-            # Context data for LaTeX templates
-            context = {
+            # Create HTML context for rendering the template
+            html_context = {
                 'report_title': 'Turto Vertinimo Ataskaita',
-                'property_id': obj.id,
+                'report_date': datetime.now().strftime('%Y-%m-%d'),
+                'client_first_name': client.first_name,
+                'client_last_name': client.last_name,
+                'customer_phone': phone_number,
                 'property_street': obj.street,
                 'property_house_no': obj.house_no,
                 'property_municipality': obj.municipality,
-                'client_first_name': client.first_name,
-                'client_last_name': client.last_name,
-                'company_name': 'Vertinta',
-                'manager_first_name': 'Vadovas',
-                'manager_last_name': 'Pavardė',
                 'evaluator_first_name': request.user.first_name,
                 'evaluator_last_name': request.user.last_name,
-                'report_date': datetime.now().strftime('%Y-%m-%d'),
-                'customer_name': client.first_name,
-                'customer_surname': client.last_name,
-                'customer_phone': phone_number,
-                'visit_date': report.visit_date,
-                'description': report.description,
+                'company_name': 'Vertinta',
+                'images': images,
                 'engineering': report.engineering,
                 'addictions': report.addictions,
                 'floor_plan': report.floor_plan,
                 'district': report.district,
                 'conclusion': report.conclusion,
                 'valuation_methodology': report.valuation_methodology,
-                'images': images,
+                'media_url': settings.MEDIA_URL,
                 'meta_data': meta_dict,
-                'latitude': obj.latitude,
-                'longitude': obj.longitude,
             }
-            
-            # Render LaTeX templates
-            report_title = render_to_string('report/report_title.tex', context)
-            report_property = render_to_string('report/report_property.tex', context)
-            report_client = render_to_string('report/report_client.tex', context)
-            report_company = render_to_string('report/report_company.tex', context)
-            report_details = render_to_string('report/report_details.tex', context)
-            report_gallery = render_to_string('report/report_gallery.tex', context)
-            report_regulation = render_to_string('report/static_text/report_evaluation_regulation.tex', context)
-            report_general = render_to_string('report/static_text/report_general_provisions.tex', context)
-            report_rights = render_to_string('report/static_text/report_rights.tex', context)
-            report_terms = render_to_string('report/static_text/term_explanation.tex', context)
-            
-            # Combine LaTeX templates
-            latex_content = f"""
-            \\documentclass{{article}}
-            \\usepackage[utf8]{{inputenc}}
-            \\usepackage[lithuanian]{{babel}}
-            \\usepackage[T1]{{fontenc}}
-            \\usepackage{{graphicx}}
-            \\usepackage{{tikz}}
-            \\usetikzlibrary{{backgrounds}}
-            
-            \\pgfdeclarelayer{{background}}
-            \\pgfdeclarelayer{{foreground}}
-            \\pgfsetlayers{{background,main,foreground}}
-            
-            \\begin{{document}}
-            \\sloppy
-            {report_title}
-            {report_terms}
-            {report_regulation}
-            {report_general}
-            {report_rights}
-            {report_client}
-            {report_property}
-            {report_company}
-            {report_details}
-            {report_gallery}
-            \\end{{document}}
-            """
-            
-            # Write LaTeX file
-            latex_file_path = os.path.join(settings.MEDIA_ROOT, f'report_{order.id}.tex')
-            with open(latex_file_path, 'w') as latex_file:
-                latex_file.write(latex_content)
-            
-            # Generate PDF
-            pdf_file_path = os.path.join(settings.MEDIA_ROOT, f'report_{order.id}.pdf')
-            subprocess.run(['pdflatex', '-output-directory', settings.MEDIA_ROOT, latex_file_path])
-            
-            # Save PDF to report object
-            report_file_generated = False
-            try:
-                with open(pdf_file_path, 'rb') as pdf_file:
-                    report.report_file.save(f'report_{order.id}.pdf', pdf_file)
-                    report_file_generated = True
-            except Exception as e:
-                print(f"Error saving PDF: {str(e)}")
-                return False, f"Nepavyko išsaugoti ataskaitos failo: {str(e)}"
-            
-            if report_file_generated:
-                report.status = 'pending'
-                report.save()
-                
-                # Notify agency
-                LaTeXReportGenerator.notify_agency(order, request)
 
-                # Create notification for agency
-                create_report_submission_notification(report, request.user)
-                
-                return True, _("Ataskaita sėkmingai sugeneruota ir išsiųsta agentūrai patvirtinimui.")
-            else:
-                return False, _("Nepavyko sugeneruoti ataskaitos.")
-                
+            # Render HTML template
+            html_content = render_to_string('report/full_report.html', html_context)
+
+            debug_html_path = os.path.join(settings.MEDIA_ROOT, f'report_{order.id}_debug.html')
+            with open(debug_html_path, 'w', encoding='utf-8') as f:
+                f.write(html_content)
+
+            # Generate PDF using WeasyPrint
+            pdf_file = BytesIO()
+
+            css_path = os.path.join(settings.BASE_DIR, 'modules', 'evaluator', 'templates', 'report', 'report.css')
+            css = CSS(filename=css_path) if os.path.exists(css_path) else None
+
+            HTML(string=html_content, base_url=settings.MEDIA_ROOT).write_pdf(pdf_file, stylesheets=[css] if css else None)
+            pdf_bytes = pdf_file.getvalue()
+            pdf_file.close()
+
+            # Save PDF to report object
+            report.report_file.save(f'report_{order.id}.pdf', ContentFile(pdf_bytes))
+
+            report.status = 'pending'
+            report.save()
+            PDFReportGenerator.notify_agency(order, request)
+            create_report_submission_notification(report, request.user)
+
+            return True, _("Ataskaita sėkmingai sugeneruota ir išsiųsta agentūrai patvirtinimui.")
+
         except Exception as e:
-            print(f"Error generating report: {str(e)}")
+            import traceback
+            print(f"Error generating PDF report: {str(e)}")
+            print(traceback.format_exc())
             return False, f"Klaida generuojant ataskaitą: {str(e)}"
-    
+
+
     @staticmethod
     def check_report_data_complete(report):
         """
@@ -395,6 +362,7 @@ class LaTeXReportGenerator:
                 return False
         
         return True
+
     
     @staticmethod
     def notify_agency(order, request):
@@ -435,7 +403,7 @@ Nekilnojamo Turto Vertinimo Sistema
             print(f"Message: {message}")
             print("="*80 + "\n")
             
-            # In production you would send the actual email
+            # In production
             # email = EmailMessage(
             #     subject=subject,
             #     body=message,

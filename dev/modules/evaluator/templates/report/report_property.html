@@ -1,0 +1,128 @@
+<div class="report-section page-break">
+    <h2>Vertinamas turtas</h2>
+    <p><strong>Adresas:</strong>
+        {{ meta_data.street }} {{ meta_data.house_no }}
+        {% if meta_data.flat_no %}, {{ meta_data.flat_no }}{% endif %},
+        {{ meta_data.municipality }}
+    </p>
+    {% if meta_data.cadastral_no %}
+        <p><strong>Kadastrinis numeris:</strong> {{ meta_data.cadastral_no }}</p>
+    {% endif %}
+    {% if meta_data.object_type %}
+        <p><strong>Turto tipas:</strong> {{ meta_data.object_type }}</p>
+    {% endif %}
+    {% if meta_data.living_size %}
+        <p><strong>Gyvenamasis plotas:</strong> {{ meta_data.living_size }} m²</p>
+    {% endif %}
+    {% if meta_data.land_size %}
+        <p><strong>Žemės plotas:</strong> {{ meta_data.land_size }} m²</p>
+    {% endif %}
+    {% if meta_data.build_years %}
+        <p><strong>Statybos metai:</strong> {{ meta_data.build_years }}</p>
+    {% endif %}
+    {% if meta_data.renovation_years %}
+        <p><strong>Renovacijos metai:</strong> {{ meta_data.renovation_years }}</p>
+    {% endif %}
+    {% if meta_data.room_count %}
+        <p><strong>Kambarių skaičius:</strong> {{ meta_data.room_count }}</p>
+    {% endif %}
+    {% if meta_data.building_floor_count %}
+        <p><strong>Aukštų skaičius:</strong> {{ meta_data.building_floor_count }}</p>
+    {% endif %}
+    {% if meta_data.apartament_floor %}
+        <p><strong>Aukštas:</strong> {{ meta_data.apartament_floor }}</p>
+    {% endif %}
+    {% if meta_data.foundation %}
+        <p><strong>Pamatai:</strong> {{ meta_data.foundation }}</p>
+    {% endif %}
+    {% if meta_data.walls %}
+        <p><strong>Sienos:</strong> {{ meta_data.walls }}</p>
+    {% endif %}
+    {% if meta_data.inside_walls %}
+        <p><strong>Vidinės sienos:</strong> {{ meta_data.inside_walls }}</p>
+    {% endif %}
+    {% if meta_data.subfloor %}
+        <p><strong>Pogrindis:</strong> {{ meta_data.subfloor }}</p>
+    {% endif %}
+    {% if meta_data.roof %}
+        <p><strong>Stogas:</strong> {{ meta_data.roof }}</p>
+    {% endif %}
+    {% if meta_data.windows %}
+        <p><strong>Langai:</strong> {{ meta_data.windows }}</p>
+    {% endif %}
+    {% if meta_data.heating %}
+        <p><strong>Šildymas:</strong> {{ meta_data.heating }}</p>
+    {% endif %}
+    {% if meta_data.water %}
+        <p><strong>Vanduo:</strong> {{ meta_data.water }}</p>
+    {% endif %}
+    {% if meta_data.gas %}
+        <p><strong>Dujos:</strong> {{ meta_data.gas }}</p>
+    {% endif %}
+    {% if meta_data.wastewater %}
+        <p><strong>Nuotekos:</strong> {{ meta_data.wastewater }}</p>
+    {% endif %}
+    {% if meta_data.electricity %}
+        <p><strong>Elektra:</strong> {{ meta_data.electricity }}</p>
+    {% endif %}
+    {% if meta_data.energy_efficiency %}
+        <p><strong>Energijos efektyvumas:</strong> {{ meta_data.energy_efficiency }}</p>
+    {% endif %}
+    {% if meta_data.air_conditioning %}
+        <p><strong>Oro kondicionavimas:</strong> {{ meta_data.air_conditioning }}</p>
+    {% endif %}
+    {% if meta_data.security %}
+        <p><strong>Saugumas:</strong> {{ meta_data.security }}</p>
+    {% endif %}
+    {% if meta_data.parking_spaces %}
+        <p><strong>Parkavimo vietos:</strong> {{ meta_data.parking_spaces }}</p>
+    {% endif %}
+    {% if meta_data.balcony %}
+        <p><strong>Balkonas:</strong> {{ meta_data.balcony }}</p>
+    {% endif %}
+    {% if meta_data.basement %}
+        <p><strong>Rūsys:</strong> {{ meta_data.basement }}</p>
+    {% endif %}
+    {% if meta_data.garage_size or meta_data.garage_cars_count or meta_data.garage_attached %}
+        <p><strong>Garažas:</strong>
+            {% if meta_data.garage_size %} Dydis: {{ meta_data.garage_size }} m²;{% endif %}
+            {% if meta_data.garage_cars_count %} Automobilių vietos: {{ meta_data.garage_cars_count }};{% endif %}
+            {% if meta_data.garage_attached %} Sujungtas su namu: {{ meta_data.garage_attached }};{% endif %}
+        </p>
+    {% endif %}
+    {% if meta_data.shed_size or meta_data.shed_type or meta_data.shed_electricity %}
+        <p><strong>Sandėlis:</strong>
+            {% if meta_data.shed_size %} Dydis: {{ meta_data.shed_size }} m²;{% endif %}
+            {% if meta_data.shed_type %} Tipas: {{ meta_data.shed_type }};{% endif %}
+            {% if meta_data.shed_electricity %} Elektra: {{ meta_data.shed_electricity }};{% endif %}
+        </p>
+    {% endif %}
+    {% if meta_data.gazebo_size or meta_data.gazebo_type or meta_data.gazebo_electricity %}
+        <p><strong>Pavėsinė:</strong>
+            {% if meta_data.gazebo_size %} Dydis: {{ meta_data.gazebo_size }} m²;{% endif %}
+            {% if meta_data.gazebo_type %} Tipas: {{ meta_data.gazebo_type }};{% endif %}
+            {% if meta_data.gazebo_electricity %} Elektra: {{ meta_data.gazebo_electricity }};{% endif %}
+        </p>
+    {% endif %}
+    {% if meta_data.land_purpose %}
+        <p><strong>Žemės paskirtis:</strong> {{ meta_data.land_purpose }}</p>
+    {% endif %}
+    {% if meta_data.interior_deco %}
+        <p><strong>Interjero apdaila:</strong> {{ meta_data.interior_deco }}</p>
+    {% endif %}
+    {% if meta_data.interior_floors %}
+        <p><strong>Grindys:</strong> {{ meta_data.interior_floors }}</p>
+    {% endif %}
+    {% if meta_data.ceiling_deco %}
+        <p><strong>Lubos:</strong> {{ meta_data.ceiling_deco }}</p>
+    {% endif %}
+    {% if meta_data.outside_doors %}
+        <p><strong>Išorinės durys:</strong> {{ meta_data.outside_doors }}</p>
+    {% endif %}
+    {% if meta_data.inside_doors %}
+        <p><strong>Vidinės durys:</strong> {{ meta_data.inside_doors }}</p>
+    {% endif %}
+    {% if meta_data.description %}
+        <p><strong>Aprašymas:</strong> {{ meta_data.description }}</p>
+    {% endif %}
+</div>
