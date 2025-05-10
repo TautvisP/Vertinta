@@ -214,5 +214,4 @@ class AnnotationDetailView(View):
             'annotation_text': annotation.annotation_text,
             'annotation_image': annotation.annotation_image.url if annotation.annotation_image else None,
         }
-        print(data)
         return JsonResponse(data)

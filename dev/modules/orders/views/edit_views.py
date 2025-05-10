@@ -493,17 +493,14 @@ class EditAdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, User
 
         if garage_form.is_valid():
             self.save_form_data(obj, garage_form.cleaned_data)
-            print("Garage form data saved:", garage_form.cleaned_data)
             return redirect(self.success_url)
 
         elif shed_form.is_valid():
             self.save_form_data(obj, shed_form.cleaned_data)
-            print("Shed form data saved:", shed_form.cleaned_data)
             return redirect(self.success_url)
 
         elif gazebo_form.is_valid():
             self.save_form_data(obj, gazebo_form.cleaned_data)
-            print("Gazebo form data saved:", gazebo_form.cleaned_data)
             return redirect(self.success_url)
 
         forms = {
@@ -524,5 +521,4 @@ class EditAdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, User
     def save_form_data(self, obj, cleaned_data):
 
         for key, value in cleaned_data.items():
-            print(f"Saving {key}: {value}")
             self.model_meta.objects.update_or_create(ev_object=obj, meta_key=key, defaults={'meta_value': value})

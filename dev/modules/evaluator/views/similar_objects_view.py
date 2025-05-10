@@ -280,7 +280,6 @@ class EditSimilarObjectDataView(LoginRequiredMixin, EvaluatorAccessMixin, UserRo
         Handles the POST request to create or update a similar object.
         Validates the forms and saves the data if valid.
         """
-        print("posting a new similar object")
 
         context = self.get_context_data(**kwargs)
         location_form = self.form_class_location(request.POST)
@@ -290,15 +289,10 @@ class EditSimilarObjectDataView(LoginRequiredMixin, EvaluatorAccessMixin, UserRo
         additional_form = self.get_additional_form(obj.object_type, request.POST)
         similar_object_form = self.form_class_similar_object(request.POST) if context['is_similar_object'] else None
 
-        print("location form: ", location_form)
-        print("additional form: ", additional_form)
-        print("similar object form: ", similar_object_form)
         if location_form.is_valid() and (additional_form is None or additional_form.is_valid()) and (similar_object_form is None or similar_object_form.is_valid()):
             edit_id = request.POST.get('edit_id')
             
-            print("all valid")
             if edit_id and edit_id != '0':
-                print("editing")
                 similar_object = get_object_or_404(self.model_similar_object, id=edit_id)
                 similar_object.price = similar_object_form.cleaned_data['price']
                 similar_object.link = similar_object_form.cleaned_data['link']
@@ -311,14 +305,12 @@ class EditSimilarObjectDataView(LoginRequiredMixin, EvaluatorAccessMixin, UserRo
                     self.save_metadata(similar_object, additional_form)
                     
             else:
-                print("creating")
                 similar_object = self.model_similar_object(
                     original_object=context['object'],
                     price=similar_object_form.cleaned_data['price'],
                     link=similar_object_form.cleaned_data['link'],
                     description=similar_object_form.cleaned_data['description']
                 )
-                print(similar_object)
                 similar_object.save()
                 self.save_metadata(similar_object, location_form)
                 

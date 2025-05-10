@@ -103,16 +103,13 @@ class DocumentImportView(LoginRequiredMixin, EvaluatorAccessMixin, TemplateView)
         form = TextFileUploadForm(request.POST, request.FILES)
 
         if form.is_valid():
-            print("Form is valid")
             file = form.cleaned_data['file']
             comment = form.cleaned_data['comment']
 
             try:
                 pdf_file = self.convert_to_pdf(file)
-                print("File converted to PDF")
 
             except Exception as e:
-                print(f"Error converting file to PDF: {e}")
                 return self.render_to_response(self.get_context_data(**kwargs))
             
             order_id = self.kwargs.get('order_id')
@@ -123,7 +120,6 @@ class DocumentImportView(LoginRequiredMixin, EvaluatorAccessMixin, TemplateView)
                 file_path=pdf_file,
                 comment=comment
             )
-            print("UploadedDocument instance created")
             return redirect('modules.evaluator:document_import', order_id=order_id, pk=self.kwargs['pk'])
         
         else:
