@@ -70,6 +70,12 @@
                                 · {{ order.evaluator.email }}
                             </p>
                             {% endif %}
+
+                            {% if order.first_future_event %}
+                                <div class="upcoming-event">
+                                    <span>{% trans 'Sekantis įvykis:' %} {{ order.first_future_event.title }} - {{ order.first_future_event.start_time|date:"Y-m-d H:i" }}</span>
+                                </div>
+                            {% endif %}
                         </div>
                         <div class="order-actions">
                             {% if order.report and order.report.report_file %}

@@ -395,7 +395,12 @@ class EditOrderStatusPriorityView(LoginRequiredMixin, UserRoleContextMixin, User
         return context
 
     def get_success_url(self):
-        return reverse_lazy('modules.orders:evaluator_order_list')    
+        user = self.request.user
+
+        if user.groups.filter(name='Agency').exists():
+            return reverse_lazy('modules.agency:evaluator_list')
+            
+        return reverse_lazy('modules.orders:evaluator_order_list')
 
 
 

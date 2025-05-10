@@ -147,6 +147,11 @@ class OrderListView(LoginRequiredMixin, UserRoleContextMixin, UserPassesTestMixi
             if order.evaluator and order.evaluator.id not in evaluator_phones:
                 phone = UserMeta.get_meta(order.evaluator, 'phone_num')
                 evaluator_phones[order.evaluator.id] = phone
+
+            now = timezone.now()
+            future_events = order.events.filter(start_time__gt=now).order_by('start_time')
+            order.first_future_event = future_events.first() if future_events.exists() else None
+
         context['evaluator_phones'] = evaluator_phones
 
         return context
@@ -239,6 +244,12 @@ class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, UserPasse
         context['priority_choices'] = PRIORITY_CHOICES
         context['is_agency'] = self.request.user.groups.filter(name='Agency').exists()
         context['is_evaluator'] = self.request.user.groups.filter(name='Evaluator').exists()
+        now = timezone.now()
+        
+        for order in context['orders']:
+            future_events = order.events.filter(start_time__gt=now).order_by('start_time')
+            order.first_future_event = future_events.first() if future_events.exists() else None
+
         return context
 
 
