@@ -157,7 +157,6 @@ class DocumentImportView(LoginRequiredMixin, EvaluatorAccessMixin, TemplateView)
         pdfmetrics.registerFont(TTFont('DejaVuSans', font_path))
 
         if file_extension == '.odt':
-            # Handle .odt file conversion
 
             temp_file_path = os.path.join(settings.MEDIA_ROOT, 'uploaded_documents', f"{file_name}{file_extension}")
             
@@ -190,7 +189,7 @@ class DocumentImportView(LoginRequiredMixin, EvaluatorAccessMixin, TemplateView)
             return pdf_file
         
         elif file_extension == '.docx':
-            # Handle .docx file conversion
+
             pythoncom.CoInitialize()
 
             try:
@@ -221,7 +220,6 @@ class DocumentImportView(LoginRequiredMixin, EvaluatorAccessMixin, TemplateView)
                 pythoncom.CoUninitialize()
         
         elif file_extension == '.txt':
-            # Handle .txt file conversion
 
             content = file.read().decode('utf-8')
             pdf = canvas.Canvas(pdf_buffer, pagesize=letter)

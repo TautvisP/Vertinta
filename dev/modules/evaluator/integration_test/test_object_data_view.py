@@ -69,7 +69,6 @@ class ObjectDataViewTest(TestCase):
             'parking_spaces': 1,
             'basement': 'Yra',
             'balcony': 'Yra',
-            # Add required evaluation fields if any
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 200)

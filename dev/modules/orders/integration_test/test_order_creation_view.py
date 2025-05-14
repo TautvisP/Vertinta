@@ -16,21 +16,19 @@ class OrderCreationIntegrationTest(TestCase):
         Group.objects.get_or_create(name='User')[0].uauth_user_set.add(self.user)
 
     def test_order_creation_step_flow(self):
-        # Simulate session for object type selection
         session = self.client.session
         session['selected_obj_type'] = 'Namas'
         session.save()
     
-        # Step 1: Location and HouseForm
         url = reverse('modules.orders:order_creation_step')
         data = {
-            'municipality': '1',  # Use a valid code from MUNICIPALITY_CHOICES
+            'municipality': '1',
             'street': 'Test gatvė',
             'house_no': 1,
             'latitude': 55.0,
             'longitude': 25.0,
             # HouseForm fields
-            'land_purpose': 'Namų valda',  # Use a valid value from LAND_PURPOSE_CHOICES
+            'land_purpose': 'Namų valda', 
             'land_size': 10,
             'floor_count': 2,
         }
@@ -38,10 +36,9 @@ class OrderCreationIntegrationTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('modules.orders:order_decoration_step'))
     
-        # Step 2: Decoration (fill with valid required fields)
         url = reverse('modules.orders:order_decoration_step')
         data = {
-            'outside_deco': 'Tinkuota',  # Example, use valid choices
+            'outside_deco': 'Tinkuota',
             'interior_deco': 'Dažyta',
             'interior_floors': 'Parketas',
             'ceiling_deco': 'Dažyta',

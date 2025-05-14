@@ -195,7 +195,6 @@ class EvaluatorOrderListView(LoginRequiredMixin, UserRoleContextMixin, UserPasse
             return False
         
         else:
-            # If no specific ID, just check if user is either an evaluator or agency
             return user.groups.filter(name__in=['Evaluator', 'Agency']).exists()
 
 
@@ -272,7 +271,6 @@ class OrderDeleteView(LoginRequiredMixin, View):
 
         obj = order.object
 
-        # Delete associated metadata and object
         ObjectMeta.objects.filter(ev_object=obj).delete()
         obj.delete()
         order.delete()
@@ -313,15 +311,12 @@ class AgencySelectionView(LoginRequiredMixin, UserPassesTestMixin, UserRoleConte
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        # Check if we have an order_id or object_id in the URL
         order_id = self.kwargs.get('order_id')
         object_id = self.kwargs.get('object_id')
         
-        # Handle both possible URL parameter scenarios
         if order_id:
             context['order_id'] = order_id
         elif object_id:
-            # If we only have object_id but no order_id, pass the object_id
             context['object_id'] = object_id
         
         agencies = self.get_queryset()
@@ -336,7 +331,7 @@ class AgencySelectionView(LoginRequiredMixin, UserPassesTestMixin, UserRoleConte
                 'id': agency.id,
                 'name': self.model_user_meta.get_meta(agency, 'agency_name'),
                 'date_joined': agency.date_joined,
-                'evaluator_count': evaluators.count(),  # Use actual count instead of agency.evaluator_count
+                'evaluator_count': evaluators.count(),
                 'ongoing_orders': ongoing_orders_count,
                 'completed_orders': completed_orders_count,
                 'evaluation_starting_price': self.model_user_meta.get_meta(agency, 'evaluation_starting_price'),
@@ -351,35 +346,29 @@ class AgencySelectionView(LoginRequiredMixin, UserPassesTestMixin, UserRoleConte
             try:
                 selected_agency = self.model.objects.get(id=selected_agency_id, groups__name='Agency')
                 
-                # Check if we have an order_id or object_id
                 order_id = self.kwargs.get('order_id')
                 object_id = self.kwargs.get('object_id')
                 
                 if order_id:
-                    # Update an existing order
                     order = get_object_or_404(Order, id=order_id)
                     order.agency = selected_agency
                     order.save()
                     
                 elif object_id:
-                    # Create a new order for this object
                     obj = get_object_or_404(Object, id=object_id)
                     order = Order.objects.create(
                         client=request.user,
                         object=obj,
                         agency=selected_agency,
-                        status='Naujas'  # Default status for new orders
+                        status='Naujas' 
                     )
                     
-                    # Select the appraiser with the least amount of orders
                     appraisers = self.model.objects.filter(groups__name='Evaluator', agency=selected_agency)
                     if appraisers.exists():
                         appraiser_with_least_orders = min(appraisers, key=lambda appraiser: appraiser.evaluator_orders.count())
-                        # Associate the order with the selected appraiser
                         order.evaluator = appraiser_with_least_orders
                         order.save()
                 
-                # Clear session data
                 for key in ['selected_obj_type', 'location_data', 'decoration_data', 
                             'common_info_data', 'utility_data', 'additional_data', 'pending_object_id']:
                     if key in request.session:
@@ -453,7 +442,6 @@ class ReportAccessView(LoginRequiredMixin, UserPassesTestMixin, View):
         user = self.request.user
         
         # Check if user has permission to access this report
-        # Agencies and evaluators can always access
         if user.groups.filter(name__in=['Agency', 'Evaluator']).exists():
             return True
             

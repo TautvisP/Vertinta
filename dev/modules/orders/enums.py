@@ -10,12 +10,6 @@ class ObjectTypes:
     STORAGE = _('Sandėliukas')
     ARBOR = _('Pavėsinė')
     GARAGE_TYPE = _('Garažas')
-    #POOL = _('Baseinas')
-    #COMMERCIAL_TYPE = _('komercinis')
-    #INDUSTRIAL_TYPE = _('Industrinis')
-    #CULTURE_TYPE = _('Kultūros')
-    #EDUCATION_TYPE = _('Mokslo')
-    #RELAXATION_TYPE = _('Poilsio')
 
 ObjectImages = {
     ObjectTypes.LAND_TYPE: 'land.png',

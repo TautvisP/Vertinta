@@ -21,7 +21,3 @@ class EvaluatorAccessMixin:
             return redirect('modules.orders:order_list')
 
         return super().dispatch(request, *args, **kwargs)
-    
-
-
-

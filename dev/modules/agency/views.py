@@ -337,13 +337,10 @@ class AssignEvaluatorView(LoginRequiredMixin, UserRoleContextMixin, View):
         Calendar events created by the old evaluator will now show as created by the new evaluator.
         This ensures all calendar events for the order remain associated with the current evaluator.
         """
-        # Import Event model here to avoid circular imports
-        from modules.orders.models import Event
         
         if not old_evaluator:
             return 0
         
-        # Get all events for this order
         events = Event.objects.filter(order=order)
         
         transfer_count = 0
@@ -421,14 +418,10 @@ class ApproveReportView(LoginRequiredMixin, UserPassesTestMixin, View):
             messages.error(request, _("Ši ataskaita neegzistuoja."))
             return redirect('modules.orders:order_list')
         
-        # Approve report
         order.report.status = 'approved'
         order.report.save()
         
-        # Notify client
         self.notify_client(order)
-
-        # Create notifications
         create_report_approval_notification(order.report, request.user)
     
         
@@ -451,7 +444,6 @@ Sistema
         """
         
         try:
-            # Print to console for development
             print("\n" + "="*80)
             print("CLIENT NOTIFICATION EMAIL")
             print("="*80)
@@ -460,7 +452,6 @@ Sistema
             print(f"Message: {message}")
             print("="*80 + "\n")
             
-            # In production you would send the actual email
             # email = EmailMessage(
             #     subject=subject,
             #     body=message,
@@ -498,21 +489,16 @@ class RejectReportView(LoginRequiredMixin, UserPassesTestMixin, View):
             messages.error(request, _("Ši ataskaita neegzistuoja."))
             return redirect('modules.orders:order_list')
         
-        # Get rejection reason
         rejection_reason = request.POST.get('rejection_reason', '')
         if not rejection_reason:
             messages.error(request, _("Prašome nurodyti atmetimo priežastį."))
             return redirect('modules.agency:review_report', order_id=order_id)
         
-        # Reject report
         order.report.status = 'rejected'
         order.report.rejection_reason = rejection_reason
         order.report.save()
         
-        # Notify evaluator
         self.notify_evaluator(order, rejection_reason)
-
-        # Create notification
         create_report_rejection_notification(order.report, request.user, rejection_reason)
         
         messages.success(request, _("Ataskaita atmesta. Vertintojui bus pranešta."))
@@ -538,7 +524,6 @@ Sistema
         """
         
         try:
-            # Print to console for development
             print("\n" + "="*80)
             print("EVALUATOR NOTIFICATION EMAIL")
             print("="*80)
@@ -547,7 +532,6 @@ Sistema
             print(f"Message: {message}")
             print("="*80 + "\n")
             
-            # In production you would send the actual email
             # email = EmailMessage(
             #     subject=subject,
             #     body=message,

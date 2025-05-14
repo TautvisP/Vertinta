@@ -12,4 +12,3 @@ urlpatterns = [
     # Secure agency registration with token
     path('register/agency/<uuid:token>/', AgencyRegisterWithTokenView.as_view(), name='agency_register_with_token'),
 ]
-# http://127.0.0.1:8000/auth/login/ is the starting, main, initial url of the project

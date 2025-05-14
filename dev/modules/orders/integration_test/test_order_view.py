@@ -9,7 +9,6 @@ User = get_user_model()
 class OrderIntegrationTest(TestCase):
     def setUp(self):
         self.client = Client()
-        # Create users and groups
         self.client_user = User.objects.create_user(email='client@example.com', password='pass', first_name='Client', last_name='User')
         self.agency_user = User.objects.create_user(email='agency@example.com', password='pass', first_name='Agency', last_name='User')
         self.evaluator_user = User.objects.create_user(email='eval@example.com', password='pass', first_name='Eval', last_name='User')
@@ -122,10 +121,9 @@ class OrderIntegrationTest(TestCase):
         url = reverse('modules.orders:view_report', args=[self.order.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)  # Not approved, should redirect
-        # Simulate approved report
         report = Report.objects.get(order=self.order)
         report.status = 'approved'
-        report.report_file.name = 'reports/dummy.pdf'  # Set a dummy file path
+        report.report_file.name = 'reports/dummy.pdf'
         report.save()
         response = self.client.get(url)
         # Should redirect to file url if approved

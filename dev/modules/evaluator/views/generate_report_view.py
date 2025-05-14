@@ -394,7 +394,6 @@ Nekilnojamo Turto Vertinimo Sistema
         """
         
         try:
-            # Print to console for development
             print("\n" + "="*80)
             print("AGENCY NOTIFICATION EMAIL")
             print("="*80)
@@ -403,7 +402,6 @@ Nekilnojamo Turto Vertinimo Sistema
             print(f"Message: {message}")
             print("="*80 + "\n")
             
-            # In production
             # email = EmailMessage(
             #     subject=subject,
             #     body=message,

@@ -31,7 +31,6 @@ class SimilarObjectsIntegrationTest(TestCase):
             'price': 100000,
             'link': 'https://example.com',
             'description': 'Test similar object',
-            # Location form fields (add required ones)
             'municipality': '1',
             'street': 'Test gatvė',
             'house_no': 1,

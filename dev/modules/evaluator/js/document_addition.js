@@ -17,7 +17,6 @@ window.addEventListener('click', function(event) {
     }
 });
 
-// Setup drop area for file upload
 const dropAreas = document.querySelectorAll('.drop');
 dropAreas.forEach(dropArea => {
     const fileInput = dropArea.querySelector('input[type="file"]');
@@ -51,7 +50,6 @@ dropAreas.forEach(dropArea => {
     });
 });
 
-// Edit comment functionality
 document.querySelectorAll('.edit-comment-button').forEach(button => {
     button.addEventListener('click', function() {
         const documentId = this.getAttribute('data-id');

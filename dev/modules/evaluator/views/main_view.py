@@ -158,7 +158,7 @@ class RCDataEditView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMi
     
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['obj'] = self.get_object()  # Pass object to form
+        kwargs['obj'] = self.get_object()
         return kwargs
     
     def get_context_data(self, **kwargs):
@@ -169,7 +169,6 @@ class RCDataEditView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleContextMi
         client = order.client
         phone_number = self.user_meta.get_meta(client, 'phone_num')
         
-        # Get RC data
         rc_data = {}
         meta_data = ObjectMeta.objects.filter(ev_object=obj, meta_key__startswith='rc_')
         for meta in meta_data:

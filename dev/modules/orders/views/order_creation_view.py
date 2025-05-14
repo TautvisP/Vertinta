@@ -438,7 +438,6 @@ class AdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, UserPass
         context['object'] = obj
         context['object_id'] = object_id
 
-        # Try to get the order, but don't fail if it doesn't exist yet
         order = Order.objects.filter(object=obj).first()
         if order:
             context['order'] = order
@@ -490,13 +489,10 @@ class AdditionalBuildingsView(LoginRequiredMixin, UserRoleContextMixin, UserPass
         if all_valid:
             object_id = self.kwargs.get('object_id')
             obj = get_object_or_404(Object, id=object_id)
-            # Check if there's an order, if not, this is part of creation flow
             order = Order.objects.filter(object=obj).first()
             if not order:
-                # We're in the creation flow, go to agency selection
                 return redirect('modules.orders:select_agency', object_id=object_id)
             else:
-                # We have an order, go to edit order
                 return redirect('modules.orders:select_agency', order_id=order.id)
 
         return self.form_invalid(forms)

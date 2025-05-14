@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Copy link buttons
     document.querySelectorAll('.copy-link-button').forEach(button => {
         button.addEventListener('click', function() {
             const link = this.getAttribute('data-link');
@@ -9,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Open comment modal
     document.querySelectorAll('.open-comment-modal-button').forEach(button => {
         button.addEventListener('click', function() {
             const comment = this.getAttribute('data-comment');
@@ -18,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Close comment modal - make sure this selector is precise
     document.querySelectorAll('#commentModal .close').forEach(closeBtn => {
         closeBtn.addEventListener('click', function() {
             document.getElementById('commentModal').style.display = 'none';

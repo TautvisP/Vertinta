@@ -42,6 +42,14 @@ export default class ObjectGallery extends Component {
         this.activateEventsHandling();
         this.setupDropAreas();
         this.setupDeleteButtons();
+
+        const notificationMessage = localStorage.getItem('notificationMessage');
+        const notificationType = localStorage.getItem('notificationType');
+        if (notificationMessage && notificationType) {
+            this.showNotification(notificationMessage, notificationType);
+            localStorage.removeItem('notificationMessage');
+            localStorage.removeItem('notificationType');
+        }
     }
 
     openModal() {
@@ -107,6 +115,25 @@ export default class ObjectGallery extends Component {
         });
     }
 
+    showNotification(message, type) {
+        const notificationContainer = document.getElementById('notification-container');
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <span>${message}</span>
+            <span class="close-notification">&times;</span>
+        `;
+        notificationContainer.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
+
+        notification.querySelector('.close-notification').addEventListener('click', () => {
+            notification.remove();
+        });
+    }
+
     setupDeleteButtons() {
         document.querySelectorAll('.icon-button').forEach(button => {
             button.addEventListener('click', function(event) {
@@ -125,9 +152,11 @@ export default class ObjectGallery extends Component {
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
+                        localStorage.setItem('notificationMessage', data.message || 'Nuotrauka sėkmingai ištrinta.');
+                        localStorage.setItem('notificationType', 'success');
                         location.reload();
                     } else {
-                        alert('Error deleting image');
+                        this.showNotification('Klaida ištrinant nuotrauką', 'error');
                     }
                 })
                 .catch(error => {

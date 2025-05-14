@@ -47,10 +47,9 @@ class FoundNearbyOrganizationView(LoginRequiredMixin, EvaluatorAccessMixin, User
         context['current_step'] = 7
         context['total_steps'] = TOTAL_STEPS
 
-        # Filters
         object_type = self.request.GET.get('object_type', 'all')
         search_radius = int(self.request.GET.get('search_radius', 2000))
-        sort_order = self.request.GET.get('sort_order', 'asc')  # Default to ascending order
+        sort_order = self.request.GET.get('sort_order', 'asc')
 
         if obj.latitude is None or obj.longitude is None:
             context['nearby_organizations'] = []
@@ -222,18 +221,14 @@ class NearbyOrganizationListView(LoginRequiredMixin, EvaluatorAccessMixin, UserR
         context['current_step'] = 7
         context['total_steps'] = TOTAL_STEPS
         
-        # Get filter and sort parameters
         category = self.request.GET.get('category', 'all')
         sort_order = self.request.GET.get('sort_order', 'asc')
         
-        # Get nearby organizations
         nearby_organizations = NearbyOrganization.objects.filter(object=obj)
         
-        # Apply category filter if not 'all'
         if category != 'all':
             nearby_organizations = nearby_organizations.filter(category=category)
         
-        # Apply sorting
         if sort_order == 'desc':
             nearby_organizations = nearby_organizations.order_by('-distance')
         else:

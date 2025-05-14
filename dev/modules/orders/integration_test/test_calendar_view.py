@@ -100,6 +100,5 @@ class CalendarViewTests(TestCase):
         url = reverse('modules.orders:confirm_event', args=[self.event.id])
         response = self.client.post(url)
         self.assertEqual(response.status_code, 302)
-        # Optionally, check if is_confirmed is set if you have such a field
         self.event.refresh_from_db()
         self.assertTrue(getattr(self.event, 'is_confirmed', True))

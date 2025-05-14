@@ -28,43 +28,6 @@ class HouseRequestConditionForm(forms.Form):
     
     roof = forms.ChoiceField(label=_('Stogas'), choices=ROOF_CHOICES,
                              widget=forms.Select(attrs={'class': 'form-control'}))
-    
-#    window = forms.ChoiceField(label=_('Langai'), choices=WINDOW_CHOICES,
-#                               widget=forms.Select(attrs={'class': 'form-control'}))
-#    inner_door = forms.ChoiceField(label=_('Vidaus durys'), choices=INNER_DOOR_CHOICES,
-#                                   widget=forms.Select(attrs={'class': 'form-control'}))
-#    outer_door = forms.ChoiceField(label=_('Lauko durys'), choices=OUTER_DOOR_CHOICES,
-#                                   widget=forms.Select(attrs={'class': 'form-control'}))
-#    parking = forms.ChoiceField(label=_('Vieta automobiliui'), choices=PARKING_CHOICES,
-#                                widget=forms.Select(attrs={'class': 'form-control'}))
-#    basement = forms.ChoiceField(label=_('Rūsys'), choices=BASEMENT_CHOICES,
-#                                 widget=forms.Select(attrs={'class': 'form-control'}))
-#    balcony = forms.ChoiceField(label=_('Balkonas'), choices=BALCONY_CHOICES,
-#                                widget=forms.Select(attrs={'class': 'form-control'}))
-#    wall_deco = forms.ChoiceField(label=_('Sienos'), choices=DECO_CHOICES,
-#                                  widget=forms.Select(attrs={'class': 'form-control'}))
-#    floor_deco = forms.ChoiceField(label=_('Grindys'), choices=FLOOR_CHOICES,
-#                                   widget=forms.Select(attrs={'class': 'form-control'}))
-#    ceiling_deco = forms.ChoiceField(label=_('Lubos'), choices=DECO_CHOICES,
-#                                     widget=forms.Select(attrs={'class': 'form-control'}))
-#    electricity = forms.ChoiceField(label=_('Elektra'), choices=ELECTRICITY_GAS_CHOICES,
-#                                    widget=forms.Select(attrs={'class': 'form-control'}))
-#    gas = forms.ChoiceField(label=_('Dujos'), choices=ELECTRICITY_GAS_CHOICES,
-#                            widget=forms.Select(attrs={'class': 'form-control'}))
-#    heating = forms.ChoiceField(label=_('Šildymas'), choices=HEATING_CHOICES,
-#                                widget=forms.Select(attrs={'class': 'form-control'}))
-#    water_supply = forms.ChoiceField(label=_('Vandentiekis'), choices=WATER_SUPPLY_CHOICES,
-#                                     widget=forms.Select(attrs={'class': 'form-control'}))
-#    outdoor_deco = forms.ChoiceField(label=_('Išorės apdaila'), choices=OUTDOOR_DECO_TABLE_CHOICES,
-#                                     widget=forms.Select(attrs={'class': 'form-control'}))
-#    wastewater_disposal = forms.ChoiceField(label=_('Nuotekų šalinimas'), choices=WASTEWATER_CHOICES,
-#                                            widget=forms.Select(attrs={'class': 'form-control'}))
-#    ventilation = forms.ChoiceField(label=_('Vėdinimas/kond.'), choices=VENTILATION_CHOICES,
-#                                    widget=forms.Select(attrs={'class': 'form-control'}))
-#    security = forms.ChoiceField(label=_('Saugos signalizacija'), choices=SECURITY_CHOICES,
-#                                 widget=forms.Select(attrs={'class': 'form-control'}))
-#    energy_use_class = forms.ChoiceField(label=_('Energ. naud. klasė'), choices=ENERGY_CHOICES,
-#                                         widget=forms.Select(attrs={'class': 'form-control'}))
 
 
 class ObjectLocationForm(forms.Form):

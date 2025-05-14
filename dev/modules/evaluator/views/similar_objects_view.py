@@ -68,11 +68,10 @@ class SimilarObjectSearchView(LoginRequiredMixin, EvaluatorAccessMixin, UserRole
         order_id = self.kwargs.get('order_id')
         pk = self.kwargs.get('pk')
         object_type = request.POST.get('object_type')
-        # print(f"POST request received with object_type: {object_type}")  # Debugging statement
         form_class = self.get_form_class(object_type)
 
         if form_class is None:
-            print(f"Invalid object type: {object_type}")  # Debugging statement
+            print(f"Invalid object type: {object_type}")
             return HttpResponseBadRequest(f"Invalid object type: {object_type}")
         
         form = form_class(request.POST)
@@ -93,11 +92,10 @@ class SimilarObjectSearchView(LoginRequiredMixin, EvaluatorAccessMixin, UserRole
         
         if 'object_type' in request.GET:
             object_type = request.GET.get('object_type')
-            #print(f"GET request received with object_type: {object_type}")  # Debugging statement
             form_class = self.get_form_class(object_type)
 
             if form_class is None:
-                print(f"Invalid object type: {object_type}")  # Debugging statement
+                print(f"Invalid object type: {object_type}")
                 return HttpResponseBadRequest(f"Invalid object type: {object_type}")
             
             form = form_class()
@@ -108,7 +106,6 @@ class SimilarObjectSearchView(LoginRequiredMixin, EvaluatorAccessMixin, UserRole
 
 
     def get_form_class(self, object_type):
-        #print(f"Retrieving form class for object_type: {object_type}")  # Debugging statement
         form_classes = {
             'butai': ButasSearchForm,
             'namai': NamasSearchForm,
@@ -118,7 +115,7 @@ class SimilarObjectSearchView(LoginRequiredMixin, EvaluatorAccessMixin, UserRole
         form_class = form_classes.get(object_type)
 
         if form_class is None:
-            print(f"No form class found for object_type: {object_type}")  # Debugging statement
+            print(f"No form class found for object_type: {object_type}")
 
         return form_class
 
@@ -136,18 +133,17 @@ class SimilarObjectSearchView(LoginRequiredMixin, EvaluatorAccessMixin, UserRole
         # Prepare the full URL with parameters
         request = requests.Request('GET', base_url, params=params).prepare()
         full_url = request.url
-        print(f"Full URL: {full_url}")  # Debugging statement
+        print(f"Full URL: {full_url}")
 
         response = requests.get(full_url)
         soup = BeautifulSoup(response.text, 'html.parser')
-        # print(f"Soup: {soup}")  # Debugging statement
         listings = []
 
         for listing in soup.select('.advert'):
             title = listing.select_one('.list-item-title').get_text(strip=True)
             price = listing.select_one('.list-item-price').get_text(strip=True)
             link = listing.select_one('.list-item-title a')['href']
-            print(f"Found listing Title: {title}, Price: {price}, Link: {link}")  # Debugging statement
+            print(f"Found listing Title: {title}, Price: {price}, Link: {link}")
             listings.append({'title': title, 'price': price, 'link': link})
 
         return listings
@@ -166,7 +162,6 @@ class SimilarObjectSearchView(LoginRequiredMixin, EvaluatorAccessMixin, UserRole
             'FWarmSystem': ','.join(data.get('heating', [])),
             'FHouseType': ','.join(data.get('building_type', [])),
         }
-        #print(f"Constructed URL params: {params}")  # Debugging statement
         return params
     
 

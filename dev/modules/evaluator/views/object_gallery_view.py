@@ -97,7 +97,7 @@ class DeleteObjectImageView(LoginRequiredMixin, EvaluatorAccessMixin, UserRoleCo
         image.annotations.all().delete()
         image.delete()
 
-        return JsonResponse({'status': 'success'})
+        return JsonResponse({'status': 'success', 'message': 'Nuotrauka sėkmingai ištrinta.'})
 
 
 
