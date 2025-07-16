@@ -1,3 +1,0 @@
-[submodule "lib/indeform_p2024_osomjs.git"]
-	path = lib/indeform_p2024_osomjs.git
-	url = ssh://git-codecommit.us-east-1.amazonaws.com/v1/repos/indeform_p2024_osomjs

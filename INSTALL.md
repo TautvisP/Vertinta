@@ -1,21 +1,6 @@
 # Welcome to OSOM.Codex sandbox edition!
 # Please open terminal and follow setup steps below to make your project up and running in minutes.
 
-
-# Libraries setup.
-# lib: Setup OSOM.js GIT submodule.
-git submodule init
-git submodule update
-
-
-# lib: Install NPM packages for frontend development.
-$ mkdir -p ./lib/node_modules
-$ npm install --prefix ./lib
-
-# NOTE: Use the same command for installation of different NPM packages.
-# $ npm install --prefix ./lib {PACKAGE_NAME}
-
-
 # backend: Setup Python virtual environment for backend libraries.
 $ python3 -m venv .venv
 
